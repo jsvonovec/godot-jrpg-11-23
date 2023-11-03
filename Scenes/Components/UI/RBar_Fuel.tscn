@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://by2uofjdoijhu"]
+
+[ext_resource type="Texture2D" uid="uid://bj0oslwp15rr" path="res://Sprites/chevron.png" id="1"]
+[ext_resource type="PackedScene" uid="uid://dxyk7d18lkx2r" path="res://Scenes/Components/UI/RBar_HP.tscn" id="2"]
+[ext_resource type="Shader" path="res://Shaders/RBar_HP.gdshader" id="2_ulqgx"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0ejif"]
+resource_local_to_scene = true
+shader = ExtResource("2_ulqgx")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 20
+shader_parameter/fill_color = Vector3(0.94902, 0.694118, 0.262745)
+shader_parameter/unfill_color = Vector3(0.711765, 0.520589, 0.197059)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 224.89
+shader_parameter/size = Vector2(177, 18)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("1")
+
+[node name="RBar_Fuel" instance=ExtResource("2")]
+material = SubResource("ShaderMaterial_0ejif")
+custom_minimum_size = Vector2(36.5, 17.5)
+fill_color = Color(0.94902, 0.694118, 0.262745, 1)
+icon = ExtResource("1")
+resource = 0

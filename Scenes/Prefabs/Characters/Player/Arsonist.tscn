@@ -1,0 +1,181 @@
+[gd_scene load_steps=24 format=3 uid="uid://c501sv0l862sw"]
+
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://djkv1ems570ly" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Flamethrower.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://if2uxx3leam6" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Firestorm.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://biaapdkl580kx" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Infinerate.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://bcsnne0l85wti" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Blazing Shackles.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://cugfrof6cr0iq" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Thermoset.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://patvvvwcw4df" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Pyrobolt.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://blcsmopk4ly1m" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Ashify.tscn" id="8"]
+[ext_resource type="Texture2D" uid="uid://b368fnke513vu" path="res://Sprites/Emoji/twe_jackolantern.png" id="9"]
+[ext_resource type="PackedScene" uid="uid://tyn5uutkuago" path="res://Scenes/Prefabs/Actions/General/Secondary/Slash.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://b8756w1dr5yme" path="res://Scenes/Prefabs/Actions/General/Secondary/Snap.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://cvmvo2xxhyi1" path="res://Scenes/Prefabs/Actions/General/Secondary/Riposte.tscn" id="12"]
+[ext_resource type="PackedScene" uid="uid://dludl1mwyayyl" path="res://Scenes/Prefabs/Actions/General/Secondary/Hit-and-Run.tscn" id="13"]
+[ext_resource type="Texture2D" uid="uid://cphgjhdsjpq38" path="res://Sprites/Characters/arsonist_idle.png" id="14"]
+
+[sub_resource type="Animation" id="Animation_8ouwx"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Vector3(0, 1.81663, 0)]
+}
+
+[sub_resource type="Animation" id="4"]
+resource_name = "atk melee"
+step = 0.05
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0.000747688, 0.0507477, 0.100748, 0.14936, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.548612, 0.599252, 0.649252, 0.699252, 0.749252),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1),
+"update": 1,
+"values": [1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0, 1, 0]
+}
+
+[sub_resource type="Animation" id="5"]
+resource_name = "atk ranged"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D:frame")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.9),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [1, 0]
+}
+
+[sub_resource type="Animation" id="6"]
+resource_name = "idle"
+length = 4.0
+loop_mode = 1
+tracks/0/type = "position_3d"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Sprite2D")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = PackedFloat32Array()
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("Sprite2D:position")
+tracks/1/interp = 2
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2, 4),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [Vector3(0, 0.741742, 0), Vector3(0, 1.81663, 0), Vector3(0, 0.741742, 0)]
+}
+
+[sub_resource type="Animation" id="7"]
+resource_name = "move"
+length = 0.75
+step = 0.05
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0wa6d"]
+_data = {
+"RESET": SubResource("Animation_8ouwx"),
+"atk melee": SubResource("4"),
+"atk ranged": SubResource("5"),
+"idle": SubResource("6"),
+"move": SubResource("7")
+}
+
+[sub_resource type="AtlasTexture" id="1"]
+atlas = ExtResource("14")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="2"]
+atlas = ExtResource("14")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="3"]
+resource_local_to_scene = true
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("1")
+}, {
+"duration": 1.0,
+"texture": SubResource("2")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Arsonist" instance=ExtResource("1")]
+avi = ExtResource("9")
+rname = &"Arsonist"
+p_color = Color(0.992157, 0.658824, 0.266667, 1)
+s_color = Color(0.533333, 0.447059, 0.270588, 1)
+default_speed = 135
+default_max_hp = 60
+default_hp = 60
+default_atk = [80, 120, 100, 70]
+default_def = [15, 22, 20, 45]
+default_max_res = Array[int]([110, 1, 140, 20])
+default_res = Array[int]([110, 1, 140, 50])
+
+[node name="Puppet" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+dancing_sprite_path = NodePath("Center/Sprite2D")
+dance_duration = 4
+dance_ticks = Array[float]([0.0, 1.0, 2.0, 2.25, 3.0, 3.25])
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Puppet" index="0"]
+root_node = NodePath("../Center")
+libraries = {
+"": SubResource("AnimationLibrary_0wa6d")
+}
+
+[node name="Center" parent="Puppet" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.31621, 0)
+
+[node name="Sprite2D" type="AnimatedSprite3D" parent="Puppet/Center" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.81663, 0)
+pixel_size = 0.125
+billboard = 1
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = SubResource("3")
+
+[node name="Pyrobolt" parent="L1" index="0" instance=ExtResource("7")]
+
+[node name="Thermoset" parent="L1" index="1" instance=ExtResource("6")]
+
+[node name="Snap" parent="L1" index="2" instance=ExtResource("11")]
+
+[node name="Riposte" parent="L1" index="3" instance=ExtResource("12")]
+
+[node name="Hit-and-Run" parent="L1" index="4" instance=ExtResource("13")]
+
+[node name="Firestorm" parent="L2" index="0" instance=ExtResource("3")]
+
+[node name="Slash" parent="L2" index="1" instance=ExtResource("10")]
+
+[node name="Ashify" parent="L3" index="0" instance=ExtResource("8")]
+
+[node name="Infinerate" parent="L3" index="1" instance=ExtResource("4")]
+
+[node name="Flamethrower" parent="L4" index="0" instance=ExtResource("2")]
+
+[node name="Blazing Shackles" parent="L5" index="0" instance=ExtResource("5")]

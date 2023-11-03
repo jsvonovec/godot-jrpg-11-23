@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://yo6mg7tuou5m"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+#export (Texture) var se_icon : Texture
+@export var effect_duration = 2
+#export (StatusEffect.TICK_EVENT) var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		deal_basic_damage(target)
+		# warning-ignore:return_value_discarded
+		se_Bleed.new(character, target, effect_duration)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Obliterate" instance=ExtResource("1")]
+script = SubResource("1")
+effect_duration = 3
+target_friendlies = false
+power = 30
+description = "Does heavy damage to one target and bleeds them for {effect_duration} turns."
+melee = true

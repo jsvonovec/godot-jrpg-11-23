@@ -1,0 +1,90 @@
+[gd_scene load_steps=4 format=3 uid="uid://dludl1mwyayyl"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+
+func _use(targets):
+	# randomly move if there are no targets
+	if len(targets) == 0:
+		targets = [get_child(randi() % get_child_count())]
+	
+	# Damage
+	if NIU.get_class_name(targets[0]) == \"TurnCharacter\":
+		deal_basic_damage(targets[0])
+	
+	# Now change position
+	var last = targets[len(targets) - 1]
+	if NIU.get_class_name(last) == \"HitAndRunDirection\":
+		character.change_position(character.position + (int(last.name) * 1.01),
+		true)
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+func possible_following_targets(_targets) -> Array:
+	var positions := []
+	var party = character.get_party()
+	party.erase(character)
+	# get possible positions to switch to
+	for chara in party:
+		if abs(chara.pos - character.pos) < 1.01:
+			positions.append(chara.pos)
+	# turn into objects
+	var results := []
+	for p in positions:
+		var diff = p - character.pos
+		diff = round(diff)
+		var diffname = str(diff) if diff<0 else \"+\" + str(diff)
+		for child in get_children():
+			if child.name == diffname:
+				results.append(child)
+	return results
+"
+
+[sub_resource type="GDScript" id="2"]
+script/source = "extends Node
+
+
+
+
+func get_chara():
+	return null
+
+func _get_name() -> String:
+	return (\"Right %s\" % name.right(-1)) if name.left(1) == \"+\" else (\"Left %s\" % name.right(-1))
+
+func get_class_name() -> String:
+	return \"HitAndRunDirection\"
+"
+
+[node name="Hit-and-Run" instance=ExtResource("1")]
+script = SubResource("1")
+primary = false
+costs = Array[float]([0.0, 0.0, 0.0, 30.0])
+power = 6
+description = "Shifts up or down one position after attacking."
+melee = true
+max_targets = 2
+allow_same_target = false
+allow_same_target_consec = false
+
+[node name="+1" type="Node" parent="." index="0"]
+script = SubResource("2")
+
+[node name="-1" type="Node" parent="." index="1"]
+script = SubResource("2")

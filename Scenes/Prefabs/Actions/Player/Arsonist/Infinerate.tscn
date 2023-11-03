@@ -1,0 +1,44 @@
+[gd_scene load_steps=3 format=3 uid="uid://biaapdkl580kx"]
+
+[ext_resource type="PackedScene" uid="uid://djkv1ems570ly" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Flamethrower.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var se_icon : Texture2D
+@export var effect_duration = 8
+#export (StatusEffect.TICK_EVENT) var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		apply_burn(target, power, effect_duration)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Infinerate" instance=ExtResource("1")]
+script = SubResource("1")
+se_icon = null
+effect_duration = 6
+close_range = false
+costs = Array[float]([15.0])
+power = 3
+description = "Burns the target with a {power}-damage, {effect_duration}-turn burn. Additional casts of Infinerate stack their damage and reset the duration."
+def_multiplier = 1.0

@@ -1,0 +1,49 @@
+[gd_scene load_steps=4 format=3 uid="uid://8oyli7x47ckn"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://ccnub4xs8hcse" path="res://Sprites/Emoji/twe_bomb.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var duration: int
+
+var status_effect
+
+func _use(_targets):
+	var psn := -1
+	# figure out if initial target is poisoned
+	for se in _targets[0].status_effects_active:
+		if \"se_Poisoned\" in NIU.get_class_name(se):
+			match NIU.get_class_name(se):
+				\"se_Poisoned\":
+					psn = 0
+				\"se_Poisoned_Badly\":
+					psn = 1
+				\"se_Poisoned_Lethally\":
+					psn = 2
+			break
+	# if poisoned, double damage and poison friends
+	_targets[0].take_damage(power * (1 + int(psn != -1)), character, 
+	attack_type, atk_multiplier, def_multiplier, true)
+	if psn == -1:
+		return
+	_targets = get_aoe_targets(_targets, false)
+	for i in range(0, len(_targets)):
+		apply_poison(_targets[i], duration, psn)
+"
+
+[node name="Detonate" instance=ExtResource("1")]
+script = SubResource("1")
+duration = 3
+close_range = false
+costs = Array[float]([20.0])
+follow = true
+attack_type = 2
+power = 10
+icon = ExtResource("2")
+description = "If the target is poisoned, the power is doubled and  the target's closest allies are poisoned at the same intensity for {duration} turns."
+aoe = 3.0
+sfx_default = 5
+allow_same_target = false
+allow_same_target_consec = false

@@ -1,0 +1,74 @@
+[gd_scene load_steps=4 format=3 uid="uid://cugfrof6cr0iq"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://c322tuflr87un" path="res://Sprites/pizza w mushrooms.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var se_icon : Texture2D
+@export var effect_duration = 1
+@export var fuel_per = 3
+@export var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	var total := 0
+	# Get all flames and delete them...
+	for chara in character.cell.get_inhabitants():
+		for i in range(len(chara.status_effects_active) - 1, -1, -1):
+			var se = chara.status_effects_active[i]
+			if se is se_Burning:
+				total += fuel_per
+				se.end_effect()
+	# Then give self that much mana and shields
+	character.set_resource(0, character.resource[0] + total)
+	#_caster, _affected, _icon, _duration, _amount
+# warning-ignore:return_value_discarded
+	se_Shield.new(character, character, se_icon, effect_duration, total)
+
+
+func calc_fuel_regain() -> int:
+	var total := 0
+	# Get all flames and delete them...
+	for chara in character.cell.get_inhabitants():
+		for i in range(len(chara.status_effects_active) - 1, -1, -1):
+			var se = chara.status_effects_active[i]
+			if se is se_Burning:
+				total += fuel_per
+	return total
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Thermoset" instance=ExtResource("1")]
+script = SubResource("1")
+se_icon = ExtResource("2")
+effect_duration = 5
+fuel_per = 3
+tick_event = 7
+primary = false
+target_self = true
+skip_targeting = true
+skill_category = 1
+cooldown = 3
+target_friendlies = false
+target_enemies = false
+beneficial = true
+attack_type = 1
+description = "Ends all Burning effects, regaining {fuel_per} fuel and shield for each effect removed. (Currently: {calc_fuel_regain()})"

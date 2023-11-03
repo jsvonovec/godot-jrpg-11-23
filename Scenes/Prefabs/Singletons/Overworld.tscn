@@ -1,0 +1,178 @@
+[gd_scene load_steps=5 format=3 uid="uid://cqlxn17dlkrw2"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/Overworld.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://brf0qvi3c212f" path="res://Scenes/Prefabs/Room.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Characters/CharacterPlaceholder.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://b83b5q5tplihr" path="res://Scenes/Prefabs/Rooms/redworldroom.tscn" id="4_1lgle"]
+
+[node name="OverworldOLD" type="Node"]
+script = ExtResource("1")
+all_rooms = [NodePath("Starting Room"), NodePath("Bat Central"), NodePath("Avalanche"), NodePath("Slime Cave"), NodePath("Boss 1"), NodePath("The Slime"), NodePath("Crossroad"), NodePath("The Ghost"), NodePath("Swamp Rock"), NodePath("Boss 2"), NodePath("Boss 3"), NodePath("Red 1")]
+starting_room = NodePath("Starting Room")
+room_connections = [[NodePath("Starting Room"), NodePath("Bat Central"), NodePath("The Slime"), NodePath("Boss 3"), NodePath("Red 1")], [NodePath("Bat Central"), NodePath("Starting Room"), NodePath("Avalanche")], [NodePath("Avalanche"), NodePath("Slime Cave"), NodePath("Bat Central"), NodePath("Crossroad")], [NodePath("Slime Cave"), NodePath("Avalanche"), NodePath("The Slime"), NodePath("Boss 1")], [NodePath("The Slime"), NodePath("Starting Room"), NodePath("Slime Cave")], [NodePath("Boss 1"), NodePath("Slime Cave")], [NodePath("Crossroad"), NodePath("The Ghost"), NodePath("Swamp Rock")], [NodePath("Swamp Rock"), NodePath("Crossroad"), NodePath("Boss 2")], [NodePath("The Ghost"), NodePath("Crossroad")], [NodePath("Boss 2"), NodePath("Swamp Rock")], [NodePath("Boss 3"), NodePath("Starting Room")]]
+
+[node name="Starting Room" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 182.119, 0, 200.658)
+full_heal = true
+
+[node name="CharactersPlaceholder" parent="Starting Room" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Player/Parisitologist.tscn"]
+on_players_team = true
+
+[node name="CharactersPlaceholder2" parent="Starting Room" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Player/eisel.tscn"]
+on_players_team = true
+
+[node name="CharactersPlaceholder3" parent="Starting Room" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Player/Arsonist.tscn"]
+on_players_team = true
+
+[node name="CharactersPlaceholder4" parent="Starting Room" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Player/Plaguebearer.tscn"]
+on_players_team = true
+
+[node name="Marker3D" type="Marker3D" parent="Starting Room"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Bat Central" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 264.069, 3.82662e-05, 357.974)
+
+[node name="CharactersPlaceholder2" parent="Bat Central" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Bat.tscn"]
+min_charas = 2
+max_charas = 3
+
+[node name="Marker3D" type="Marker3D" parent="Bat Central"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Avalanche" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 261.414, -2.2769e-05, 544.407)
+
+[node name="CharactersPlaceholder2" parent="Avalanche" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn"]
+max_charas = 2
+
+[node name="Marker3D" type="Marker3D" parent="Avalanche"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Slime Cave" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 144.882, -2.2769e-05, 588.617)
+
+[node name="CharactersPlaceholder2" parent="Slime Cave" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Bat.tscn"]
+min_charas = 0
+
+[node name="CharactersPlaceholder3" parent="Slime Cave" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Slime.tscn"]
+min_charas = 2
+max_charas = 2
+
+[node name="Marker3D" type="Marker3D" parent="Slime Cave"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Boss 1" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 157.376, -2.2769e-05, 801.186)
+
+[node name="CharactersPlaceholder3" parent="Boss 1" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Knight.tscn"]
+
+[node name="Marker3D" type="Marker3D" parent="Boss 1"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="The Slime" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 46.31, -2.2769e-05, 430.335)
+
+[node name="CharactersPlaceholder2" parent="The Slime" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Bat.tscn"]
+min_charas = 0
+
+[node name="CharactersPlaceholder3" parent="The Slime" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Slime.tscn"]
+
+[node name="Marker3D" type="Marker3D" parent="The Slime"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Crossroad" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 486.298, -8.38041e-05, 541.097)
+
+[node name="Marker3D" type="Marker3D" parent="Crossroad"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="The Ghost" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 460.349, -5.32866e-05, 317.725)
+
+[node name="CharactersPlaceholder2" parent="The Ghost" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn"]
+min_charas = 3
+max_charas = 3
+
+[node name="CharactersPlaceholder3" parent="The Ghost" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Knight.tscn"]
+
+[node name="Marker3D" type="Marker3D" parent="The Ghost"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Swamp Rock" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 569.306, -8.38041e-05, 751.279)
+
+[node name="CharactersPlaceholder2" parent="Swamp Rock" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Slime.tscn"]
+min_charas = 2
+max_charas = 3
+
+[node name="CharactersPlaceholder3" parent="Swamp Rock" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn"]
+min_charas = 2
+max_charas = 3
+
+[node name="Marker3D" type="Marker3D" parent="Swamp Rock"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Boss 2" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 492.139, -8.38041e-05, 971.243)
+
+[node name="CharactersPlaceholder2" parent="Boss 2" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Knight.tscn"]
+min_charas = 2
+max_charas = 2
+
+[node name="CharactersPlaceholder3" parent="Boss 2" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn"]
+
+[node name="CharactersPlaceholder4" parent="Boss 2" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Bat.tscn"]
+min_charas = 0
+max_charas = 2
+
+[node name="Marker3D" type="Marker3D" parent="Boss 2"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Boss 3" parent="." instance=ExtResource("2")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 34.3391, -8.38041e-05, 30.3505)
+
+[node name="CharactersPlaceholder2" parent="Boss 3" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Knight.tscn"]
+max_charas = 3
+
+[node name="CharactersPlaceholder3" parent="Boss 3" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn"]
+min_charas = 0
+
+[node name="CharactersPlaceholder4" parent="Boss 3" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Bat.tscn"]
+min_charas = 0
+max_charas = 2
+
+[node name="CharactersPlaceholder5" parent="Boss 3" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn"]
+max_charas = 2
+
+[node name="CharactersPlaceholder6" parent="Boss 3" instance=ExtResource("3")]
+possible_character_paths = ["res://Scenes/Prefabs/Characters/Enemy/Slime.tscn"]
+max_charas = 2
+
+[node name="Marker3D" type="Marker3D" parent="Boss 3"]
+transform = Transform3D(5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0)
+
+[node name="Red 1" parent="." instance=ExtResource("4_1lgle")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 181.174, 0, -110.68)

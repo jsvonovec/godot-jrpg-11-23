@@ -1,0 +1,83 @@
+[gd_scene load_steps=6 format=3 uid="uid://cmy02yd27kphh"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://djkv1ems570ly" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Flamethrower.tscn" id="2"]
+[ext_resource type="Texture2D" uid="uid://ccnub4xs8hcse" path="res://Sprites/Emoji/twe_bomb.png" id="3"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Abilities/Explosive.tscn" id="4"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends TurnCharacter
+
+
+# Declare member variables here. Examples:
+# var a: int = 2
+# var b: String = \"text\"
+@export var evasion_boost = 25
+@export var death_action_name: String
+var boost_done = false
+var statbooster : se_StatIncrease
+var action_on_death : se_ActionOnDeath = null
+
+# Called when the node enters the scene tree for the first time.
+func _on_turn_started_override() -> void:
+	if boost_done: return
+	# Stat boost for friends
+	var party = (cell.get_spawned_friends()
+	if on_players_team else cell.get_spawned_enemies())
+	for chara in party:
+		#_caster, _affected, _icon, _duration, _recurring: bool, 
+		#atk = 0, def = 0, hp = 0, spd = 0, dr = 0, eva = 0
+		statbooster = se_StatIncrease.new(self, chara, -1, 
+		se_StatIncrease.stats.eva, false, evasion_boost)
+		statbooster.caster_death_behavior = (
+			StatusEffect.CASTER_DEATH_BEHAVIOR.END_EFFECT)
+	# Action on death
+	if action_on_death != null:
+		action_on_death.end_effect()
+	#_caster, _affected, _icon, _duration, _action
+	#action_on_death = se_ActionOnDeath.new(self, self, load(FIRE_ICON_PATH),
+	#-1, get_node(death_action_name))
+	boost_done = true
+
+
+# Called every frame. 'delta' is the elapsed time since the previous frame.
+#func _process(delta: float) -> void:
+#	pass
+"
+
+[node name="Smoke Bomb" instance=ExtResource("1")]
+script = SubResource("1")
+evasion_boost = 25
+death_action_name = "Flamethrower"
+exp_reward = 25
+default_speed = 1
+default_max_hp = 5
+default_hp = 5
+default_atk = [5, 30, 5, 5]
+default_def = [5, 5, 5, 5]
+default_on_players_team = false
+default_max_res = Array[int]([])
+default_res = Array[int]([])
+
+[node name="Sprite3D" type="Sprite3D" parent="Puppet/Center" index="0"]
+layers = 2
+pixel_size = 0.025
+billboard = 1
+shaded = true
+alpha_cut = 2
+texture = ExtResource("3")
+
+[node name="Explosive" parent="." index="3" instance=ExtResource("4")]
+
+[node name="Flamethrower" parent="." index="4" instance=ExtResource("2")]
+fire_duration = 2
+fire_damage = 0
+close_range = false
+target_self = true
+costs = Array[int]([])
+target_enemies = false
+usable = false
+visible = false
+power = 10
+aoe = 2.0
+aoe_other_team = true

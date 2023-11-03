@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://dnr7x0f7nsb8m"]
+
+[ext_resource type="PackedScene" uid="uid://b3bf2x3be0p7o" path="res://Scenes/Prefabs/Animations/PSlash.tscn" id="1"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var duration = 3
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		deal_basic_damage(target)
+		se_Stunned.new(character, target, duration)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Chomp" instance=ExtResource("2")]
+script = SubResource("1")
+duration = 2
+primary = false
+close_range = false
+skill_category = 2
+cooldown = 3
+costs = Array[float]([0.0, 0.0, 0.0, 30.0])
+power = 30
+description = "Does moderate damage and stuns the target for {duration} turns."
+melee = true
+sfx_default = 4
+
+[node name="PSlash" parent="." index="0" instance=ExtResource("1")]

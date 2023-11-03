@@ -1,0 +1,29 @@
+[gd_scene load_steps=6 format=3 uid="uid://bmevpwlv2mfi5"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="2"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="3"]
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5kbv0"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 1.0
+
+[sub_resource type="StandardMaterial3D" id="2"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("3")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_uu8il"]
+material = SubResource("2")
+
+[node name="GameParticles" type="GPUParticles3D"]
+cast_shadow = 0
+visibility_aabb = AABB(-6.05531, -4.10719, -4, 12.0862, 8.34816, 8)
+process_material = SubResource("ParticleProcessMaterial_5kbv0")
+draw_pass_1 = SubResource("QuadMesh_uu8il")
+script = ExtResource("2")
+_process_material = SubResource("ParticleProcessMaterial_5kbv0")

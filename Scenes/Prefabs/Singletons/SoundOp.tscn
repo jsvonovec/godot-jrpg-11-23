@@ -1,0 +1,15 @@
+[gd_scene load_steps=2 format=3 uid="uid://br8oajpuoiijm"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/SoundOpScript.gd" id="1"]
+
+[node name="SoundOp" type="Node"]
+script = ExtResource("1")
+UI_Normal = "res://Sounds/UI Normal"
+UI_End = "res://Sounds/UI End"
+BGM_Battle1 = "res://Sounds/BGM Battle"
+BGM_Calm1 = "res://Sounds/BGM Calm"
+HIT_Physical1 = "res://Sounds/Hit Physical"
+HIT_Magical1 = "res://Sounds/Hit Magical"
+
+[node name="BGM" type="AudioStreamPlayer" parent="."]
+bus = &"Music"

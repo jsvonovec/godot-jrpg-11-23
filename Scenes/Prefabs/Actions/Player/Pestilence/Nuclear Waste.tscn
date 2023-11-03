@@ -1,0 +1,48 @@
+[gd_scene load_steps=4 format=3 uid="uid://le0ax7q7s777"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://b3bf2x3be0p7o" path="res://Scenes/Prefabs/Animations/PSlash.tscn" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var duration = 6
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets + get_aoe_targets(_targets, false):
+		deal_basic_damage(target)
+		apply_poison(target, duration, 1)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Nuclear Waste" instance=ExtResource("1")]
+script = SubResource("1")
+duration = 6
+close_range = false
+target_self = true
+costs = Array[float]([5.0, 0.0, 0.0, 0.0])
+attack_type = 2
+power = 0
+description = "Badly poisons all targets for {duration} turns."
+aoe = 5.0
+sfx_default = 6
+
+[node name="PSlash" parent="." index="0" instance=ExtResource("2")]

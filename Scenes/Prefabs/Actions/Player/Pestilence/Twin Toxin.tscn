@@ -1,0 +1,182 @@
+[gd_scene load_steps=23 format=3 uid="uid://dwbtljcqlsuxe"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://bql6uupqocv4d" path="res://Sprites/Emoji/twe_microbe.png" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="3_h2ar0"]
+[ext_resource type="AnimationLibrary" uid="uid://btypfi0dxgaon" path="res://Animations/Libraries/Twin Toxin.res" id="3_whptd"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="4_01i5w"]
+[ext_resource type="AudioStream" uid="uid://dnqy5tb7w55ib" path="res://Sounds/Hit Magical/Blastwave_FX_FireballWhoosh_S08FI.42.mp3" id="4_jwhd5"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="6_23fm0"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="7_imyia"]
+[ext_resource type="Texture2D" uid="uid://jujhlsf48e4r" path="res://Sprites/Emoji/twe_rock.png" id="8_sy8jt"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="9_1lndk"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="10_7hx3a"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var duration: int
+@export var poison_chance = 0.1
+
+var status_effect
+
+func _use(_targets):
+	for target in _targets + get_aoe_targets(_targets, false):
+		deal_basic_damage(target) 
+		if randf() < poison_chance:
+			apply_poison(target, duration, 0)
+"
+
+[sub_resource type="Animation" id="Animation_4ygcb"]
+length = 0.001
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_tr23k"]
+_data = {
+"­RESET­": SubResource("Animation_4ygcb")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_svbtd"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.25, 0, 0, -1.25, 0, 1, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_rxe60"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_frgqg"]
+curve = SubResource("Curve_rxe60")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_pavgh"]
+resource_local_to_scene = true
+direction = Vector3(0, 0.5, 1)
+spread = 25.0
+scale_curve = SubResource("CurveTexture_frgqg")
+color = Color(0.627451, 1, 0.360784, 1)
+collision_mode = 1
+collision_friction = 0.24
+collision_bounce = 0.47
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("4_01i5w")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_2qixk"]
+material = SubResource("10")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wp2u8"]
+resource_local_to_scene = true
+direction = Vector3(0, 0.5, 1)
+spread = 180.0
+flatness = 0.77
+gravity = Vector3(0, -30, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 10.0
+scale_curve = SubResource("CurveTexture_frgqg")
+color = Color(0.627451, 1, 0.360784, 1)
+collision_mode = 1
+collision_friction = 0.24
+collision_bounce = 0.47
+
+[sub_resource type="QuadMesh" id="QuadMesh_st5sq"]
+material = SubResource("10")
+
+[node name="Twin Toxin" instance=ExtResource("1")]
+script = SubResource("1")
+duration = 2
+poison_chance = 0.1
+close_range = false
+costs = Array[float]([10.0])
+follow = true
+attack_type = 2
+power = 15
+icon = ExtResource("2")
+description = "Poisons both targets."
+sfx_default = 5
+max_targets = 2
+allow_same_target = false
+allow_same_target_consec = false
+require_max_targets = true
+
+[node name="Twin ToxinCPA" type="AnimationPlayer" parent="." index="0"]
+root_node = NodePath(".")
+libraries = {
+"": SubResource("AnimationLibrary_tr23k"),
+"Twin Toxin": ExtResource("3_whptd")
+}
+script = ExtResource("3_h2ar0")
+duplicate_for_each_target = true
+duplication_delay = 1.0
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Twin ToxinCPA" index="0"]
+stream = ExtResource("4_jwhd5")
+attenuation_model = 3
+max_polyphony = 2
+bus = &"Game"
+
+[node name="PathToFrom" type="Path3D" parent="Twin ToxinCPA" index="1"]
+curve = SubResource("Curve3D_svbtd")
+script = ExtResource("7_imyia")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+middle_height = 1.0
+middle_control_strength = 0.5
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Twin ToxinCPA/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 0.928477, 0.371391, 0, 0.371391, -0.928477, 0, 0, 0)
+rotation_mode = 4
+loop = false
+
+[node name="GameParticles" type="GPUParticles3D" parent="Twin ToxinCPA/PathToFrom/PathFollow3D" index="0"]
+transform = Transform3D(-1, 3.55273e-15, 8.74228e-08, 3.24681e-08, 0.928479, 0.371392, -8.11702e-08, 0.371392, -0.928479, 0, 0, 0)
+layers = 1023
+emitting = false
+one_shot = true
+collision_base_size = 1.0
+process_material = SubResource("ParticleProcessMaterial_pavgh")
+draw_pass_1 = SubResource("QuadMesh_2qixk")
+script = ExtResource("6_23fm0")
+_process_material = SubResource("ParticleProcessMaterial_pavgh")
+
+[node name="Sprite3D" type="Sprite3D" parent="Twin ToxinCPA/PathToFrom/PathFollow3D" index="1"]
+modulate = Color(0.45098, 0.760784, 0.372549, 1)
+pixel_size = 0.005
+billboard = 1
+texture_filter = 1
+texture = ExtResource("8_sy8jt")
+
+[node name="OriginStart" type="Node3D" parent="Twin ToxinCPA" index="2"]
+
+[node name="OriginMarker" type="Sprite3D" parent="Twin ToxinCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("9_1lndk")
+
+[node name="TargetStart" type="Node3D" parent="Twin ToxinCPA" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="Twin ToxinCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("10_7hx3a")
+
+[node name="GameParticles" type="GPUParticles3D" parent="Twin ToxinCPA/TargetStart/TargetMarker" index="0"]
+transform = Transform3D(-1, 3.55273e-15, 8.74228e-08, 3.24681e-08, 0.928479, 0.371392, -8.11702e-08, 0.371392, -0.928479, 0, 0, 0)
+layers = 1023
+emitting = false
+amount = 30
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+collision_base_size = 1.0
+process_material = SubResource("ParticleProcessMaterial_wp2u8")
+draw_pass_1 = SubResource("QuadMesh_st5sq")
+script = ExtResource("6_23fm0")
+_process_material = SubResource("ParticleProcessMaterial_wp2u8")

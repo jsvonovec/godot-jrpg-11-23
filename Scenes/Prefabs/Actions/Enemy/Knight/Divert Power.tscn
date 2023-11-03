@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://bantw71cl2fe1"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://7j8odobjf21l" path="res://Sprites/Emoji/twe_mecharm.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var atk_boost = 20
+@export var def_decrease = 20
+var status_effects = []
+@export var se_icon: Texture2D
+
+#func _init(_caster, _affected, _icon, _duration, _recurring: bool, 
+#atk = 0, def = 0, hp = 0, spd = 0, dr = 0, eva = 0):
+func _use(_targets):
+	#_init(_caster, _affected, _duration, type: int, _recurring: bool, 
+	#_boost: int):
+	status_effects.append(se_StatIncrease.new(character, character, -1, 
+	se_StatIncrease.stats.atk, false, atk_boost))
+	status_effects.append(se_StatIncrease.new(character, character, -1, 
+	se_StatIncrease.stats.def, false, -def_decrease))
+	for se in status_effects:
+		se.only_on_screen = false
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Divert Power" instance=ExtResource("1")]
+script = SubResource("1")
+target_self = true
+skip_targeting = true
+skill_category = 4
+target_enemies = false
+beneficial = true
+power = 0
+description = "Boosts attack by {atk_boost} but lowers defense and evasion by {def_decrease}."
+atk_boost = 40
+se_icon = ExtResource("2")

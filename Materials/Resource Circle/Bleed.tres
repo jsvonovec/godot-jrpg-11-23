@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://d2e3rgvvrx83u"]
+
+[ext_resource type="Shader" path="res://Shaders/ResourceCircle_SECircle.gdshader" id="1_t83pp"]
+[ext_resource type="Texture2D" uid="uid://m175topas1at" path="res://Textures/redwave.png" id="2_7wirp"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_yuuy1"]
+load_path = "res://.godot/imported/noise2grad2.png-7ee0d61dd7a1ceda113c97e81d769228.s3tc.ctex"
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_t83pp")
+shader_parameter/def_id = 0.9
+shader_parameter/def_od = 2.2
+shader_parameter/id = 0.9
+shader_parameter/od = 2.2
+shader_parameter/tfactor1 = 0.1
+shader_parameter/tfactor2 = -0.2
+shader_parameter/repetitions1 = 0.75
+shader_parameter/repetitions2 = 3.0
+shader_parameter/alpha_cutoff = 0.542
+shader_parameter/noise_floor = 0.067
+shader_parameter/tempo = 110.0
+shader_parameter/tempo_offset = 0.0
+shader_parameter/beat_pow = 0.191
+shader_parameter/beat_alpha_cutoff_offset = 0.212
+shader_parameter/beat_color_boost = 0.5
+shader_parameter/tex = ExtResource("2_7wirp")
+shader_parameter/noise = SubResource("CompressedTexture2D_yuuy1")

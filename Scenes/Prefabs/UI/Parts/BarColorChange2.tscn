@@ -1,0 +1,164 @@
+[gd_scene load_steps=5 format=3 uid="uid://cd1h7ktrl70or"]
+
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="2"]
+
+[sub_resource type="GDScript" id="4"]
+script/source = "@tool
+extends MarginContainer
+
+@export var font_size = 32
+@export var bar_label: String
+@export var text_format: String
+@export var max_value := 100.0
+@export var value := 66.0: set = set_value
+@export var bar_height = 8
+@export var bar_bg = Color.DARK_SLATE_GRAY
+@export var bar = Color.GRAY
+@export var txt_bg = Color.DARK_CYAN
+@export var txt = Color.CYAN
+
+var def_font_size : int
+var text : String
+var chara
+var resource := -1
+
+func set_value(val) -> void:
+	value = val
+	queue_redraw()
+
+
+func _draw() -> void:
+	if !can_update: return
+	# Set text
+	text = NIU.format_string(text_format, self)
+	$M/TopText.text = text
+	$MBot/BotText.text = text
+	
+	# Set bar
+	$Bars/TopBar.max_value = max_value
+	$Bars/TopBar.value = value
+	
+	# Rect Sizes
+	$MBot/BotText.size = size
+	$Bars/BotBar.size = size
+	$Bars/TopBar.size = size
+	$M.size = size
+	$Bars.add_theme_constant_override(\"offset_top\", size.y - bar_height)
+	#$M/M.rect_size = rect_size
+	
+	# Font Size
+	# Gets size of text
+#	var txt_size = $MBot/BotText.get_font(\"font\").get_string_size($MBot/BotText.text)
+#	var font_size = $MBot/BotText.get_font(\"font\").size
+#	# scales down depending on its size
+#	if txt_size.x > rect_size.x or txt_size.x < rect_size.x * 0.8:
+#		txt_size /= font_size
+#		var new_size = rect_size.x / txt_size.x
+#		new_size = min(int(new_size), def_font_size)
+	$MBot/BotText.get_font(\"font\").size = font_size
+	$M/TopText.get_font(\"font\").size = font_size
+	
+	# Top Text Rect Size
+	# Amt of bar is filled
+	var barfill = inverse_lerp($Bars/TopBar.min_value, $Bars/TopBar.max_value, 
+	$Bars/TopBar.value)
+	# Amt of text that should be showing
+	
+	$M.size.x = int(lerp(0.0, size.x, barfill))
+	
+	# Colors
+	$Bars/BotBar.self_modulate = bar_bg
+	$Bars/TopBar.self_modulate = bar
+	$MBot/BotText.self_modulate = txt_bg
+	$M/TopText.self_modulate = txt
+
+var can_update = false
+func _ready() -> void:
+	def_font_size = $MBot/BotText.get_font(\"font\").size
+	can_update = true
+	queue_redraw()
+	pass
+
+var t = 0.0
+func _process(delta: float) -> void:
+	t += delta
+	#value = abs(float(int(t*100.0) % 1000) * 0.01 - 5.0) * 10.0
+	#update()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED or what == NOTIFICATION_SORT_CHILDREN:
+		queue_redraw()
+
+
+func get_class_name() -> String:
+	return \"BarColorChange2\"
+"
+
+[sub_resource type="FontFile" id="5"]
+resource_local_to_scene = true
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="StyleBoxFlat" id="6"]
+bg_color = Color(1, 1, 1, 1)
+
+[node name="BCC2" type="MarginContainer" groups=["bcc2"]]
+offset_right = 161.0
+offset_bottom = 33.0
+script = SubResource("4")
+bar_label = "HP"
+text_format = "{bar_label}: {value}/{max_value}"
+bar_bg = Color(0.301961, 0, 0, 1)
+bar = Color(0.913725, 0.129412, 0.129412, 1)
+txt_bg = Color(0.301961, 0, 0, 1)
+txt = Color(0.913725, 0.129412, 0.129412, 1)
+
+[node name="MBot" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 5
+
+[node name="BotText" type="Label" parent="MBot"]
+self_modulate = Color(0.301961, 0, 0, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "HP: 52/100"
+
+[node name="M" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_right = 0
+
+[node name="TopText" type="Label" parent="M"]
+self_modulate = Color(0.913725, 0.129412, 0.129412, 1)
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "HP: 52/100"
+clip_text = true
+
+[node name="Bars" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_top = 25
+
+[node name="BotBar" type="Panel" parent="Bars"]
+self_modulate = Color(0.301961, 0, 0, 1)
+layout_mode = 2
+theme_override_styles/panel = SubResource("6")
+
+[node name="TopBar" type="ProgressBar" parent="Bars"]
+self_modulate = Color(0.913725, 0.129412, 0.129412, 1)
+layout_mode = 2
+size_flags_vertical = 1
+step = 1.0
+value = 52.0

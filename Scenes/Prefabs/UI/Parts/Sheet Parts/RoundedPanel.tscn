@@ -1,0 +1,63 @@
+[gd_scene load_steps=5 format=3 uid="uid://e1qnq3ew8h16"]
+
+[ext_resource type="Theme" uid="uid://cny534440nugo" path="res://Themes/csheet.tres" id="1"]
+[ext_resource type="Texture2D" uid="uid://drhwhvqq5n4du" path="res://Textures/UI/panel1bg.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bkgdeie6fydpq" path="res://Textures/UI/panel1border.png" id="3"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "@tool
+extends MarginContainer
+
+
+
+func _draw() -> void:
+	$BG.texture = theme.get_stylebox(\"panel_bg\", \"NinePatchRect\").texture
+	$Border.texture = theme.get_stylebox(\"panel_border\", \"NinePatchRect\").texture
+	$BG.self_modulate = theme.get_color(\"bg_color\", \"NinePatchRect\")
+	$Border.self_modulate = theme.get_color(\"font_color\", \"Label\")
+
+func set_bg_color(color: Color) -> void:
+	theme.set_color(\"bg_color\", \"NinePatchRect\", color)
+	queue_redraw()
+
+func set_border_color(color: Color) -> void:
+	theme.set_color(\"font_color\", \"Label\", color)
+	queue_redraw()
+
+func set_colors(bg: Color, border: Color) -> void:
+	theme.set_color(\"bg_color\", \"NinePatchRect\", bg)
+	theme.set_color(\"font_color\", \"Label\", border)
+	queue_redraw()
+
+
+func _ready() -> void:
+	queue_redraw()
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_RESIZED or what == NOTIFICATION_SORT_CHILDREN:
+		queue_redraw()
+"
+
+[node name="Panel" type="MarginContainer"]
+offset_right = 64.0
+offset_bottom = 64.0
+theme = ExtResource("1")
+script = SubResource("1")
+
+[node name="BG" type="NinePatchRect" parent="."]
+self_modulate = Color(0.580392, 0.878431, 0.482353, 1)
+layout_mode = 2
+texture = ExtResource("2")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Border" type="NinePatchRect" parent="."]
+self_modulate = Color(0.266667, 0.690196, 0.113725, 1)
+layout_mode = 2
+texture = ExtResource("3")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32

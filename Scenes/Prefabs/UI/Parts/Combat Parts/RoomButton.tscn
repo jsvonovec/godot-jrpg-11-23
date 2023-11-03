@@ -1,0 +1,22 @@
+[gd_scene load_steps=4 format=3 uid="uid://b1peux3wohknx"]
+
+[ext_resource type="FontFile" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/RoomFont.tres" id="1"]
+[ext_resource type="Material" uid="uid://c07cg4cgf3me0" path="res://Materials/WiggleText.tres" id="1_cj3oo"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Button
+
+var cell : Cell
+"
+
+[node name="RoomButton" type="Button"]
+self_modulate = Color(1, 1, 0.635294, 1)
+material = ExtResource("1_cj3oo")
+custom_minimum_size = Vector2(10, 20)
+offset_right = 129.0
+offset_bottom = 35.0
+size_flags_horizontal = 0
+theme_override_fonts/font = ExtResource("1")
+theme_override_font_sizes/font_size = 25
+text = "Pushable"
+script = SubResource("1")

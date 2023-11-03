@@ -1,0 +1,46 @@
+[gd_scene load_steps=5 format=3 uid="uid://dfe6mvdvfeia5"]
+
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://r2l1mmk1sq7u" path="res://Sprites/Emoji/twe_ice.png" id="2"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/General/BasicAttack.tscn" id="3"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends TurnCharacter
+
+# Turns to duplicate self
+@export var dupe_time = 4
+@export var slime_icon: Texture2D
+
+func _ready() -> void:
+	# give self se_Slime
+	#_caster, _affected, _icon, _duration
+	var slime = se_Slime.new(self, self, slime_icon, dupe_time)
+	slime.extend_duration(1)
+	super._ready()
+
+"
+
+[node name="Slime" instance=ExtResource("1")]
+script = SubResource("1")
+dupe_time = 4
+slime_icon = ExtResource("2")
+exp_reward = 50
+default_speed = 70
+default_max_hp = 150
+default_hp = 150
+default_atk = [20, 15, 30, 10]
+default_def = [20, 30, 40, 25]
+default_on_players_team = false
+
+[node name="Center" parent="Puppet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.585, 0)
+
+[node name="Sprite3D" type="Sprite3D" parent="Puppet/Center" index="0"]
+modulate = Color(0.784314, 0.933333, 0.32549, 1)
+pixel_size = 0.025
+billboard = 1
+shaded = true
+alpha_cut = 2
+texture = ExtResource("2")
+
+[node name="BasicAttack" parent="." index="3" instance=ExtResource("3")]

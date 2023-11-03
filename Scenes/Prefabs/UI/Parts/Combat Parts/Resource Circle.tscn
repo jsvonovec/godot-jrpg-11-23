@@ -1,0 +1,446 @@
+[gd_scene load_steps=16 format=3 uid="uid://bvjfayru1w46l"]
+
+[ext_resource type="Material" uid="uid://dclmpbp8ep2u8" path="res://Materials/Resource Circle/Poison.tres" id="1_u03ga"]
+[ext_resource type="Material" uid="uid://c51i7gqjk8713" path="res://Materials/Resource Circle/BadPoison.tres" id="2_xqw75"]
+[ext_resource type="Material" uid="uid://cefuk8o58usvi" path="res://Materials/Resource Circle/LethalPoison.tres" id="3_6l4t0"]
+[ext_resource type="Material" uid="uid://yw3yvat4tnmp" path="res://Materials/Resource Circle/Burn.tres" id="4_8tqfp"]
+[ext_resource type="Material" uid="uid://d2e3rgvvrx83u" path="res://Materials/Resource Circle/Bleed.tres" id="5_atjbs"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Node3D
+
+# Should create new circles for each resource.
+
+
+var chara
+# -1 is HP
+@export var float_height = 0.01
+@export var max_od = 4.5
+@export var max_id = 3.0
+@export var more_bars_scale_factor = 0.85
+@export var bar_scene_path = (
+\"res://Scenes/Prefabs/UI/Parts/Combat Parts/Resource Circle Part.tscn\")
+@export var se_od = 5.0
+# in RADIANS!
+@export var se_start_angle = PI/2.0
+@export var se_end_angle = PI/8.0
+const circle_se_scene_path := (
+\"res://Scenes/Prefabs/UI/Parts/Combat Parts/CircleSE.tscn\")
+var bar_scene := load(bar_scene_path)
+var circle_ses := []
+
+enum SE_CIRCLE_TYPE {NONE, POISON, BAD_POISON, LETHAL_POISON, BURN, BLEED}
+
+func _ready() -> void:
+	if get_parent().has_method(\"get_chara\"):
+		chara = get_parent().get_chara()
+
+func _process(_delta: float) -> void:
+	update_bars_existence()
+	
+	update_bars_values()
+	if NIU.iiv(chara):
+		$Bars.global_transform.origin = (
+		chara.global_transform.origin) + chara.pup.position
+		$SECircle.global_transform.origin = (
+		chara.global_transform.origin) + chara.pup.position + Vector3.UP * float_height
+		for i in range($Bars.get_child_count()):
+			$Bars.get_child(i).global_transform.origin = (
+			$Bars.global_transform.origin + Vector3(
+			0.0, float_height * float(i + 2.0), 0.0))
+		$SEs.global_transform.origin = $Bars.global_transform.origin
+	# put SEs outside circle
+	var buffs = []
+	var debuffs = []
+	for se in circle_ses:
+		if !NIU.iiv(se.status_effect) or se.status_effect.big:
+			continue
+		if se.status_effect.is_buff:
+			buffs.append(se)
+		else:
+			debuffs.append(se)
+	var no_se_circle = true
+	for s in circle_ses:
+		var se : StatusEffect = s.status_effect
+		if se is se_Poisoned:
+			set_se_circle(SE_CIRCLE_TYPE.POISON)
+			no_se_circle = false
+			break
+		if se is se_Poisoned_Badly:
+			set_se_circle(SE_CIRCLE_TYPE.BAD_POISON)
+			no_se_circle = false
+			break
+		if se is se_Poisoned_Lethally:
+			set_se_circle(SE_CIRCLE_TYPE.LETHAL_POISON)
+			no_se_circle = false
+			break
+		if se is se_Burning:
+			set_se_circle(SE_CIRCLE_TYPE.BURN)
+			no_se_circle = false
+			break
+		if se is se_Bleed:
+			set_se_circle(SE_CIRCLE_TYPE.BLEED)
+			no_se_circle = false
+			break
+	if no_se_circle:
+		set_se_circle(SE_CIRCLE_TYPE.NONE)
+	for i in range(len(buffs)):
+		var theta = (2.0 * float(chara.on_players_team) - 1.0) * -1.0 * (
+		se_start_angle - (float(i) / max(1.0, 
+		float(len(buffs)))) * (se_start_angle - se_end_angle)
+		) + TurnPlayer.camera.rotation.y
+		buffs[i].position = Vector3(sin(theta), 0.0, cos(theta)
+		) * se_od / 2.0
+	for i in range(len(debuffs)):
+		var theta = (2.0 * float(!chara.on_players_team) - 1.0) * -1.0 * (
+		se_start_angle - (float(i) / max(1.0, 
+		float(len(debuffs)))) * (se_start_angle - se_end_angle)
+		) + TurnPlayer.camera.rotation.y
+		debuffs[i].position = Vector3(sin(theta), 0.0, cos(theta)
+		) * se_od / 2.0
+
+func update_bars_existence():
+	# do the whole duplication song and dance
+	# Copied from CharaStatus.tscn::5 and modified slightly
+	var bars = $Bars.get_children()
+	var used_bars := []
+	for resource in chara.revealed_resource + [-1]:
+		# check if this resource has a bar for it
+		var resource_has_a_bar = false
+		for circ in bars:
+			if circ.resource == resource:
+				# this resource is good - it has a bar.
+				resource_has_a_bar = true
+				used_bars.append(circ)
+				break
+		# create new bar if there is not a bar for it
+		if !resource_has_a_bar:
+			var rb = bar_scene.instantiate()
+			#print(resource)
+			rb.resource = resource
+			# reparent
+			if rb.get_parent() != null:
+				rb.get_parent().remove_child(rb)
+			$Bars.add_child(rb)
+			used_bars.append(rb)
+	# delete all unused bars
+	for i in range(len(bars) - 1, -1, -1):
+		if bars[i].name == \"HP\" or bars[i] in used_bars:
+			continue
+		bars[i].queue_free()
+
+# SHADER VARIABLES
+#uniform float od = 1.0;
+#uniform float id = 0.75;
+#uniform float fill = 0.5;
+#uniform vec3 color = vec3(1.0, 0.05, 0.05);
+#uniform vec3 unfilled_color = vec3(0.3, 0.025, 0.025);
+
+func update_bars_values():
+	var bars = $Bars.get_children()
+	var od = max_od
+	var id = max_id
+#	if chara.pup.dead:
+#		breakpoint
+	for bar in bars:
+		var material = bar.mesh.surface_get_material(0)
+		# HP
+		if bar.resource == -1:
+			#set_shader_param(name, val)
+#			material.set_shader_param(\"fill\", 
+#			float(chara.pup.hp) / float(chara.pup.max_hp))
+			bar.set_fill(float(chara.pup.hp) / float(chara.pup.max_hp))
+			var color = material.get_shader_parameter(\"color\")
+			color = Color(color.x, color.y, color.z)
+			color = CombatUI.get_drained_color_any(color)
+			material.set_shader_parameter(\"unfilled_color\", 
+			Vector3(color.r, color.g, color.b))
+		else:
+			var calc = float(chara.pup.res[bar.resource]) / float(
+			chara.pup.max_res[bar.resource])
+			bar.set_fill(calc)
+			var color = CombatUI.RESOURCE_COLORS[bar.resource]
+			material.set_shader_parameter(\"color\", 
+			Vector3(color.r, color.g, color.b))
+			color = CombatUI.get_drained_color(bar.resource)
+			material.set_shader_parameter(\"unfilled_color\", 
+			Vector3(color.r, color.g, color.b))
+			bar.name = CombatUI.res_name(bar.resource, 2)
+		bar.mesh.size = Vector2(od, od)
+		material.set_shader_parameter(\"od\", od)
+		material.set_shader_parameter(\"id\", id)
+		od = od * more_bars_scale_factor
+		id = id * more_bars_scale_factor
+
+# Find the floaty SE icon around the resource circle.
+# If there is none, create one and return it.
+func find_circle_se(se) -> Node:
+	for circ in circle_ses:
+		if circ.status_effect == se:
+			return circ
+	# none found; create one
+	var circ = preload(circle_se_scene_path).instantiate()
+	circ.set_status_effect(se, true)
+	return circ
+
+var prev_se_circle_type := SE_CIRCLE_TYPE.NONE
+var prev_se_circle_node : MeshInstance3D = null
+func set_se_circle(type: SE_CIRCLE_TYPE):
+	if type == prev_se_circle_type:
+		return
+	var node : MeshInstance3D = null
+	match type:
+		SE_CIRCLE_TYPE.POISON:
+			node = $SECircle/Poison
+		SE_CIRCLE_TYPE.BAD_POISON:
+			node = $SECircle/BadPoison
+		SE_CIRCLE_TYPE.LETHAL_POISON:
+			node = $SECircle/LethalPoison
+		SE_CIRCLE_TYPE.BURN:
+			node = $SECircle/Burn
+		SE_CIRCLE_TYPE.BLEED:
+			node = $SECircle/Bleed
+	fade_in_SECircle(node)
+	fade_out_SECircle(prev_se_circle_node)
+	for sec in $SECircle.get_children():
+		var mat = sec.mesh.surface_get_material(0)
+		mat.set_shader_parameter(\"id\", mat.get_shader_parameter(\"def_id\") * max_id)
+		mat.set_shader_parameter(\"od\", mat.get_shader_parameter(\"def_od\") * max_od)
+	prev_se_circle_type = type
+	prev_se_circle_node = node
+
+# fade in by tweening in alpha cutoff of the shader for a cool little effect
+const SEC_FADE_TIME = 3.0
+func fade_in_SECircle(sec: MeshInstance3D):
+	if !NIU.iiv(sec):
+		return
+	var tween = get_tree().create_tween()
+	var mat : Material = sec.mesh.surface_get_material(0)
+	tween.tween_callback(sec.show)
+	tween.set_parallel(true)
+	# Slowly bring in alpha cutoff
+	tween.tween_method(tweenable_set_s_param.bind(mat, \"alpha_cutoff\"), 1.0, 
+	mat.get_shader_parameter(\"alpha_cutoff\"), SEC_FADE_TIME
+	).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	# slowly bring up beat power
+	tween.tween_method(tweenable_set_s_param.bind(mat, \"beat_pow\"), 0.0, 
+	mat.get_shader_parameter(\"beat_pow\"), SEC_FADE_TIME
+	).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+
+
+
+func fade_out_SECircle(sec: MeshInstance3D):
+	if !NIU.iiv(sec):
+		return
+	var tween = get_tree().create_tween()
+	var mat : Material = sec.mesh.surface_get_material(0)
+	tween.set_parallel(true)
+	# Slowly bring down alpha cutoff
+	var ac = mat.get_shader_parameter(\"alpha_cutoff\")
+	tween.tween_method(tweenable_set_s_param.bind(mat, \"alpha_cutoff\"), ac, 1.0, 
+	SEC_FADE_TIME).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	# slowly bring down beat power
+	var bp = mat.get_shader_parameter(\"beat_pow\")
+	tween.tween_method(tweenable_set_s_param.bind(mat, \"beat_pow\"), bp, 0.0, 
+	SEC_FADE_TIME).set_ease(Tween.EASE_OUT).set_trans(Tween.TRANS_CUBIC)
+	tween.chain().tween_callback(sec.hide)
+	await tween.finished
+	tweenable_set_s_param(ac, mat, \"alpha_cutoff\")
+	tweenable_set_s_param(bp, mat, \"beat_pow\")
+	
+
+func tweenable_set_s_param(val, material : ShaderMaterial, parameter : String):
+	material.set_shader_parameter(parameter, val)
+"
+
+[sub_resource type="Shader" id="Shader_lth2e"]
+code = "shader_type spatial;
+render_mode shadows_disabled, unshaded;
+
+const float darken_factor = 0.6;
+const float start_angle = 1.0; // radians away from straight away from camera; full angle is x2
+uniform float od = 1.0;
+uniform float id = 0.75;
+uniform float fill = 0.5;
+uniform vec3 color = vec3(1.0, 0.05, 0.05);
+uniform vec3 unfilled_color = vec3(0.3, 0.025, 0.025);
+
+varying vec3 pos;
+
+void vertex(){
+	pos = VERTEX;
+}
+
+void fragment(){
+	//ALPHA = 1.0;
+	//empty if not in radius
+	if (length(pos) < id / 2.0 || length(pos) > od / 2.0){
+		ALPHA = 0.0;
+	}
+	else
+	{
+		
+		//ALPHA = 1.0;
+		//find angle
+		vec3 campos = INV_VIEW_MATRIX[3].xyz;
+		vec3 view2 = vec3(MODEL_MATRIX[3].x - campos.x, 0.0, MODEL_MATRIX[3].z - campos.z);
+		float theta = acos(dot(view2, vec3(pos.x, 0.0, -pos.y)) / (length(view2) * length(pos)));
+		
+		// empty if between start angles
+		if(theta < start_angle){
+			ALPHA = 0.0;
+		}
+		else
+		{
+			// un-mirror
+			if(cross(view2, vec3(pos.x, 0.0, -pos.y)).y > 0.0){
+				theta = 6.283185 - theta;
+			}
+			
+			// deal with discontunuity
+			// (idk if this works)
+			else if(isinf(theta) || isnan(theta)){
+				theta = 3.1415;
+			}
+			
+			// now color in the bar
+			if(mix(start_angle, 6.283185 - start_angle, 1.0 - fill) > theta){
+				ALBEDO = unfilled_color * darken_factor;
+				EMISSION = vec3(0.0);
+			}
+			else{
+				ALBEDO = color * darken_factor;
+				EMISSION = ALBEDO * 0.25;
+			}
+		}
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_ro7i4"]
+resource_local_to_scene = true
+resource_name = "iuhuihiihu"
+render_priority = 0
+shader = SubResource("Shader_lth2e")
+shader_parameter/od = 1.0
+shader_parameter/id = 0.75
+shader_parameter/fill = 0.5
+shader_parameter/color = Vector3(1, 0.05, 0.05)
+shader_parameter/unfilled_color = Vector3(0.3, 0.025, 0.025)
+
+[sub_resource type="QuadMesh" id="QuadMesh_lit6e"]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_ro7i4")
+size = Vector2(5, 5)
+
+[sub_resource type="GDScript" id="5"]
+script/source = "extends MeshInstance3D
+
+var resource = -1
+
+var fake_fill := 1.0
+var fill_goal := 1.0
+
+const lerp_t = 0.075 * 60.0
+
+
+func set_fill(fill: float):
+	fill_goal = fill
+
+
+func _process(_delta: float) -> void:
+#	if fill_goal <= 0.01 and resource == -1:
+#		breakpoint
+	fake_fill = lerp(fake_fill, fill_goal, lerp_t * _delta)
+	mesh.surface_get_material(0).set_shader_parameter(\"fill\", fake_fill)
+	
+"
+
+[sub_resource type="SphereMesh" id="SphereMesh_3mr0h"]
+resource_local_to_scene = true
+material = ExtResource("1_u03ga")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_8x235"]
+resource_local_to_scene = true
+material = ExtResource("2_xqw75")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_selqj"]
+resource_local_to_scene = true
+material = ExtResource("3_6l4t0")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_hnfbx"]
+resource_local_to_scene = true
+material = ExtResource("4_8tqfp")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true
+
+[sub_resource type="SphereMesh" id="SphereMesh_wp876"]
+resource_local_to_scene = true
+material = ExtResource("5_atjbs")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true
+
+[node name="RCircle" type="Node3D"]
+script = SubResource("1")
+
+[node name="Bars" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1, 0)
+
+[node name="HP" type="MeshInstance3D" parent="Bars"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("QuadMesh_lit6e")
+script = SubResource("5")
+
+[node name="SEs" type="Node3D" parent="."]
+
+[node name="SECircle" type="Node3D" parent="."]
+
+[node name="Poison" type="MeshInstance3D" parent="SECircle"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 5, 0)
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("SphereMesh_3mr0h")
+
+[node name="BadPoison" type="MeshInstance3D" parent="SECircle"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 5, 0)
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("SphereMesh_8x235")
+
+[node name="LethalPoison" type="MeshInstance3D" parent="SECircle"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 5, 0)
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("SphereMesh_selqj")
+
+[node name="Burn" type="MeshInstance3D" parent="SECircle"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 5, 0)
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("SphereMesh_hnfbx")
+
+[node name="Bleed" type="MeshInstance3D" parent="SECircle"]
+transform = Transform3D(1, 0, 0, 0, -1, 8.74228e-08, 0, -8.74228e-08, -1, 0, 5, 0)
+visible = false
+cast_shadow = 0
+gi_mode = 0
+mesh = SubResource("SphereMesh_wp876")

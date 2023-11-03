@@ -1,0 +1,271 @@
+[gd_scene load_steps=22 format=3 uid="uid://bso5t8t35ot34"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://b2qdawqrkmo8o" path="res://Sprites/Emoji/twe_wind.png" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="3_g31te"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="4_acmq8"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="5_3q0aw"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="6_wln26"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="7_8cyrc"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="8_bomg0"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var eva_boost = 50
+@export var boost_duration = 1
+var status_effect
+@export var se_icon: Texture2D
+
+func _use(_targets):
+	#_init(_caster, _affected, _duration, type: int, _recurring: bool, 
+	#_boost: int):
+	status_effect = se_StatIncrease.new(character, character, boost_duration, 
+	se_StatIncrease.stats.eva, false, eva_boost)
+	status_effect.only_on_screen = false
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[sub_resource type="Animation" id="Animation_6gnvs"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EvadeCPA/OriginStart/OriginMarker/GameParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:z")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_1deek"]
+_data = {
+"RESET": SubResource("Animation_6gnvs")
+}
+
+[sub_resource type="Animation" id="Animation_6f5t1"]
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("EvadeCPA/OriginStart/OriginMarker/GameParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:x")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -2, -0.25, 0, 0.25, 0, 1, -0.25, 0, 0.25, 0, -3, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.6, 1, 1.4, 2)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:y")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.6, 1, 1.4, 2)
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("EvadeCPA/OriginStart/OriginMarker:position:z")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0, 0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, -1, -0.25, 0, 0.25, 0, 2, -0.25, 0, 0.25, 0, 2, -0.25, 0, 0.25, 0, 0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 0.6, 1, 1.4, 2)
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("EvadeCPA")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(1.4),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_bcjx0"]
+_data = {
+"atk": SubResource("Animation_6f5t1")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_88gc3"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Gradient" id="Gradient_lfj06"]
+offsets = PackedFloat32Array(0, 0.103704, 1)
+colors = PackedColorArray(0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1)
+
+[sub_resource type="GradientTexture1D" id="GradientTexture1D_3w8sv"]
+gradient = SubResource("Gradient_lfj06")
+
+[sub_resource type="Curve" id="Curve_clutt"]
+_data = [Vector2(0, 0.445455), 0.0, 0.0580423, 0, 0, Vector2(0.433735, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -3.31026, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_hphwl"]
+curve = SubResource("Curve_clutt")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_lfkhx"]
+resource_local_to_scene = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 0, 1)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 0.0
+spread = 40.0
+gravity = Vector3(0, 3, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 10.0
+scale_max = 5.0
+scale_curve = SubResource("CurveTexture_hphwl")
+color = Color(0.541176, 0.541176, 0.541176, 0.572549)
+color_ramp = SubResource("GradientTexture1D_3w8sv")
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.0
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+depth_draw_mode = 2
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_3q0aw")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_eglgy"]
+material = SubResource("10")
+
+[node name="Evade" instance=ExtResource("1")]
+script = SubResource("1")
+eva_boost = 50
+boost_duration = 1
+se_icon = ExtResource("2")
+primary = false
+target_self = true
+skip_targeting = true
+skill_category = 1
+costs = Array[float]([0.0, 0.0, 0.0, 40.0])
+target_enemies = false
+beneficial = true
+description = "Boost evasion by {eva_boost}."
+
+[node name="EvadeCPA" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_1deek"),
+"Evade": SubResource("AnimationLibrary_bcjx0")
+}
+script = ExtResource("3_g31te")
+
+[node name="PathToFrom" type="Path3D" parent="EvadeCPA" index="0"]
+curve = SubResource("Curve3D_88gc3")
+script = ExtResource("8_bomg0")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="OriginStart" type="Node3D" parent="EvadeCPA" index="1"]
+
+[node name="OriginMarker" type="Sprite3D" parent="EvadeCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("4_acmq8")
+
+[node name="GameParticles" type="GPUParticles3D" parent="EvadeCPA/OriginStart/OriginMarker" index="0"]
+transform = Transform3D(-4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0, 1, 0, 0, 0)
+layers = 2
+emitting = false
+amount = 75
+lifetime = 2.5
+one_shot = true
+explosiveness = 0.5
+process_material = SubResource("ParticleProcessMaterial_lfkhx")
+draw_pass_1 = SubResource("QuadMesh_eglgy")
+script = ExtResource("6_wln26")
+above_sprites = null
+_process_material = SubResource("ParticleProcessMaterial_lfkhx")
+
+[node name="TargetStart" type="Node3D" parent="EvadeCPA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="EvadeCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("7_8cyrc")

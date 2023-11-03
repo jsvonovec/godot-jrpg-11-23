@@ -1,0 +1,31 @@
+[gd_scene load_steps=2 format=3 uid="uid://cs85jgxomfjxe"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var bloodthirsty_dur = 2
+#export (Texture) var se_icon : Texture
+#export (StatusEffect.TICK_EVENT) var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+func _use(_targets):
+	for target in _targets:
+	# warning-ignore:return_value_discarded
+		se_Bloodthirsty.new(character, target, bloodthirsty_dur)
+"
+
+[node name="Howl" type="Node"]
+script = SubResource("1")
+close_range = false
+target_self = true
+skill_category = 4
+cooldown = 3
+costs = [0.0, 0.0, 0.0, 40.0]
+target_enemies = false
+beneficial = true
+description = "Inspires teammates to become Bloodthirsty for {bloodthirsty_dur} turns. Bloodthirsty animals deal more damage and may bleed their targets after every attack."
+max_targets = 999
+allow_same_target = false
+allow_same_target_consec = false
+multi_autotarget = true
+multi_one_team = true

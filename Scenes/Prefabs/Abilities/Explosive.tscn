@@ -1,0 +1,58 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Actions/Player/Arsonist/Flamethrower.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends StatusEffect
+
+const TICK = TICK_EVENT.CUSTOM
+
+# Should be called by the action that causes this.
+# Format: 
+# status_effect = se_Status_Effect_Name.new(caster, affected,
+# icon, duration)
+func _ready():
+	caster = get_parent()
+	caster.connect(\"se_about_to_die\", Callable(self, \"_tick_effect\"))
+	_finish_constructor(caster, caster, icon, TICK, null)
+
+# To be overridden
+func _duplicate(new_affected = null):
+	if new_affected == null: new_affected = affected
+	return get_script().new(caster, new_affected, icon, duration)
+# override this in extending scripts
+#func _apply_status_effect(_arg = null):
+#	pass
+
+# override this in extending scripts
+func _tick_effect(_arg = null):
+	affected.disconnect(\"se_about_to_die\", Callable(self, \"_tick_effect\"))
+	affected.evasion = 0
+	$Flamethrower.gameplay_use([caster])
+	end_effect()
+
+# override this in extending scripts
+#func _remove_status_effect(_arg = null):
+#	pass
+
+# The The message for when it's applied. Override it!
+#func _application_message() -> String:
+#	if is_buff:
+#		return \"%s is buffed with %s!\" % [affected.name, name]
+#	return \"%s is debuffed with %s!\" % [affected.name, name]
+
+# To be overridden. Updates the name of the SE
+#func _get_name():
+#	return name
+"
+
+[node name="Explosive" type="Node"]
+script = SubResource( 1 )
+ability = true
+
+[node name="Flamethrower" parent="." instance=ExtResource( 1 )]
+target_self = true
+power = 10
+aoe_other_team = true
+fire_duration = 2
+fire_damage = 3.0

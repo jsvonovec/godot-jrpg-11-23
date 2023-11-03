@@ -1,0 +1,46 @@
+[gd_scene load_steps=2 format=3 uid="uid://tebbxd6eh7f2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var atk_boost = 50
+@export var effect_duration = 2
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+	# warning-ignore:return_value_discarded
+		se_Vulnerable.new(character, target, 1)
+		var _si = se_StatIncrease.new(character, target, 
+		effect_duration, se_StatIncrease.stats.atk, false, atk_boost)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Boast" type="Node"]
+script = SubResource("1")
+primary = false
+target_self = true
+skip_targeting = true
+skill_category = 4
+costs = [0.0, 0.0, 0.0, 15.0]
+beneficial = true
+attack_type = 3
+priority = -1
+description = "Gain +{atk_boost} attack until after the next turn and become Vulnerable."

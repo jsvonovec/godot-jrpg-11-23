@@ -1,0 +1,360 @@
+[gd_scene load_steps=25 format=3 uid="uid://patvvvwcw4df"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://12tbfc3bndwg" path="res://Sprites/flame.png" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="4_cxai4"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="5_2dany"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="6_whrsg"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="7_j3nif"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="8_inktw"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="9_0u6mg"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var fire_duration: int
+@export var fire_damage: int
+
+var status_effect
+
+func _use(_targets):
+	for target in _targets:
+		apply_burn(target, fire_damage, fire_duration)
+		deal_basic_damage(target) 
+"
+
+[sub_resource type="Animation" id="Animation_eckcn"]
+resource_name = "RESET"
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathToFrom/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PathToFrom/PathFollow3D/Sparks:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PathToFrom/PathFollow3D/Ball:emitting")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("TargetStart/TargetMarker/Boom:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="Animation" id="Animation_x6e0p"]
+resource_name = "atk"
+length = 1.5
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathToFrom/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("OriginStart/OriginMarker/AudioStreamPlayer3D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PathToFrom/PathFollow3D/Sparks:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PathToFrom/PathFollow3D/Ball:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/5/type = "value"
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/path = NodePath("TargetStart/TargetMarker/Boom:emitting")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t52er"]
+_data = {
+"RESET": SubResource("Animation_eckcn"),
+"atk": SubResource("Animation_x6e0p")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_dgxcv"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1.25, 0, 0, -1.25, 0, 2, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_4nn8j"]
+_data = [Vector2(0, 0.809091), 0.0, 2.15584, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_b2ym0"]
+curve = SubResource("Curve_4nn8j")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_4k65h"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.25
+spread = 180.0
+gravity = Vector3(0, -5, 0)
+initial_velocity_max = 2.0
+radial_accel_min = -2.0
+radial_accel_max = 2.0
+tangential_accel_min = -3.0
+tangential_accel_max = 3.0
+scale_min = 0.2
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_b2ym0")
+color = Color(0.968627, 0.501961, 0.360784, 1)
+hue_variation_min = -0.05
+hue_variation_max = 0.18
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("6_whrsg")
+disable_receive_shadows = true
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_g7ub3"]
+material = SubResource("10")
+
+[sub_resource type="Curve" id="Curve_lgmpj"]
+min_value = -200.0
+max_value = 200.0
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 1), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_vncr8"]
+curve = SubResource("Curve_lgmpj")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_g4av1"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(1, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 0, 0)
+initial_velocity_min = 0.1
+initial_velocity_max = 0.5
+angular_velocity_max = 1.0
+tangential_accel_max = 1.0
+tangential_accel_curve = SubResource("CurveTexture_vncr8")
+scale_min = 0.2
+scale_max = 0.5
+scale_curve = SubResource("CurveTexture_b2ym0")
+color = Color(0.968627, 0.360784, 0.176471, 1)
+hue_variation_min = -0.05
+hue_variation_max = 0.18
+
+[sub_resource type="QuadMesh" id="QuadMesh_etbag"]
+material = SubResource("10")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_j6jls"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(1, 1, 0)
+spread = 180.0
+gravity = Vector3(0, 10, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 8.0
+angular_velocity_max = 1.0
+radial_accel_min = -10.0
+radial_accel_max = -1.0
+tangential_accel_max = 1.0
+tangential_accel_curve = SubResource("CurveTexture_vncr8")
+damping_min = 3.0
+damping_max = 5.0
+scale_min = 0.2
+scale_max = 0.6
+scale_curve = SubResource("CurveTexture_b2ym0")
+color = Color(0.97, 0.241207, 0.0194, 1)
+hue_variation_min = -0.05
+hue_variation_max = 0.18
+
+[sub_resource type="QuadMesh" id="QuadMesh_xu7qx"]
+material = SubResource("10")
+
+[node name="Pyrobolt" instance=ExtResource("1")]
+script = SubResource("1")
+fire_duration = 3
+fire_damage = 2
+close_range = false
+costs = Array[float]([5.0])
+follow = true
+attack_type = 1
+power = 10
+accuracy = 95
+icon = ExtResource("2")
+description = "Causes Burning."
+allow_same_target = false
+allow_same_target_consec = false
+multi_target_initial_max_range = 1
+multi_autotarget = true
+multi_one_team = true
+
+[node name="Ranged" type="AnimationPlayer" parent="." index="0"]
+root_node = NodePath(".")
+libraries = {
+"Pyrobolt": SubResource("AnimationLibrary_t52er")
+}
+script = ExtResource("4_cxai4")
+
+[node name="PathToFrom" type="Path3D" parent="Ranged" index="0"]
+top_level = true
+curve = SubResource("Curve3D_dgxcv")
+script = ExtResource("5_2dany")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+middle_height = 2.0
+middle_control_strength = 0.5
+
+[node name="PathFollow3D" type="PathFollow3D" parent="Ranged/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 0.780869, 0.624695, 0, 0.624695, -0.780869, 0, 0, 0)
+rotation_mode = 4
+loop = false
+
+[node name="Sparks" type="GPUParticles3D" parent="Ranged/PathToFrom/PathFollow3D" index="0"]
+layers = 2
+sorting_offset = 1.0
+emitting = false
+amount = 80
+one_shot = true
+process_material = SubResource("ParticleProcessMaterial_4k65h")
+draw_pass_1 = SubResource("QuadMesh_g7ub3")
+script = ExtResource("7_j3nif")
+_process_material = SubResource("ParticleProcessMaterial_4k65h")
+
+[node name="Ball" type="GPUParticles3D" parent="Ranged/PathToFrom/PathFollow3D" index="1"]
+layers = 2
+sorting_offset = 1.0
+emitting = false
+amount = 80
+lifetime = 2.0
+one_shot = true
+explosiveness = 1.0
+local_coords = true
+transform_align = 1
+process_material = SubResource("ParticleProcessMaterial_g4av1")
+draw_pass_1 = SubResource("QuadMesh_etbag")
+script = ExtResource("7_j3nif")
+_process_material = SubResource("ParticleProcessMaterial_g4av1")
+
+[node name="OriginStart" type="Node3D" parent="Ranged" index="1"]
+
+[node name="OriginMarker" type="Sprite3D" parent="Ranged/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("8_inktw")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Ranged/OriginStart/OriginMarker" index="0"]
+attenuation_model = 3
+max_polyphony = 2
+bus = &"Game"
+
+[node name="TargetStart" type="Node3D" parent="Ranged" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="Ranged/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("9_0u6mg")
+
+[node name="Boom" type="GPUParticles3D" parent="Ranged/TargetStart/TargetMarker" index="0"]
+layers = 2
+sorting_offset = 1.0
+emitting = false
+amount = 150
+lifetime = 1.25
+one_shot = true
+explosiveness = 1.0
+process_material = SubResource("ParticleProcessMaterial_j6jls")
+draw_pass_1 = SubResource("QuadMesh_xu7qx")
+script = ExtResource("7_j3nif")
+_process_material = SubResource("ParticleProcessMaterial_j6jls")

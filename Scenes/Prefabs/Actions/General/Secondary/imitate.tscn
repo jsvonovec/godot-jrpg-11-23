@@ -1,0 +1,16 @@
+[gd_scene load_steps=3 format=3 uid="uid://tbftwip25nmu"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/General/BasicAttack.tscn" id="1_gb8yg"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Actions/imitate.gd" id="2_gql0h"]
+
+[node name="Imitate" instance=ExtResource("1_gb8yg")]
+script = ExtResource("2_gql0h")
+rname = "Imitate"
+primary = false
+close_range = false
+skill_category = 2
+costs = Array[float]([0.0, 0.0, 0.0, 60.0])
+attack_type = 1
+power = 0
+priority = 1
+description = "Replaces this with the target's last used move."

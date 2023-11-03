@@ -1,0 +1,65 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Action
+
+
+func _use(_targets):
+	for target in _targets:
+		# remove the leech (which is targets),
+		# and deal the damage.
+		target.leech(target.power * 2, 0.5)
+		target.end_effect()
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+func possible_initial_targets():
+	# This part is normal:
+	var chars = character.turn_manager.targets_in_range(
+	character, close_range, target_self, target_enemies, target_friendlies)
+	
+	# Now, get all parasites on those people.
+	var leeches := []
+	for chara in chars:
+		for effect in chara.status_effects_active:
+			if effect is se_Parasite:
+				leeches.append(effect)
+	
+	return leeches
+
+func possible_following_targets(targets) -> Array:
+	# Return none if we cannot target any more peeps
+	if len(targets) >= max_targets:
+		return []
+	var results = []
+	var initials = possible_initial_targets()
+	for initial in initials:
+		# Only calculate whether we can target them from the LAST one we got
+		if can_follow_target_with_this_target(targets, initial):
+			results.append(initial)
+	
+	return results
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Recall Leech" instance=ExtResource( 1 )]
+script = SubResource( 1 )
+primary = false
+target_self = true
+skill_category = 2
+attack_type = 2
+power = 0
+description = "Removes a Leech, stealing health and dealing double the normal amount of damage."
+max_targets = 4
+allow_same_target = false
+allow_same_target_consec = false
+multi_ignores_atk_range = false

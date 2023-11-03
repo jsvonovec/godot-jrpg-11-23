@@ -1,0 +1,34 @@
+[gd_scene load_steps=3 format=3 uid="uid://h1n5c3lt842p"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var extension = 1
+func _use(_targets):
+	for target in _targets:
+		# Increase every status effect's duration by 1 turn.
+		var count = 0
+		for se in target.status_effects_active:
+			se.extend_duration(extension)
+			count += 1
+		
+		if count == 0:
+			print(\"But the target, %s, had no status effects...\" % target.name)
+"
+
+[node name="Fan the Flame" instance=ExtResource("1")]
+script = SubResource("1")
+extension = 1
+primary = false
+close_range = false
+target_self = true
+skill_category = 4
+costs = Array[float]([0.0, 0.0, 35.0])
+attack_type = 3
+power = 0
+description = "Extends the duration of all status effects on the targets by {extension} turn."
+max_targets = 2
+allow_same_target = false
+allow_same_target_consec = false

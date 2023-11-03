@@ -1,0 +1,10 @@
+[gd_scene load_steps=2 format=3 uid="uid://ceib5gh6bdbws"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/SpotLightGobo.gd" id="1"]
+
+[node name="SpotMover" type="SpotLight3D"]
+transform = Transform3D(1, 0, 0, 0, 0.498003, 0.867175, 0, -0.867175, 0.498003, 0.207235, 22.7425, 18.5719)
+shadow_enabled = true
+spot_range = 79.2705
+spot_angle = 28.0
+script = ExtResource("1")

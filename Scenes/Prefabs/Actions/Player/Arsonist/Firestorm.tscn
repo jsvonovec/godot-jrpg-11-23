@@ -1,0 +1,36 @@
+[gd_scene load_steps=3 format=3 uid="uid://if2uxx3leam6"]
+
+[ext_resource type="PackedScene" uid="uid://djkv1ems570ly" path="res://Scenes/Prefabs/Actions/Player/Arsonist/Flamethrower.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var fire_duration: int
+@export var fire_damage: int
+
+var status_effect
+
+func _use(_targets):
+	for target in _targets:
+		if target == character: continue
+		apply_burn(target, fire_damage, fire_duration)
+		deal_basic_damage(target)
+
+"
+
+[node name="Firestorm" instance=ExtResource("1")]
+script = SubResource("1")
+fire_duration = 2
+fire_damage = 0
+primary = false
+close_range = false
+target_self = true
+skip_targeting = true
+costs = Array[float]([60.0])
+power = 10
+description = "Damages all characters except the Arsonist for {calc_dmg()} damage, leaving a {fire_damage}-damage {fire_duration}-turn burn."
+def_multiplier = 1.0
+aoe = 100.0
+max_targets = 100
+multi_target_initial_max_range = -1
+multi_one_team = false

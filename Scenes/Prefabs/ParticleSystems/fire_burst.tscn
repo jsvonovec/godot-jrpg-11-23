@@ -1,0 +1,62 @@
+[gd_scene load_steps=8 format=3 uid="uid://cybtbvrmjtijg"]
+
+[ext_resource type="Texture2D" uid="uid://cq7fnxvrk0y6u" path="res://Sprites/Emoji/twe_fire.png" id="1_g042u"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="2_4jltg"]
+
+[sub_resource type="Curve" id="Curve_s6r6y"]
+_data = [Vector2(0.0060241, 0.472727), 0.0, 5.19798, 0, 0, Vector2(0.23494, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_3c0cx"]
+curve = SubResource("Curve_s6r6y")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7b0gw"]
+resource_local_to_scene = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 4.0
+gravity = Vector3(0, -5, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+tangential_accel_max = 1.0
+scale_min = 0.0
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_3c0cx")
+color = Color(1, 0.619608, 0.619608, 1)
+turbulence_enabled = true
+turbulence_noise_strength = 0.15
+turbulence_noise_scale = 1.0
+collision_mode = 1
+collision_friction = 0.24
+collision_bounce = 0.47
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_g042u")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_ge50c"]
+material = SubResource("10")
+
+[node name="FireBurst" type="GPUParticles3D"]
+layers = 1023
+emitting = false
+amount = 30
+one_shot = true
+explosiveness = 1.0
+collision_base_size = 1.0
+process_material = SubResource("ParticleProcessMaterial_7b0gw")
+draw_pass_1 = SubResource("QuadMesh_ge50c")
+script = ExtResource("2_4jltg")
+_texture = ExtResource("1_g042u")
+_process_material = SubResource("ParticleProcessMaterial_7b0gw")

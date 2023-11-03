@@ -1,0 +1,55 @@
+[gd_scene load_steps=3 format=3 uid="uid://csbuws6gukcl1"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+
+# Override possible_targets.
+func possible_initial_targets():
+	# This part is normal:
+	var targs = character.turn_manager.targets_in_range(
+	character, close_range, target_self, target_enemies, target_friendlies)
+	
+	# Now, filter out the ones that DON'T have parasites.
+	var this_chara_has_parasite = false
+	for i in range(len(targs) - 1, -1, -1):
+		this_chara_has_parasite = false
+		for effect in targs[i].status_effects_active:
+			if effect is se_Parasite:
+				this_chara_has_parasite = true
+				break
+		if !this_chara_has_parasite:
+			targs.remove_at(i)
+	
+	return targs
+
+func _use(_targets):
+	for target in _targets:
+		var found_a_leech = false
+		for effect in target.status_effects_active:
+			# Do effects on each leech
+			if effect is se_Parasite:
+				effect.leech(-1, -1, character, null)
+				effect.extend_duration(1)
+				found_a_leech = true
+		# If no parasites were found, do nothing
+		# This can happen if the target dies before excitement can
+		# happen, or if they act before the parisitologist and the
+		# effect ends
+		if !found_a_leech:
+			print(\"%s tried to Excite parasites in %s, but none were there!\"
+			% [character.name, target.name])
+			return
+"
+
+[node name="Excite" instance=ExtResource("1")]
+script = SubResource("1")
+close_range = false
+target_self = true
+skill_category = 2
+usable = false
+attack_type = 2
+description = "Extends the duration of a Leech by 1 turn and steals HP."
+melee = true

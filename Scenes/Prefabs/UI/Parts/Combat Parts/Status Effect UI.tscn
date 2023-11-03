@@ -1,0 +1,124 @@
+[gd_scene load_steps=7 format=2]
+
+[ext_resource path="res://Sprites/dmg up.png" type="Texture2D" id=1]
+[ext_resource path="res://Fonts/Bahnschrift/bahnschrift.ttf" type="FontFile" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends TextureRect
+
+
+
+var status_effect
+var character
+
+
+func assign_stuff(_effect, _char, _icon):
+	status_effect = _effect
+	character = _char
+	texture = _icon
+
+func set_stacks(amt: int):
+	get_node(\"Stacks\").text = \"[center]\" + (str(amt
+	) if amt != 0 else \"\") + \"[/center]\"
+
+func set_dur(amt: int):
+	get_node(\"Counter\").text = (\"[right]\" + 	str(amt) + \"[/right]\"
+	) if (amt >= 0 and amt < 100) else \"\"
+
+func set_extra(string := \"\"):
+	get_node(\"ExtraInfo\").text = \"[center]\" + string + \"[/center]\"
+"
+
+[sub_resource type="FontFile" id=2]
+size = 40
+outline_size = 2
+outline_color = Color( 0.411765, 0.411765, 0.411765, 1 )
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="FontFile" id=3]
+size = 40
+outline_size = 2
+outline_color = Color( 0.407843, 0.384314, 0.317647, 1 )
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="FontFile" id=4]
+size = 40
+outline_size = 2
+outline_color = Color( 0.411765, 0.411765, 0.411765, 1 )
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[node name="Icon" type="TextureRect"]
+offset_right = 64.0
+offset_bottom = 64.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_minimum_size = Vector2( 64, 64 )
+size_flags_horizontal = 2
+size_flags_vertical = 0
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 6
+script = SubResource( 1 )
+
+[node name="Counter" type="RichTextLabel" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = 13.1102
+offset_top = -20.5365
+offset_right = 63.1102
+offset_bottom = 19.4635
+custom_minimum_size = Vector2( 50, 40 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/default_color = Color( 1, 1, 1, 1 )
+theme_override_fonts/normal_font = SubResource( 2 )
+bbcode_enabled = true
+text = "[right]2[/right]"
+text = "2"
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Stacks" type="RichTextLabel" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -28.1042
+offset_top = -21.0
+offset_right = 44.8958
+offset_bottom = 19.0
+custom_minimum_size = Vector2( 50, 40 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/default_color = Color( 1, 0.858824, 0.423529, 1 )
+theme_override_fonts/normal_font = SubResource( 3 )
+bbcode_enabled = true
+text = "[center]4[/center]"
+text = "4"
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ExtraInfo" type="RichTextLabel" parent="."]
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -64.0
+offset_right = 128.0
+offset_bottom = 64.0
+custom_minimum_size = Vector2( 50, 40 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+theme_override_colors/default_color = Color( 0.8, 0.529412, 0.94902, 1 )
+theme_override_fonts/normal_font = SubResource( 4 )
+bbcode_enabled = true
+text = "[center]HELLO[/center]"
+text = "HELLO"
+fit_content_height = true
+scroll_active = false
+__meta__ = {
+"_edit_use_anchors_": false
+}

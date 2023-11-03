@@ -1,0 +1,36 @@
+[gd_scene load_steps=4 format=3 uid="uid://djkv1ems570ly"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://12tbfc3bndwg" path="res://Sprites/flame.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var fire_duration: int
+@export var fire_damage: int
+
+var status_effect
+
+func _use(_targets):
+	for aoegroup in get_aoe_targets(_targets):
+		for target in aoegroup:
+			apply_burn(target, fire_damage, fire_duration)
+			deal_basic_damage(target)
+"
+
+[node name="Flamethrower" instance=ExtResource("1")]
+script = SubResource("1")
+fire_duration = 4
+fire_damage = 0
+costs = Array[float]([50.0])
+attack_type = 1
+power = 15
+icon = ExtResource("2")
+description = "Engulfs the target in flames, dealing {calc_dmg()} damage and leaving a {fire_damage}-damage {fire_duration}-turn burn. Resisted by high magic defense."
+def_multiplier = 2.0
+aoe = 3.0
+allow_same_target = false
+allow_same_target_consec = false
+multi_target_initial_max_range = 1
+multi_autotarget = true
+multi_one_team = true

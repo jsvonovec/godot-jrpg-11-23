@@ -1,0 +1,53 @@
+[gd_scene load_steps=4 format=3 uid="uid://d3gphkt2xal21"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://cck20acy4utgr" path="res://Sprites/Emoji/twe_bubbletea.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+var atk_icon : Texture2D
+@export var atk_duration = 4
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	se_Defending.new(character, character)
+	#_caster, _affected, _duration, type: int, _recurring: bool, 
+	#_boost: int):
+	se_StatIncrease.new(character, character, atk_duration,
+	se_StatIncrease.stats.atk, false, 50)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Pressurize" instance=ExtResource("1")]
+script = SubResource("1")
+target_self = true
+skip_targeting = true
+skill_category = 4
+cooldown = 4
+costs = Array[float]([20.0])
+target_friendlies = false
+target_enemies = false
+beneficial = true
+attack_type = 2
+power = 0
+can_miss = false
+icon = ExtResource("2")
+description = "Increases attack by 50% for 4 turns and Protects the user."
+sfx_default = 6

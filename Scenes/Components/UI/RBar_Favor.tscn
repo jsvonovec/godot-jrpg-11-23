@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3]
+
+[ext_resource type="PackedScene" uid="uid://dxyk7d18lkx2r" path="res://Scenes/Components/UI/RBar_HP.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://cvqkwwv4oyirq" path="res://Sprites/star.png" id="2"]
+[ext_resource type="Shader" path="res://Shaders/RBar_HP.gdshader" id="2_4mq3h"]
+
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_1ov1x"]
+resource_local_to_scene = true
+shader = ExtResource("2_4mq3h")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 10
+shader_parameter/fill_color = Vector3(0.988235, 0.972549, 0.764706)
+shader_parameter/unfill_color = Vector3(0.741176, 0.729412, 0.573529)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 2181.07
+shader_parameter/size = Vector2(176.5, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("2")
+
+[node name="RBar_Favor" instance=ExtResource("1")]
+material = SubResource("ShaderMaterial_1ov1x")
+fill_color = Color(0.988235, 0.972549, 0.764706, 1)
+icon = ExtResource("2")
+resource = 2

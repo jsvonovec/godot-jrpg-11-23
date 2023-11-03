@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://cycrqailfp5w1"
+path="res://.godot/imported/Labyrinth Fight.mp3-e63332312b035a70dbdb9616ad0513be.mp3str"
+
+[deps]
+
+source_file="res://Sounds/asdasdasdsa/Labyrinth Fight.mp3"
+dest_files=["res://.godot/imported/Labyrinth Fight.mp3-e63332312b035a70dbdb9616ad0513be.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://bm85urysa71t8"
+path="res://.godot/imported/Last Battle.mp3-f9fe3fd2d7e5f3e7dba3352e1fe5a3c9.mp3str"
+
+[deps]
+
+source_file="res://Sounds/asdasdasdsa/Last Battle.mp3"
+dest_files=["res://.godot/imported/Last Battle.mp3-f9fe3fd2d7e5f3e7dba3352e1fe5a3c9.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=1.292
+bpm=0
+beat_count=0
+bar_beats=4

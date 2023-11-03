@@ -1,0 +1,245 @@
+[gd_scene load_steps=20 format=3 uid="uid://co4hxx4kh6ltl"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://b8d6j0gtadua8" path="res://Sprites/leech.png" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="3_rup5c"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="4_crs8m"]
+[ext_resource type="Texture2D" uid="uid://kmoprtx3p8mj" path="res://Sprites/UI/Icons/star.png" id="5_kyn8j"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="6_c14p0"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="7_av3bn"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="8_t4q6y"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var se_icon : Texture2D
+@export var effect_duration = 1
+@export var leech_fraction = 1.0
+@export var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+var status_effect
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+	# warning-ignore:return_value_discarded
+		se_Parasite.new(character, target, 
+		effect_duration, power, leech_fraction, se_icon)
+
+func _on_miss(_missed_target) -> void:
+	# refund 1 leech
+	character.set_resource(1, character.resource[1] + 1) 
+"
+
+[sub_resource type="Animation" id="Animation_uqh47"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathToFrom/PathFollow3D/GameParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PathToFrom/PathFollow3D/Sprite3D:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0x73m"]
+_data = {
+"RESET": SubResource("Animation_uqh47")
+}
+
+[sub_resource type="Animation" id="Animation_fkjy3"]
+resource_name = "atk"
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PathToFrom/PathFollow3D:progress_ratio")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 0,
+"values": [0.0, 1.0]
+}
+tracks/1/type = "method"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath(".")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(1),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+tracks/2/type = "value"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PathToFrom/PathFollow3D/Sprite3D:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/4/type = "value"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath("PathToFrom/PathFollow3D/GameParticles:emitting")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_0v8la"]
+_data = {
+"atk": SubResource("Animation_fkjy3")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_g4r7a"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2.5, 0, 0, -2.5, 0, 1, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_v30hq"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_jcdus"]
+curve = SubResource("Curve_v30hq")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_der38"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.25
+direction = Vector3(1, 1, 0.5)
+spread = 180.0
+flatness = 0.81
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+scale_curve = SubResource("CurveTexture_jcdus")
+color = Color(0.694118, 0.301961, 0.0117647, 1)
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_kyn8j")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_ww3nh"]
+material = SubResource("10")
+
+[node name="Instill" instance=ExtResource("1")]
+script = SubResource("1")
+se_icon = ExtResource("2")
+effect_duration = 3
+leech_fraction = 1.0
+tick_event = 0
+target_self = true
+skill_category = 2
+costs = Array[float]([0.0, 1.0])
+attack_type = 2
+power = 10
+icon = ExtResource("2")
+description = "Leeches the target for {effect_duration} turns, stealing HP every turn."
+
+[node name="InstillCPA" type="AnimationPlayer" parent="." index="0"]
+root_node = NodePath(".")
+libraries = {
+"": SubResource("AnimationLibrary_0x73m"),
+"Instill": SubResource("AnimationLibrary_0v8la")
+}
+script = ExtResource("3_rup5c")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="InstillCPA" index="0"]
+attenuation_model = 3
+max_polyphony = 2
+bus = &"Game"
+
+[node name="PathToFrom" type="Path3D" parent="InstillCPA" index="1"]
+top_level = true
+curve = SubResource("Curve3D_g4r7a")
+script = ExtResource("4_crs8m")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+middle_height = 1.0
+middle_control_strength = 1.0
+
+[node name="PathFollow3D" type="PathFollow3D" parent="InstillCPA/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 0.928471, -0.371406, 0, -0.371406, -0.928471, 0, 1.61678e-06, -5)
+progress = 5.77057
+rotation_mode = 4
+loop = false
+
+[node name="Sprite3D" type="Sprite3D" parent="InstillCPA/PathToFrom/PathFollow3D" index="0"]
+visible = false
+pixel_size = 0.015
+billboard = 1
+texture = ExtResource("2")
+
+[node name="GameParticles" type="GPUParticles3D" parent="InstillCPA/PathToFrom/PathFollow3D" index="1"]
+emitting = false
+amount = 30
+process_material = SubResource("ParticleProcessMaterial_der38")
+draw_pass_1 = SubResource("QuadMesh_ww3nh")
+script = ExtResource("6_c14p0")
+_texture = ExtResource("5_kyn8j")
+_process_material = SubResource("ParticleProcessMaterial_der38")
+
+[node name="OriginStart" type="Node3D" parent="InstillCPA" index="2"]
+
+[node name="OriginMarker" type="Sprite3D" parent="InstillCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("7_av3bn")
+
+[node name="TargetStart" type="Node3D" parent="InstillCPA" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="InstillCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("8_t4q6y")

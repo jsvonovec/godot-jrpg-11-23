@@ -1,0 +1,243 @@
+[gd_scene load_steps=12 format=3]
+
+[ext_resource type="Texture2D" uid="uid://t27kumahr4sh" path="res://Sprites/ui_battle_card_cloud.png" id="1"]
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/ContainerShrinker.gd" id="3"]
+[ext_resource type="Texture2D" uid="uid://83nanyxikbtq" path="res://Sprites/ui_battle_card_back.png" id="4"]
+[ext_resource type="PackedScene" uid="uid://38b7r1hxt0b5" path="res://Scenes/Components/Resource Bar.tscn" id="5"]
+[ext_resource type="Script" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/CombatCardCOntainer.gd" id="6"]
+[ext_resource type="Script" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/Combat Cardv2.gd" id="7"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/Status Effect UI.tscn" id="8"]
+
+
+[sub_resource type="FontFile" id=1]
+resource_name = "bahn"
+size = 30
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="FontFile" id=2]
+resource_name = "bahn"
+size = 30
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[sub_resource type="FontFile" id=3]
+resource_name = "bahn"
+size = 30
+use_mipmaps = true
+font_data = ExtResource( 2 )
+
+[node name="CombatCard" type="Control" groups=["combat_card"]]
+offset_left = 520.0
+offset_top = 1000.0
+offset_right = 520.0
+offset_bottom = 1000.0
+grow_horizontal = 0
+grow_vertical = 0
+script = ExtResource( 7 )
+resource_bar_prefab = ExtResource( 5 )
+status_effect_prefab = ExtResource( 8 )
+
+[node name="Card" type="MarginContainer" parent="."]
+anchor_left = 1.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = -320.0
+offset_top = -175.0
+offset_bottom = 10.0
+grow_horizontal = 0
+grow_vertical = 0
+custom_minimum_size = Vector2( 320, 185 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+script = ExtResource( 6 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SelectedPanel" type="NinePatchRect" parent="Card"]
+offset_right = 320.0
+offset_bottom = 185.0
+grow_horizontal = 0
+grow_vertical = 0
+custom_minimum_size = Vector2( 320, 175 )
+size_flags_vertical = 9
+texture = ExtResource( 4 )
+patch_margin_top = 64
+patch_margin_right = 98
+patch_margin_bottom = 75
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Name" type="RichTextLabel" parent="Card/SelectedPanel"]
+offset_left = 5.0
+offset_top = 5.0
+offset_right = 263.0
+offset_bottom = 37.0
+custom_minimum_size = Vector2( 200, 20 )
+theme_override_fonts/normal_font = SubResource( 1 )
+text = "taylor my love <3"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Bars" type="MarginContainer" parent="Card"]
+offset_top = 10.0
+offset_right = 255.0
+offset_bottom = 185.0
+size_flags_horizontal = 0
+size_flags_vertical = 8
+theme_override_constants/margin_top = 30
+theme_override_constants/margin_left = 5
+theme_override_constants/margin_bottom = 100
+
+[node name="BarCont" type="VBoxContainer" parent="Card/Bars"]
+offset_left = 5.0
+offset_top = 30.0
+offset_right = 255.0
+offset_bottom = 75.0
+grow_vertical = 0
+size_flags_horizontal = 0
+size_flags_vertical = 10
+theme_override_constants/separation = 0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HealthBar" parent="Card/Bars/BarCont" instance=ExtResource( 5 )]
+offset_bottom = 45.0
+hp_bar = true
+text_color = Color( 0.941176, 0.239216, 0.239216, 1 )
+bar_color = Color( 0.898039, 0.0156863, 0.0156863, 1 )
+
+[node name="Action" type="MarginContainer" parent="."]
+offset_left = -521.874
+offset_top = -220.0
+offset_right = -317.874
+offset_bottom = -31.0
+grow_horizontal = 0
+grow_vertical = 2
+custom_minimum_size = Vector2( 204, 189 )
+theme_override_constants/margin_right = 0
+theme_override_constants/margin_top = 0
+theme_override_constants/margin_left = 0
+theme_override_constants/margin_bottom = 0
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="NinePatchRect" parent="Action"]
+offset_right = 204.0
+offset_bottom = 189.0
+grow_horizontal = 2
+grow_vertical = 2
+custom_minimum_size = Vector2( 200, 189 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+texture = ExtResource( 1 )
+patch_margin_left = 43
+patch_margin_top = 99
+patch_margin_right = 49
+patch_margin_bottom = 52
+axis_stretch_horizontal = 2
+axis_stretch_vertical = 2
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Margin" type="MarginContainer" parent="Action"]
+offset_right = 204.0
+offset_bottom = 189.0
+custom_minimum_size = Vector2( 204, 189 )
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/margin_right = 10
+theme_override_constants/margin_top = 10
+theme_override_constants/margin_left = 10
+theme_override_constants/margin_bottom = 10
+script = ExtResource( 3 )
+
+[node name="List" type="VBoxContainer" parent="Action/Margin"]
+offset_left = 10.0
+offset_top = 10.0
+offset_right = 194.0
+offset_bottom = 179.0
+grow_horizontal = 2
+grow_vertical = 0
+custom_minimum_size = Vector2( 150, 100 )
+pivot_offset = Vector2( 75.5, 77.0316 )
+alignment = 1
+script = ExtResource( 3 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Action" type="Label" parent="Action/Margin/List"]
+offset_top = 6.0
+offset_right = 184.0
+offset_bottom = 71.0
+custom_minimum_size = Vector2( 30, 30 )
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_colors/font_color = Color( 0.94902, 0.870588, 0.517647, 1 )
+theme_override_fonts/font = SubResource( 2 )
+text = "Ranged Attackdddd"
+align = 1
+autowrap = true
+
+[node name="Separator" type="HSeparator" parent="Action/Margin/List"]
+offset_top = 82.0
+offset_right = 184.0
+offset_bottom = 86.0
+custom_minimum_size = Vector2( 184, 4 )
+
+[node name="Target" type="Label" parent="Action/Margin/List"]
+offset_top = 97.0
+offset_right = 184.0
+offset_bottom = 162.0
+custom_minimum_size = Vector2( 30, 30 )
+size_flags_horizontal = 3
+size_flags_vertical = 6
+theme_override_colors/font_color = Color( 1, 0.458824, 0.458824, 1 )
+theme_override_fonts/font = SubResource( 3 )
+text = "Grass Monster EX"
+align = 1
+autowrap = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="SEs" type="HBoxContainer" parent="."]
+offset_left = -340.0
+offset_top = -70.0
+offset_right = -60.0
+offset_bottom = 186.0
+theme_override_constants/separation = 30
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Debuffs" type="GridContainer" parent="SEs"]
+offset_right = 128.0
+offset_bottom = 228.0
+custom_minimum_size = Vector2( 128, 228 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+columns = 2
+
+[node name="Buffs" type="GridContainer" parent="SEs"]
+offset_left = 158.0
+offset_right = 286.0
+offset_bottom = 228.0
+custom_minimum_size = Vector2( 128, 228 )
+size_flags_horizontal = 0
+size_flags_vertical = 0
+columns = 2
+
+[connection signal="sort_children" from="Card" to="Card" method="_on_MarginContainer_sort_children"]
+[connection signal="sort_children" from="Action/Margin/List" to="Action/Margin/List" method="_on_List_sort_children"]

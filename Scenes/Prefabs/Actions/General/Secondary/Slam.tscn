@@ -1,0 +1,232 @@
+[gd_scene load_steps=21 format=3 uid="uid://cffc8pri88rbb"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Actions/BasicAttack.gd" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="3_gcxjh"]
+[ext_resource type="Texture2D" uid="uid://dqj53kbkqi64y" path="res://Sprites/Emoji/twe_blood.png" id="4_ndt78"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="5_lp5ai"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="6_lsqpd"]
+[ext_resource type="Texture2D" uid="uid://ck4exxce41lr3" path="res://Sprites/Particles/slam.png" id="6_n6kqv"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="8_0yhks"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="8_t3ngc"]
+
+[sub_resource type="Animation" id="Animation_qg4e2"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SlamCPA/PathToFrom/PathFollow3D/Slam:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SlamCPA/TargetStart/TargetMarker/Blood:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SlamCPA/PathToFrom/PathFollow3D:progress_ratio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_eyad0"]
+_data = {
+"RESET": SubResource("Animation_qg4e2")
+}
+
+[sub_resource type="Animation" id="Animation_as00c"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SlamCPA/PathToFrom/PathFollow3D/Slam:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SlamCPA/TargetStart/TargetMarker/Blood:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SlamCPA")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.6),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+tracks/3/type = "bezier"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("SlamCPA/PathToFrom/PathFollow3D:progress_ratio")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"handle_modes": PackedInt32Array(0, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0, 0.85, -0.7, -0.110664, 0.25, 0),
+"times": PackedFloat32Array(0, 1)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_ijk8q"]
+_data = {
+"atk": SubResource("Animation_as00c")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_owsps"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_d3iig"]
+resource_local_to_scene = true
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_db2l8"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("6_n6kqv")
+texture_filter = 0
+texture_repeat = false
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 9
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_cx3s2"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_db2l8")
+size = Vector2(3, 3)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_677b0"]
+resource_local_to_scene = true
+emission_shape = 1
+emission_sphere_radius = 0.5
+direction = Vector3(0, 0.15, -1)
+spread = 30.0
+gravity = Vector3(0, -15, 0)
+initial_velocity_min = 2.0
+initial_velocity_max = 15.0
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+albedo_texture = ExtResource("4_ndt78")
+billboard_mode = 3
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_i6fhd"]
+material = SubResource("10")
+
+[node name="Slam" instance=ExtResource("1")]
+script = ExtResource("2")
+primary = false
+costs = Array[float]([0.0, 0.0, 0.0, 20.0])
+power = 15
+priority = -1
+description = "Slow."
+melee = true
+
+[node name="SlamCPA" type="AnimationPlayer" parent="." index="0" groups=["combat_part_anims"]]
+libraries = {
+"": SubResource("AnimationLibrary_eyad0"),
+"Slam": SubResource("AnimationLibrary_ijk8q")
+}
+script = ExtResource("3_gcxjh")
+
+[node name="PathToFrom" type="Path3D" parent="SlamCPA" index="0"]
+top_level = true
+curve = SubResource("Curve3D_owsps")
+script = ExtResource("6_lsqpd")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="SlamCPA/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+rotation_mode = 4
+loop = false
+
+[node name="Slam" type="GPUParticles3D" parent="SlamCPA/PathToFrom/PathFollow3D" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 0.928475, 0.37139, 0, 0.37139, -0.928475, 0, 0, 0)
+emitting = false
+amount = 1
+one_shot = true
+visibility_aabb = AABB(-0.5, -0.5, -0.5, 1, 1, 1)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_d3iig")
+draw_pass_1 = SubResource("QuadMesh_cx3s2")
+script = ExtResource("5_lp5ai")
+_texture = ExtResource("6_n6kqv")
+h_frames = 9
+_process_material = SubResource("ParticleProcessMaterial_d3iig")
+
+[node name="OriginStart" type="Node3D" parent="SlamCPA" index="1"]
+
+[node name="OriginMarker" type="Sprite3D" parent="SlamCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("8_t3ngc")
+
+[node name="TargetStart" type="Node3D" parent="SlamCPA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="SlamCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("8_0yhks")
+
+[node name="Blood" type="GPUParticles3D" parent="SlamCPA/TargetStart/TargetMarker" index="0"]
+emitting = false
+amount = 15
+one_shot = true
+explosiveness = 0.97
+visibility_aabb = AABB(-1.01907, -1.05077, -1.01939, 2.03815, 2.10153, 2.03878)
+process_material = SubResource("ParticleProcessMaterial_677b0")
+draw_pass_1 = SubResource("QuadMesh_i6fhd")
+script = ExtResource("5_lp5ai")
+_texture = ExtResource("4_ndt78")
+_process_material = SubResource("ParticleProcessMaterial_677b0")

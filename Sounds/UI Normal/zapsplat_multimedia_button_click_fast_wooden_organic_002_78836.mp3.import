@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://c0kybipb3telw"
+path="res://.godot/imported/zapsplat_multimedia_button_click_fast_wooden_organic_002_78836.mp3-0fb789e784d7e705767eb417687beec5.mp3str"
+
+[deps]
+
+source_file="res://Sounds/UI Normal/zapsplat_multimedia_button_click_fast_wooden_organic_002_78836.mp3"
+dest_files=["res://.godot/imported/zapsplat_multimedia_button_click_fast_wooden_organic_002_78836.mp3-0fb789e784d7e705767eb417687beec5.mp3str"]
+
+[params]
+
+loop=false
+loop_offset=0
+bpm=0
+beat_count=0
+bar_beats=4

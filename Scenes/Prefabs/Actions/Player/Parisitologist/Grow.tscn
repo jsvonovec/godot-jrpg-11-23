@@ -1,0 +1,51 @@
+[gd_scene load_steps=3 format=3 uid="uid://dxn7w7ebqu2o5"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action 
+
+@export var time_extension = 2
+
+func _use(_targets):
+	# Remember: our targets are LEECHES. They're status effects, 
+	# NOT characters.
+	for target in _targets:
+		target.power += power
+		target.stacks += power
+		target.extend_duration(time_extension)
+
+
+# Override possible_targets.
+func possible_initial_targets():
+	# This part is normal:
+	var chars = character.turn_manager.targets_in_range(
+	character, close_range, target_self, target_enemies, target_friendlies)
+	
+	# Now, get all parasites on those people.
+	var leeches := []
+	for chara in chars:
+		for effect in chara.status_effects_active:
+			if effect is se_Parasite:
+				leeches.append(effect)
+	
+	return leeches
+
+func _add_initials_to_follow() -> Array:
+	return possible_initial_targets()
+"
+
+[node name="Grow" instance=ExtResource("1")]
+script = SubResource("1")
+time_extension = 2
+primary = false
+close_range = false
+target_self = true
+skill_category = 2
+cooldown = 2
+attack_type = 2
+power = 9
+description = "Increases the power of the targeted Leeches by {power}. Also extends its duration by {time_extension} turns."
+max_targets = 3
+allow_same_target = false
+allow_same_target_consec = false

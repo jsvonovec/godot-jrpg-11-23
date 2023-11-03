@@ -1,0 +1,70 @@
+[gd_scene load_steps=3 format=3 uid="uid://blcsmopk4ly1m"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var time_extension = 2
+@export var dmg_buff = 5
+
+func _use(_targets):
+	for target in _targets:
+		var longest
+		var longtime = -1
+		for se in target.status_effects_active:
+			if se is se_Burning:
+				# extend!
+				se.extend_duration(time_extension)
+				if se._time_left > longtime:
+					longest = se
+					longtime = se._time_left
+		# Now increase longest's damage
+		if longest != null:
+			longest.damage += dmg_buff
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+func possible_initial_targets() -> Array:
+	var results = get_node(\"/root/TurnManager\").targets_in_range(
+	character, close_range, target_self, target_enemies, target_friendlies)
+	for i in range(len(results) - 1, -1, -1):
+		var include = false
+		for se in results[i].status_effects_active:
+			if se is se_Burning:
+				include = true
+				break
+		if !include:
+			results.remove_at(i)
+	
+	return results
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Ashify" instance=ExtResource("1")]
+script = SubResource("1")
+time_extension = 2
+dmg_buff = 5
+primary = false
+close_range = false
+target_self = true
+skill_category = 2
+cooldown = 3
+costs = Array[float]([20.0])
+target_friendlies = false
+target_enemies = false
+attack_type = 1
+power = 5
+description = "Extends the length of all burns on the targets by {time_extension} turns and increases the longest burns' damages by {dmg_buff}."
+max_targets = 2
+allow_same_target = false
+allow_same_target_consec = false

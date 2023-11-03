@@ -1,0 +1,76 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="PackedScene" uid="uid://cjbt7c2k2qkdt" path="res://Scenes/Components/UI/HealthBar.tscn" id="1"]
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="2"]
+
+[sub_resource type="StyleBoxFlat" id="1"]
+bg_color = Color(0.603922, 0.486275, 0.0705882, 1)
+
+[sub_resource type="FontFile" id="2"]
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="3"]
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[node name="TurnCharacterUI" type="Control"]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 300.0
+offset_bottom = 100.0
+
+[node name="Background" type="Panel" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="SelectedBackground" type="Panel" parent="."]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_styles/panel = SubResource("1")
+
+[node name="CharacterName" type="Label" parent="."]
+custom_minimum_size = Vector2(80, 20)
+layout_mode = 0
+anchor_bottom = 1.0
+theme_override_fonts/font = SubResource("2")
+text = "Character Name"
+
+[node name="LevelText" type="Label" parent="."]
+custom_minimum_size = Vector2(40, 15)
+layout_mode = 0
+anchor_bottom = 0.65
+offset_right = 80.0
+offset_bottom = -1.52588e-05
+theme_override_colors/font_color = Color(0.992157, 0.960784, 0.0392157, 1)
+theme_override_fonts/font = SubResource("3")
+text = "Lv. 151"
+
+[node name="HealthBar" parent="." instance=ExtResource("1")]
+layout_mode = 0
+anchors_preset = 0
+anchor_top = 0.65
+anchor_right = 1.0
+offset_left = 2.0
+offset_top = 2.0
+offset_right = -2.0
+offset_bottom = -2.0

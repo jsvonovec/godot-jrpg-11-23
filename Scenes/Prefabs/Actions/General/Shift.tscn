@@ -1,0 +1,50 @@
+[gd_scene load_steps=3 format=3 uid="uid://de1n47cfd0n3v"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/Actions/Shift.gd" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Node
+
+
+
+
+func get_chara():
+	return get_parent().character
+
+func _get_name() -> String:
+	return (\"Right %s\" % name.right(-1)) if name.left(1) == \"+\" else (\"Left %s\" % name.right(-1))
+"
+
+[node name="Shift" type="Node"]
+script = ExtResource("1")
+primary = false
+skill_category = 1
+usable = false
+visible = false
+beneficial = true
+can_miss = false
+description = "Move up to {max_moves} {spot_or_spots} left or right."
+
+[node name="+1" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="+2" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="+3" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="+4" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="-1" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="-2" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="-3" type="Node" parent="."]
+script = SubResource("1")
+
+[node name="-4" type="Node" parent="."]
+script = SubResource("1")

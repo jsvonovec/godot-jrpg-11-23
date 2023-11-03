@@ -1,0 +1,646 @@
+[gd_scene load_steps=58 format=3 uid="uid://b7f25bnjj2pnb"]
+
+[ext_resource type="Script" path="res://Scenes/Prefabs/UI/Scripts/CombatUI.gd" id="1"]
+[ext_resource type="PackedScene" uid="uid://bopa4ukc7qga3" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/CombatButton.tscn" id="3"]
+[ext_resource type="FontFile" path="res://Fonts/Bahnschrift/bahn.tres" id="4"]
+[ext_resource type="FontFile" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/StatusFont.tres" id="5"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/Slide.gd" id="5_5on44"]
+[ext_resource type="Texture2D" uid="uid://3l70c2by7fn3" path="res://Sprites/UI/Icons/video.png" id="5_rjtdx"]
+[ext_resource type="FontFile" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/MoveFont.tres" id="6"]
+[ext_resource type="Texture2D" uid="uid://iw6v2oil6212" path="res://Sprites/UI/Icons/target.png" id="6_qa5rc"]
+[ext_resource type="PackedScene" uid="uid://b1peux3wohknx" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/RoomButton.tscn" id="7"]
+[ext_resource type="Texture2D" uid="uid://cb37xn5b0vno1" path="res://Sprites/UI/Icons/fastForward.png" id="7_qg4f7"]
+[ext_resource type="PackedScene" uid="uid://ctx0ko5ln63ci" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/CharaStatus.tscn" id="8"]
+[ext_resource type="Texture2D" uid="uid://br3jypdi67skm" path="res://Sprites/UI/Icons/exitLeft.png" id="8_64xyo"]
+[ext_resource type="Theme" path="res://Themes/CombatTheme.tres" id="9"]
+[ext_resource type="Texture2D" uid="uid://bobpio2cxwdsq" path="res://Sprites/UI/Icons/arrowLeft.png" id="10_tko15"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/CombatButton.gd" id="11_h3sac"]
+[ext_resource type="Texture2D" uid="uid://vho6qjnotiuo" path="res://Sprites/UI/Icons/arrowRight.png" id="11_mieke"]
+
+[sub_resource type="InputEventAction" id="InputEventAction_s5ixj"]
+action = &"ui_act"
+
+[sub_resource type="InputEventAction" id="InputEventAction_yncd4"]
+
+[sub_resource type="Shortcut" id="Shortcut_n3nuk"]
+events = [SubResource("InputEventAction_s5ixj"), SubResource("InputEventAction_yncd4")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_dcfoa"]
+action = &"ui_defend"
+
+[sub_resource type="InputEventAction" id="InputEventAction_xrpxq"]
+
+[sub_resource type="Shortcut" id="Shortcut_0yo4r"]
+events = [SubResource("InputEventAction_dcfoa"), SubResource("InputEventAction_xrpxq")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_tx1vf"]
+action = &"ui_shift"
+
+[sub_resource type="InputEventAction" id="InputEventAction_baofy"]
+
+[sub_resource type="Shortcut" id="Shortcut_x4vj2"]
+events = [SubResource("InputEventAction_tx1vf"), SubResource("InputEventAction_baofy")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_llpeo"]
+action = &"ui_flee"
+
+[sub_resource type="InputEventAction" id="InputEventAction_iq6w6"]
+
+[sub_resource type="Shortcut" id="Shortcut_j08p3"]
+events = [SubResource("InputEventAction_llpeo"), SubResource("InputEventAction_iq6w6")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_btjho"]
+
+[sub_resource type="Shortcut" id="Shortcut_vt015"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_scu6p"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_tuom8"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_d0w8c"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="GDScript" id="4"]
+script/source = "extends ScrollContainer
+
+var queue_slide_in = false
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED:
+		if visible:
+			queue_slide_in = true
+			queue_sort()
+	
+	elif what == NOTIFICATION_SORT_CHILDREN and queue_slide_in:
+		$List.position = $List/Slide.destination
+		$List/Slide.slide_in()
+		queue_slide_in = false
+"
+
+[sub_resource type="Shortcut" id="Shortcut_edcue"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_y03mq"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_xsx2v"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_p4uit"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="GDScript" id="5"]
+script/source = "extends ScrollContainer
+
+var queue_slide_in = false
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_VISIBILITY_CHANGED:
+		if visible:
+			queue_slide_in = true
+			queue_sort()
+	
+	elif what == NOTIFICATION_SORT_CHILDREN and queue_slide_in:
+		$List.position = $List/Slide.destination
+		$List/Slide.slide_in()
+		queue_slide_in = false
+"
+
+[sub_resource type="Shortcut" id="Shortcut_fa140"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_utu8u"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_rm4vn"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_ab60y"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_xrk7f"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="Shortcut" id="Shortcut_3pbsf"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_dcx56"]
+action = &"ui_cancel"
+
+[sub_resource type="Shortcut" id="Shortcut_suhd4"]
+events = [SubResource("InputEventAction_dcx56")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_vssxe"]
+device = -1
+keycode = 4194325
+
+[sub_resource type="Shortcut" id="Shortcut_qhn1e"]
+events = [SubResource("InputEventKey_vssxe")]
+
+[sub_resource type="InputEventKey" id="InputEventKey_6vx5a"]
+device = -1
+keycode = 4194306
+
+[sub_resource type="Shortcut" id="Shortcut_gu0yd"]
+events = [SubResource("InputEventKey_6vx5a")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_ym5wg"]
+action = &"ui_cancel"
+
+[sub_resource type="Shortcut" id="Shortcut_u5o61"]
+resource_local_to_scene = true
+events = [SubResource("InputEventAction_ym5wg")]
+
+[sub_resource type="InputEventAction" id="InputEventAction_h3bgf"]
+action = &"ui_end_turn"
+
+[sub_resource type="Shortcut" id="Shortcut_kw6ls"]
+resource_local_to_scene = true
+events = [SubResource("InputEventAction_h3bgf")]
+
+[sub_resource type="GDScript" id="2"]
+script/source = "extends Label
+
+@onready var txt = get_parent().get_node(\"Text\")
+
+func _on_rtl_updated():
+	text = txt.text
+"
+
+[sub_resource type="Shortcut" id="Shortcut_oykyp"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[node name="CombatUI" type="Control" groups=["combat_ui"]]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+mouse_filter = 2
+theme = ExtResource("9")
+script = ExtResource("1")
+action_button_prefab = ExtResource("3")
+room_button_prefab = ExtResource("7")
+finish_targeting_text = "**End Targeting**"
+
+[node name="Top" type="Control" parent="."]
+layout_mode = 1
+anchor_right = 1.0
+anchor_bottom = 0.345
+
+[node name="S" type="ScrollContainer" parent="Top"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 0.65
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="H" type="HBoxContainer" parent="Top/S"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+theme_override_constants/separation = 50
+
+[node name="General" type="ScrollContainer" parent="Top/S/H"]
+custom_minimum_size = Vector2(200, 160)
+layout_mode = 2
+size_flags_horizontal = 2
+
+[node name="List" type="VBoxContainer" parent="Top/S/H/General"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="Act" parent="Top/S/H/General/List" instance=ExtResource("3")]
+self_modulate = Color(1, 0.705882, 0.611765, 1)
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 1
+focus_neighbor_right = NodePath("../../../Actions/List/Action")
+focus_neighbor_bottom = NodePath("../Defend")
+theme_override_font_sizes/font_size = 25
+shortcut = SubResource("Shortcut_n3nuk")
+text = "ACT"
+icon = ExtResource("5_rjtdx")
+
+[node name="Defend" parent="Top/S/H/General/List" instance=ExtResource("3")]
+self_modulate = Color(0.729412, 0.882353, 0.909804, 1)
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 1
+focus_neighbor_top = NodePath("../Act")
+focus_neighbor_right = NodePath("../../../Actions/List/Action2")
+focus_neighbor_bottom = NodePath("../Shift")
+theme_override_font_sizes/font_size = 25
+shortcut = SubResource("Shortcut_0yo4r")
+text = "DEFEND"
+icon = ExtResource("6_qa5rc")
+
+[node name="Shift" parent="Top/S/H/General/List" instance=ExtResource("3")]
+self_modulate = Color(0.588235, 1, 0.623529, 1)
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 1
+focus_neighbor_top = NodePath("../Defend")
+focus_neighbor_right = NodePath("../../../Actions/List/Action3")
+focus_neighbor_bottom = NodePath("../Flee")
+theme_override_font_sizes/font_size = 25
+shortcut = SubResource("Shortcut_x4vj2")
+text = "SHIFT"
+icon = ExtResource("7_qg4f7")
+
+[node name="Flee" parent="Top/S/H/General/List" instance=ExtResource("3")]
+modulate = Color(1, 0.886275, 0.721569, 1)
+custom_minimum_size = Vector2(0, 40)
+layout_mode = 2
+size_flags_horizontal = 1
+focus_neighbor_top = NodePath("../Defend")
+focus_neighbor_right = NodePath("../../../Actions/List/Action4")
+theme_override_font_sizes/font_size = 25
+shortcut = SubResource("Shortcut_j08p3")
+text = "FLEE"
+icon = ExtResource("8_64xyo")
+
+[node name="Act" parent="Top/S/H/General/List" instance=ExtResource("3")]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 0.713726, 0.713726, 1)
+theme_override_colors/font_pressed_color = Color(0.772549, 0.545098, 0.545098, 1)
+theme_override_colors/font_hover_color = Color(0.996078, 0.815686, 0.815686, 1)
+theme_override_colors/font_disabled_color = Color(0.611765, 0.537255, 0.537255, 1)
+shortcut = SubResource("Shortcut_vt015")
+text = "Act"
+
+[node name="Defend" parent="Top/S/H/General/List" instance=ExtResource("3")]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.694118, 0.937255, 1, 1)
+theme_override_colors/font_pressed_color = Color(0.545098, 0.74902, 0.803922, 1)
+theme_override_colors/font_hover_color = Color(0.807843, 0.94902, 0.984314, 1)
+theme_override_colors/font_disabled_color = Color(0.592157, 0.631373, 0.639216, 1)
+shortcut = SubResource("Shortcut_scu6p")
+text = "Defend"
+
+[node name="Shift" parent="Top/S/H/General/List" instance=ExtResource("3")]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.694118, 1, 0.780392, 1)
+theme_override_colors/font_pressed_color = Color(0.545098, 0.803922, 0.588235, 1)
+theme_override_colors/font_hover_color = Color(0.807843, 0.984314, 0.827451, 1)
+theme_override_colors/font_disabled_color = Color(0.592157, 0.639216, 0.6, 1)
+shortcut = SubResource("Shortcut_tuom8")
+text = "Shift"
+
+[node name="Flee" parent="Top/S/H/General/List" instance=ExtResource("3")]
+visible = false
+layout_mode = 2
+theme_override_colors/font_color = Color(0.905882, 0.956863, 0.670588, 1)
+theme_override_colors/font_pressed_color = Color(0.878431, 0.972549, 0.447059, 1)
+theme_override_colors/font_hover_color = Color(0.956863, 0.984314, 0.823529, 1)
+theme_override_colors/font_disabled_color = Color(0.611765, 0.631373, 0.513726, 1)
+shortcut = SubResource("Shortcut_d0w8c")
+text = "Can't Flee! (Attacking)"
+
+[node name="Actions" type="ScrollContainer" parent="Top/S/H"]
+custom_minimum_size = Vector2(180, 160)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 20.0
+script = SubResource("4")
+
+[node name="List" type="VBoxContainer" parent="Top/S/H/Actions"]
+layout_mode = 2
+
+[node name="Action" parent="Top/S/H/Actions/List" instance=ExtResource("3")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../General/List/Act")
+shortcut = SubResource("Shortcut_edcue")
+shortcut_in_tooltip = false
+text = "Dagger Slash"
+
+[node name="Action2" parent="Top/S/H/Actions/List" instance=ExtResource("3")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../General/List/Defend")
+shortcut = SubResource("Shortcut_y03mq")
+shortcut_in_tooltip = false
+text = "Kinesis: Swap"
+
+[node name="Action3" parent="Top/S/H/Actions/List" instance=ExtResource("3")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../General/List/Shift")
+shortcut = SubResource("Shortcut_xsx2v")
+shortcut_in_tooltip = false
+text = "Summon Lesser Daemon"
+
+[node name="Action4" parent="Top/S/H/Actions/List" instance=ExtResource("3")]
+layout_mode = 2
+focus_neighbor_left = NodePath("../../../General/List/Flee")
+shortcut = SubResource("Shortcut_p4uit")
+shortcut_in_tooltip = false
+text = "Darkblast"
+
+[node name="Slide" type="Node" parent="Top/S/H/Actions/List"]
+script = ExtResource("5_5on44")
+destination = Vector2(0, -600)
+duration = 0.33
+transition_type = 4
+ease_type = 1
+
+[node name="Targets" type="ScrollContainer" parent="Top/S/H"]
+custom_minimum_size = Vector2(150, 160)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 20.0
+script = SubResource("5")
+
+[node name="List" type="VBoxContainer" parent="Top/S/H/Targets"]
+layout_mode = 2
+
+[node name="Target" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_fa140")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Target2" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_utu8u")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Target3" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_rm4vn")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Target4" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_ab60y")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Target5" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_xrk7f")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Target6" parent="Top/S/H/Targets/List" instance=ExtResource("3")]
+layout_mode = 2
+shortcut = SubResource("Shortcut_3pbsf")
+shortcut_in_tooltip = false
+text = "Enemy Name"
+
+[node name="Slide" type="Node" parent="Top/S/H/Targets/List"]
+script = ExtResource("5_5on44")
+destination = Vector2(0, -600)
+duration = 0.33
+transition_type = 4
+ease_type = 1
+
+[node name="Back" type="Button" parent="Top/S/H"]
+custom_minimum_size = Vector2(35, 50)
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+shortcut = SubResource("Shortcut_suhd4")
+icon = ExtResource("10_tko15")
+icon_alignment = 1
+expand_icon = true
+script = ExtResource("11_h3sac")
+
+[node name="ExtraButtons" type="HBoxContainer" parent="Top"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = 6.44
+offset_right = 461.0
+offset_bottom = 35.4401
+
+[node name="PrevCharacter" parent="Top/ExtraButtons" instance=ExtResource("3")]
+custom_minimum_size = Vector2(120, 20)
+layout_mode = 2
+focus_mode = 1
+shortcut = SubResource("Shortcut_qhn1e")
+text = "Previous"
+icon = ExtResource("10_tko15")
+
+[node name="NextCharacter" parent="Top/ExtraButtons" instance=ExtResource("3")]
+custom_minimum_size = Vector2(80, 20)
+layout_mode = 2
+focus_mode = 1
+shortcut = SubResource("Shortcut_gu0yd")
+text = "Next"
+icon = ExtResource("11_mieke")
+icon_alignment = 2
+
+[node name="CancelAction" parent="Top/ExtraButtons" instance=ExtResource("3")]
+layout_mode = 2
+focus_mode = 1
+shortcut = SubResource("Shortcut_u5o61")
+text = "Cancel Action"
+
+[node name="Description" type="MarginContainer" parent="Top"]
+custom_minimum_size = Vector2(100, 100)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.77
+anchor_right = 1.0
+anchor_bottom = 0.948
+offset_left = -65.04
+offset_top = 13.0
+offset_right = -12.0
+offset_bottom = 0.0651093
+grow_horizontal = 0
+grow_vertical = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Top/Description"]
+layout_mode = 2
+theme_override_constants/margin_left = -5
+theme_override_constants/margin_top = -5
+theme_override_constants/margin_right = -5
+theme_override_constants/margin_bottom = -5
+
+[node name="Panel" type="Panel" parent="Top/Description/MarginContainer"]
+layout_mode = 2
+
+[node name="Label" type="RichTextLabel" parent="Top/Description"]
+custom_minimum_size = Vector2(300, 175)
+layout_mode = 2
+theme_override_fonts/normal_font = ExtResource("4")
+theme_override_fonts/bold_font = ExtResource("4")
+theme_override_fonts/italics_font = ExtResource("4")
+theme_override_fonts/bold_italics_font = ExtResource("4")
+theme_override_fonts/mono_font = ExtResource("4")
+theme_override_font_sizes/normal_font_size = 22
+theme_override_font_sizes/bold_font_size = 22
+theme_override_font_sizes/italics_font_size = 22
+theme_override_font_sizes/bold_italics_font_size = 22
+theme_override_font_sizes/mono_font_size = 22
+bbcode_enabled = true
+text = "Blah blah blah"
+
+[node name="ExtraButtons2" type="HBoxContainer" parent="Top"]
+layout_mode = 0
+anchor_left = 0.5
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+alignment = 2
+
+[node name="EndTurn" parent="Top/ExtraButtons2" instance=ExtResource("3")]
+layout_mode = 2
+focus_mode = 1
+shortcut = SubResource("Shortcut_kw6ls")
+text = "End Turn"
+
+[node name="Status" type="CenterContainer" parent="Top"]
+layout_mode = 1
+anchors_preset = -1
+anchor_right = 1.0
+anchor_bottom = 0.518
+offset_right = 78.0
+offset_bottom = 31.28
+size_flags_horizontal = 15
+size_flags_vertical = 15
+
+[node name="P" type="PanelContainer" parent="Top/Status"]
+layout_mode = 2
+size_flags_horizontal = 13
+size_flags_vertical = 12
+
+[node name="Text" type="RichTextLabel" parent="Top/Status/P"]
+clip_contents = false
+custom_minimum_size = Vector2(50, 0)
+layout_mode = 2
+size_flags_vertical = 0
+theme_override_fonts/normal_font = ExtResource("5")
+bbcode_enabled = true
+text = "Status"
+scroll_active = false
+
+[node name="InvisT" type="Label" parent="Top/Status/P"]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("5")
+text = "Status"
+script = SubResource("2")
+
+[node name="Timer" type="Timer" parent="Top/Status"]
+
+[node name="R" type="Control" parent="."]
+anchors_preset = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="C" type="CenterContainer" parent="R"]
+layout_mode = 1
+anchors_preset = 10
+anchor_right = 1.0
+offset_left = 9.0
+offset_top = -68.0
+grow_horizontal = 2
+size_flags_horizontal = 15
+size_flags_vertical = 15
+
+[node name="H" type="HBoxContainer" parent="R/C"]
+layout_mode = 2
+
+[node name="HEAL" type="Button" parent="R/C/H"]
+visible = false
+layout_mode = 2
+mouse_filter = 2
+theme_override_colors/font_color = Color(0.639216, 1, 0.211765, 1)
+theme_override_colors/font_pressed_color = Color(0.458824, 0.811765, 0.0431373, 1)
+theme_override_colors/font_hover_color = Color(0.713726, 0.992157, 0.384314, 1)
+theme_override_colors/font_disabled_color = Color(0.513726, 0.784314, 0.192157, 1)
+theme_override_fonts/font = ExtResource("6")
+text = "Heal"
+
+[node name="MOVE" parent="R/C/H" instance=ExtResource("3")]
+layout_mode = 2
+focus_mode = 1
+theme_override_font_sizes/font_size = 40
+shortcut = SubResource("Shortcut_oykyp")
+text = "Move"
+
+[node name="G" type="GridContainer" parent="R/C/H"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 4
+size_flags_stretch_ratio = 0.0
+mouse_filter = 2
+columns = 3
+
+[node name="Left" type="Control" parent="."]
+layout_mode = 1
+anchor_top = 0.36
+anchor_bottom = 1.0
+offset_top = -0.280014
+offset_right = 274.0
+mouse_filter = 2
+
+[node name="CharaStatuses" type="VBoxContainer" parent="Left"]
+clip_contents = true
+layout_direction = 2
+layout_mode = 1
+anchors_preset = 2
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -218.0
+offset_right = 417.0
+grow_vertical = 0
+mouse_filter = 2
+
+[node name="CharaStatusDefault" parent="Left/CharaStatuses" instance=ExtResource("8")]
+clip_contents = true
+layout_mode = 2
+font_color = Color(1, 1, 1, 1)
+
+[connection signal="pressed" from="Top/S/H/General/List/Act" to="." method="_on_Act_pressed"]
+[connection signal="focus_entered" from="Top/S/H/General/List/Defend" to="." method="_on_Defend_focus_entered"]
+[connection signal="focus_exited" from="Top/S/H/General/List/Defend" to="." method="_on_Defend_focus_exited"]
+[connection signal="mouse_entered" from="Top/S/H/General/List/Defend" to="." method="_on_Defend_focus_entered"]
+[connection signal="mouse_exited" from="Top/S/H/General/List/Defend" to="." method="_on_Defend_focus_exited"]
+[connection signal="pressed" from="Top/S/H/General/List/Defend" to="." method="_on_Defend_pressed"]
+[connection signal="focus_entered" from="Top/S/H/General/List/Shift" to="." method="_on_Shift_focus_entered"]
+[connection signal="focus_exited" from="Top/S/H/General/List/Shift" to="." method="_on_Shift_focus_exited"]
+[connection signal="mouse_entered" from="Top/S/H/General/List/Shift" to="." method="_on_Shift_focus_entered"]
+[connection signal="mouse_exited" from="Top/S/H/General/List/Shift" to="." method="_on_Shift_focus_exited"]
+[connection signal="pressed" from="Top/S/H/General/List/Shift" to="." method="_on_Shift_pressed"]
+[connection signal="focus_entered" from="Top/S/H/General/List/Flee" to="." method="_on_Flee_focus_entered"]
+[connection signal="focus_exited" from="Top/S/H/General/List/Flee" to="." method="_on_Flee_focus_exited"]
+[connection signal="mouse_entered" from="Top/S/H/General/List/Flee" to="." method="_on_Flee_focus_entered"]
+[connection signal="mouse_exited" from="Top/S/H/General/List/Flee" to="." method="_on_Flee_focus_exited"]
+[connection signal="pressed" from="Top/S/H/General/List/Flee" to="." method="_on_Flee_pressed"]
+[connection signal="pressed" from="Top/S/H/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Top/ExtraButtons/PrevCharacter" to="." method="_on_PrevCharacter_pressed"]
+[connection signal="pressed" from="Top/ExtraButtons/NextCharacter" to="." method="_on_NextCharacter_pressed"]
+[connection signal="pressed" from="Top/ExtraButtons/CancelAction" to="." method="_on_CancelAction_pressed"]
+[connection signal="pressed" from="Top/ExtraButtons2/EndTurn" to="." method="_on_EndTurn_pressed"]
+[connection signal="draw" from="Top/Status/P/Text" to="Top/Status/P/InvisT" method="_on_rtl_updated"]
+[connection signal="pressed" from="R/C/H/HEAL" to="." method="_on_Heal_pressed"]
+[connection signal="button_up" from="R/C/H/MOVE" to="." method="_on_Move_pressed"]

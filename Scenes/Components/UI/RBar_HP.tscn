@@ -1,0 +1,138 @@
+[gd_scene load_steps=5 format=3 uid="uid://dxyk7d18lkx2r"]
+
+[ext_resource type="Shader" path="res://Shaders/RBar_HP.gdshader" id="1_h20im"]
+[ext_resource type="Texture2D" uid="uid://emphpnrrl6x3" path="res://Sprites/heart.png" id="2"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_wml3g"]
+resource_local_to_scene = true
+shader = ExtResource("1_h20im")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 20
+shader_parameter/fill_color = Vector3(0.913725, 0.160784, 0.160784)
+shader_parameter/unfill_color = Vector3(0.685294, 0.120588, 0.120588)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 54.3949
+shader_parameter/size = Vector2(177, 18)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("2")
+
+[sub_resource type="GDScript" id="3"]
+script/source = "@tool
+
+extends TextureRect
+
+
+@export var spacing = 3: set = set_spacing
+@export var fill_color = Color.INDIAN_RED: set = set_fill_color
+@export var res_per_icon = 10: set = set_res_per_icon
+@export var icon: Texture2D: set = set_icon
+@export var value: float : set = set_value
+var _value := 0.0
+@export var max_value: float : set = set_max_value
+@export var shake_amp: float : set = set_shake_amp
+@export var danger_amp: float
+@export var danger_factor: float
+@export var fscale: float : set = set_fscale
+var horiz_t = 0.0
+var vert_t = 0.0
+var danger
+@export var resource = -1
+var chara
+
+@export var lerp_t = 0.075
+
+func _ready() -> void:
+	material = material.duplicate()
+	material.set_shader_parameter(\"size\", size)
+	#custom_minimum_size = texture.get_size() * fscale + Vector2(shake_amp, shake_amp)
+	_value = value
+	await get_tree().process_frame
+	queue_redraw()
+
+func _draw() -> void:
+	material.set_shader_parameter(\"size\", size)
+	custom_minimum_size = (Vector2(shake_amp, shake_amp) * 2.0 + Vector2(
+	max_value / res_per_icon * texture.get_size().x + floor(max_value / res_per_icon) * spacing, 
+	texture.get_size().y)) * fscale
+
+var prev_randf = 0.5;
+func _process(delta: float) -> void:
+	prev_randf = clamp(prev_randf + danger_amp * (0.5 - randf()), 0.0, 1.0)
+	danger = max(20.0 - value, 0.0) / danger_factor
+	material.set_shader_parameter(\"rand\", prev_randf * danger)
+	horiz_t += danger * delta
+	material.set_shader_parameter(\"horiz_t\", horiz_t)
+	vert_t +=  (delta * (SoundOp.tempo if !Engine.is_editor_hint() else 110.0
+	) / 60.0 * PI) #+ danger
+	material.set_shader_parameter(\"vert_t\", vert_t)
+	
+	_value = lerp(_value, value, lerp_t)
+	material.set_shader_parameter(\"value\", _value)
+
+func set_spacing(val):
+	spacing = max(val, shake_amp * 2.0)
+	material.set_shader_parameter(\"spacing\", spacing)
+
+func set_fill_color(val):
+	fill_color = val
+	material.set_shader_parameter(\"fill_color\", Vector3(fill_color.r,
+	fill_color.g,fill_color.b))
+	var unfill_color = CombatUI.get_drained_color_any(fill_color
+	) if NIU.iiv(CombatUI) and !Engine.is_editor_hint() else fill_color * 0.75
+	material.set_shader_parameter(\"unfill_color\", Vector3(unfill_color.r,
+	unfill_color.g,unfill_color.b))
+
+func set_res_per_icon(val):
+	res_per_icon = val
+	material.set_shader_parameter(\"res_per_icon\", res_per_icon)
+
+func set_icon(val):
+	icon = val
+	material.set_shader_parameter(\"icon\", icon)
+
+func set_value(val):
+	value = val
+	update_time_offset()
+
+func set_max_value(val):
+	max_value = val
+	material.set_shader_parameter(\"max_value\", max_value)
+	update_time_offset()
+	
+
+func set_shake_amp(val):
+	shake_amp = min(val, spacing / 2.0)
+	material.set_shader_parameter(\"shake_amp\", shake_amp)
+
+func set_fscale(val):
+	fscale = val
+	material.set_shader_parameter(\"scale\", val)
+	#update()
+	
+
+func update_time_offset():
+	material.set_shader_parameter(\"time_offset\", NIU.ftime())
+"
+
+[node name="RBar_HP" type="TextureRect"]
+material = SubResource("ShaderMaterial_wml3g")
+custom_minimum_size = Vector2(176.5, 17.5)
+offset_right = 177.0
+offset_bottom = 18.0
+texture = ExtResource("2")
+expand_mode = 1
+stretch_mode = 1
+script = SubResource("3")
+fill_color = Color(0.913725, 0.160784, 0.160784, 1)
+res_per_icon = 20
+icon = ExtResource("2")
+value = 100.0
+max_value = 100.0
+shake_amp = 1.5
+danger_amp = 0.5
+danger_factor = 10.0
+fscale = 0.5

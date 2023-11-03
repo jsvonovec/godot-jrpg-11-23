@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://c0q3inqnj3h54"]
+
+[node name="MainBattleCamera" type="Camera3D" groups=["main_camera"]]
+transform = Transform3D(-0.429597, 0.458019, -0.778245, 0, 0.861824, 0.507208, 0.903021, 0.217895, -0.370237, -40, 33, -30)
+fov = 32.8
+size = 0.1

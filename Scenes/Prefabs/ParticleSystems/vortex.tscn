@@ -1,0 +1,44 @@
+[gd_scene load_steps=8 format=3 uid="uid://cv2m4bnpcqur8"]
+
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="1_nhlr4"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="2_otoai"]
+
+[sub_resource type="Curve" id="Curve_etc3b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_76lf7"]
+curve = SubResource("Curve_etc3b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_mkqod"]
+resource_local_to_scene = true
+spread = 124.89
+initial_velocity_min = 3.0
+initial_velocity_max = 3.0
+tangential_accel_min = -34.74
+tangential_accel_max = 100.0
+damping_min = 32.63
+damping_max = 32.63
+scale_curve = SubResource("CurveTexture_76lf7")
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("1_nhlr4")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_fbr4t"]
+material = SubResource("10")
+
+[node name="Vortex" type="GPUParticles3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -4)
+amount = 50
+process_material = SubResource("ParticleProcessMaterial_mkqod")
+draw_pass_1 = SubResource("QuadMesh_fbr4t")
+script = ExtResource("2_otoai")
+_process_material = SubResource("ParticleProcessMaterial_mkqod")

@@ -1,0 +1,35 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" type="PackedScene" id=1]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Action
+
+var just_killed := false
+var killed_last_turn := false
+
+func _use(targets):
+	for target in targets:
+		var killed = target.dead
+		deal_basic_damage(target)
+		if target.dead and !killed:
+			just_killed = true
+			
+
+func on_turn_end():
+	super.on_turn_end()
+	killed_last_turn = usable and just_killed
+	just_killed = false
+	
+	# change atk multiplier
+	if killed_last_turn:
+		atk_multiplier = 2.0
+	else:
+		atk_multiplier = 1.0
+"
+
+[node name="Fury Cutter" instance=ExtResource( 1 )]
+script = SubResource( 1 )
+primary = false
+costs = [ 0.0, 0.0, 0.0, 10.0 ]
+description = "Does double damage if this move killed something last turn."

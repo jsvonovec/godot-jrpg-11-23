@@ -1,0 +1,44 @@
+[gd_scene load_steps=4 format=3 uid="uid://cle7sucyekry6"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://b8d6j0gtadua8" path="res://Sprites/leech.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var se_icon : Texture2D
+@export var effect_duration = 1
+@export var leech_fraction = 0.8
+@export var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+var status_effect
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	# refund for each target less than max
+	var refund = max_targets - len(_targets)
+	if refund > 0:
+		character.set_resource(1, character.resource[1] + refund) 
+	for target in _targets:
+	# warning-ignore:return_value_discarded
+		se_Parasite.new(character, target, 
+		effect_duration, power, leech_fraction, se_icon)
+
+"
+
+[node name="Tiny Leeches" instance=ExtResource("1")]
+script = SubResource("1")
+se_icon = ExtResource("2")
+effect_duration = 3
+leech_fraction = 1.0
+tick_event = 0
+close_range = false
+target_self = true
+skill_category = 2
+costs = Array[float]([0.0, 2.0])
+attack_type = 2
+power = 4
+icon = ExtResource("2")
+description = "Places weaker parasites in two targets' bodies for {effect_duration} turns, dealing damage and healing the user each turn."
+max_targets = 2

@@ -1,0 +1,51 @@
+[gd_scene load_steps=9 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Prefabs/Characters/Player/Parisitologist.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Prefabs/Characters/Player/Arsonist.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Scenes/Prefabs/MainBattleCamera.tscn" type="PackedScene" id=5]
+[ext_resource path="res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn" type="PackedScene" id=6]
+[ext_resource path="res://Scenes/Prefabs/Characters/Player/Paladin.tscn" type="PackedScene" id=7]
+[ext_resource path="res://Scenes/Prefabs/Characters/Enemy/Slime.tscn" type="PackedScene" id=8]
+[ext_resource path="res://Scenes/Prefabs/Characters/Enemy/Knight.tscn" type="PackedScene" id=9]
+
+[node name="Battle" type="Node"]
+
+[node name="Parisitologist" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( -0.436503, 0, -0.899703, 0, 1, 0, 0.899703, 0, -0.436503, 10.9573, 0, -37.3456 )
+position = 1.0
+
+[node name="Paladin" parent="." instance=ExtResource( 7 )]
+transform = Transform3D( -0.436503, 0, -0.899703, 0, 1, 0, 0.899703, 0, -0.436503, 0.0238647, 0, -22.3721 )
+position = 2.0
+default_max_res = [ 100.0, 0.0, 100.0, 100.0 ]
+default_res = [ 100.0, 0.0, 100.0, 100.0 ]
+
+[node name="Arsonist" parent="." instance=ExtResource( 3 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, -5.06447, 0, -23.7935 )
+position = 3.0
+
+[node name="Slime" parent="." instance=ExtResource( 8 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, -2.36159, 0, 28.6732 )
+default_max_hp = 50
+default_hp = 50
+default_evasion = 50
+
+[node name="Smoke Bomb" parent="." instance=ExtResource( 1 )]
+position = 1.0
+default_battle_party = true
+
+[node name="Knight" parent="." instance=ExtResource( 9 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 11.4889, 0, 25.786 )
+default_max_hp = 100
+default_hp = 100
+position = 2.0
+
+[node name="Boulder" parent="." instance=ExtResource( 6 )]
+
+[node name="MainBattleCamera" parent="." instance=ExtResource( 5 )]
+transform = Transform3D( -0.707107, 0.454519, -0.541676, 0, 0.766045, 0.642787, 0.707107, 0.454519, -0.541676, -35.8928, 37.5691, -14.1323 )
+projection = 1
+fov = 53.0
+size = 25.0
+far = 500.0

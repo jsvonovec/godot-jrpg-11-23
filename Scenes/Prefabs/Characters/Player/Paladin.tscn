@@ -1,0 +1,142 @@
+[gd_scene load_steps=23 format=3 uid="uid://553h3enp5864"]
+
+[ext_resource type="PackedScene" uid="uid://h1n5c3lt842p" path="res://Scenes/Prefabs/Actions/Player/Paladin/Fan Flames.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://dom8vwk5jo1om" path="res://Scenes/Prefabs/Actions/Player/Paladin/Protect.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://pic3nddasi54" path="res://Sprites/Characters/paladin.png" id="3_xhwj4"]
+[ext_resource type="PackedScene" uid="uid://cqijqdkvw0e5t" path="res://Scenes/Prefabs/Actions/Player/Paladin/Spirit Tithe.tscn" id="4"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/Player/Paladin/Smite.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/Player/Paladin/Justice.tscn" id="6"]
+[ext_resource type="Texture2D" uid="uid://b08lc6cwsf6dw" path="res://Sprites/Emoji/twe_superhero.png" id="7"]
+[ext_resource type="PackedScene" uid="uid://tyn5uutkuago" path="res://Scenes/Prefabs/Actions/General/Secondary/Slash.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://21tly2xorrdp" path="res://Scenes/Prefabs/Actions/Player/Paladin/Moonglow.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://b8756w1dr5yme" path="res://Scenes/Prefabs/Actions/General/Secondary/Snap.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://cffc8pri88rbb" path="res://Scenes/Prefabs/Actions/General/Secondary/Slam.tscn" id="11"]
+[ext_resource type="PackedScene" uid="uid://tebbxd6eh7f2" path="res://Scenes/Prefabs/Actions/General/Secondary/Boast.tscn" id="12"]
+[ext_resource type="PackedScene" uid="uid://cvmvo2xxhyi1" path="res://Scenes/Prefabs/Actions/General/Secondary/Riposte.tscn" id="13"]
+
+[sub_resource type="Animation" id="Animation_l2rub"]
+length = 0.001
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Center/Sprite2D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(1.01573, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+
+[sub_resource type="Animation" id="Animation_w4csc"]
+resource_name = "idle"
+length = 6.0
+loop_mode = 1
+tracks/0/type = "bezier"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("Center/Sprite2D:position:y")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"handle_modes": PackedInt32Array(0, 0, 0),
+"points": PackedFloat32Array(1.01573, -0.25, 0, 0.25, 0, 1.5, -0.25, 0, 0.25, 0, 1.01573, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0, 3, 6)
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_64qup"]
+_data = {
+"RESET": SubResource("Animation_l2rub"),
+"idle": SubResource("Animation_w4csc")
+}
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_klxoa"]
+atlas = ExtResource("3_xhwj4")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_co42e"]
+atlas = ExtResource("3_xhwj4")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_arvun"]
+atlas = ExtResource("3_xhwj4")
+region = Rect2(64, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_sfe2s"]
+atlas = ExtResource("3_xhwj4")
+region = Rect2(96, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_wod8d"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_klxoa")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_co42e")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_arvun")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_sfe2s")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Paladin" instance=ExtResource("3")]
+avi = ExtResource("7")
+p_color = Color(0.956863, 1, 0.188235, 1)
+s_color = Color(0.611765, 0.596078, 0.396078, 1)
+default_atk = [120, 100, 70, 120]
+default_def = [50, 25, 28, 75]
+default_max_res = Array[int]([100, 1, 60, 40])
+default_res = Array[int]([100, 1, 60])
+favor_overdraw_hurts = true
+
+[node name="Puppet" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+dancing_sprite_path = NodePath("Center/Sprite2D")
+dance_duration = 3
+dance_ticks = Array[float]([0.0, 0.75, 1.5, 2.25])
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Puppet" index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_64qup")
+}
+
+[node name="Center" parent="Puppet" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Sprite2D" type="AnimatedSprite3D" parent="Puppet/Center" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.01573, 0)
+pixel_size = 0.125
+billboard = 1
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_wod8d")
+
+[node name="Spirit Tithe" parent="L1" index="0" instance=ExtResource("4")]
+
+[node name="Slash" parent="L1" index="1" instance=ExtResource("8")]
+
+[node name="Moonglow" parent="L1" index="2" instance=ExtResource("9")]
+
+[node name="Slam" parent="L1" index="3" instance=ExtResource("11")]
+
+[node name="Boast" parent="L1" index="4" instance=ExtResource("12")]
+
+[node name="Riposte" parent="L1" index="5" instance=ExtResource("13")]
+
+[node name="Protect" parent="L2" index="0" instance=ExtResource("2")]
+
+[node name="Snap" parent="L2" index="1" instance=ExtResource("10")]
+
+[node name="Fan the Flame" parent="L3" index="0" instance=ExtResource("1")]
+
+[node name="Smite" parent="L3" index="1" instance=ExtResource("5")]
+
+[node name="Justice" parent="L4" index="0" instance=ExtResource("6")]

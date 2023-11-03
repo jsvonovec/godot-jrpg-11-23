@@ -1,0 +1,107 @@
+[gd_scene load_steps=5 format=3 uid="uid://etl3h5tiu7ei"]
+
+[sub_resource type="Shader" id="2"]
+code = "shader_type spatial;
+render_mode shadows_disabled, unshaded;
+
+const float darken_factor = 0.6;
+const float start_angle = 1.0; // radians away from straight away from camera; full angle is x2
+uniform float od = 1.0;
+uniform float id = 0.75;
+uniform float fill = 0.5;
+uniform vec3 color = vec3(1.0, 0.05, 0.05);
+uniform vec3 unfilled_color = vec3(0.3, 0.025, 0.025);
+
+varying vec3 pos;
+
+void vertex(){
+	pos = VERTEX;
+}
+
+void fragment(){
+	//ALPHA = 1.0;
+	//empty if not in radius
+	if (length(pos) < id / 2.0 || length(pos) > od / 2.0){
+		ALPHA = 0.0;
+	}
+	else
+	{
+		
+		//ALPHA = 1.0;
+		//find angle
+		vec3 campos = INV_VIEW_MATRIX[3].xyz;
+		vec3 view2 = vec3(MODEL_MATRIX[3].x - campos.x, 0.0, MODEL_MATRIX[3].z - campos.z);
+		float theta = acos(dot(view2, vec3(pos.x, 0.0, -pos.y)) / (length(view2) * length(pos)));
+		
+		// empty if between start angles
+		if(theta < start_angle){
+			ALPHA = 0.0;
+		}
+		else
+		{
+			// un-mirror
+			if(cross(view2, vec3(pos.x, 0.0, -pos.y)).y > 0.0){
+				theta = 6.283185 - theta;
+			}
+			
+			// deal with discontunuity
+			// (idk if this works)
+			else if(isinf(theta) || isnan(theta)){
+				theta = 3.1415;
+			}
+			
+			// now color in the bar
+			if(mix(start_angle, 6.283185 - start_angle, 1.0 - fill) > theta){
+				ALBEDO = unfilled_color * darken_factor;
+				EMISSION = vec3(0.0);
+			}
+			else{
+				ALBEDO = color * darken_factor;
+				EMISSION = ALBEDO * 0.25;
+			}
+		}
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id="3"]
+resource_local_to_scene = true
+render_priority = 0
+shader = SubResource("2")
+shader_parameter/od = 1.0
+shader_parameter/id = 0.75
+shader_parameter/fill = 0.5
+shader_parameter/color = Vector3(1, 0.05, 0.05)
+shader_parameter/unfilled_color = Vector3(0.3, 0.025, 0.025)
+
+[sub_resource type="QuadMesh" id="4"]
+resource_local_to_scene = true
+material = SubResource("3")
+size = Vector2(5, 5)
+
+[sub_resource type="GDScript" id="5"]
+script/source = "extends MeshInstance3D
+
+var resource = -1
+
+var fake_fill := 1.0
+var fill_goal := 1.0
+
+const lerp_t = 0.075 * 60.0
+
+
+func set_fill(fill: float):
+	fill_goal = fill
+
+
+func _process(_delta: float) -> void:
+#	if fill_goal <= 0.01 and resource == -1:
+#		breakpoint
+	fake_fill = lerp(fake_fill, fill_goal, lerp_t * _delta)
+	mesh.surface_get_material(0).set_shader_parameter(\"fill\", fake_fill)
+	
+"
+
+[node name="HP" type="MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, -4.37114e-08, 1, 0, -1, -4.37114e-08, 0, 0, 0)
+mesh = SubResource("4")
+script = SubResource("5")

@@ -1,0 +1,9 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Actions/General/BasicAttack.tscn" type="PackedScene" id=1]
+
+[node name="Smite" instance=ExtResource( 1 )]
+costs = [ 0.0, 0.0, 15.0 ]
+attack_type = 3
+power = 20
+description = "The target is smitten for {calc_dmg()} damage. Divine Favor is spent again if the target is killed by this move."

@@ -1,0 +1,216 @@
+[gd_scene load_steps=20 format=3 uid="uid://lae5jmu0he4j"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="2_ymfi6"]
+[ext_resource type="AudioStream" uid="uid://dnqy5tb7w55ib" path="res://Sounds/Hit Magical/Blastwave_FX_FireballWhoosh_S08FI.42.mp3" id="3_4kva2"]
+[ext_resource type="Texture2D" uid="uid://bql6uupqocv4d" path="res://Sprites/Emoji/twe_microbe.png" id="4_4l4lm"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="5_bcxlv"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="6_4e5se"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="6_j8bj5"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="7_8an3b"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var duration = 3
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		deal_basic_damage(target)
+		apply_poison(target, duration, 0)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[sub_resource type="Animation" id="Animation_7eu5i"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TargetStart/TargetMarker/FireBurst:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_pbc0l"]
+_data = {
+"RESET": SubResource("Animation_7eu5i")
+}
+
+[sub_resource type="Animation" id="Animation_7uxub"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("TargetStart/TargetMarker/FireBurst:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 1),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AudioStreamPlayer3D:playing")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath(".")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.2),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_uqe8j"]
+_data = {
+"atk": SubResource("Animation_7uxub")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_2kuw7"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_s6r6y"]
+_data = [Vector2(0.0060241, 0.472727), 0.0, 5.19798, 0, 0, Vector2(0.23494, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_3c0cx"]
+curve = SubResource("Curve_s6r6y")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_fbhtr"]
+resource_local_to_scene = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 1.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 1.0
+direction = Vector3(0, 1, 0)
+spread = 4.0
+gravity = Vector3(0, -5, 0)
+initial_velocity_min = 5.0
+initial_velocity_max = 10.0
+tangential_accel_max = 1.0
+scale_min = 0.0
+scale_max = 2.0
+scale_curve = SubResource("CurveTexture_3c0cx")
+color = Color(0.313726, 0.643137, 0.211765, 1)
+turbulence_enabled = true
+turbulence_noise_strength = 0.15
+turbulence_noise_scale = 1.0
+collision_mode = 1
+collision_friction = 0.24
+collision_bounce = 0.47
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("4_4l4lm")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_0vmsu"]
+material = SubResource("10")
+
+[node name="Poison" instance=ExtResource("1")]
+script = SubResource("1")
+duration = 3
+primary = false
+close_range = false
+skill_category = 2
+costs = Array[float]([5.0, 0.0, 0.0, 0.0])
+attack_type = 2
+description = "Poisons."
+sfx_default = 5
+
+[node name="PoisonCPA" type="AnimationPlayer" parent="." index="0"]
+root_node = NodePath(".")
+libraries = {
+"": SubResource("AnimationLibrary_pbc0l"),
+"Enflame": SubResource("AnimationLibrary_uqe8j")
+}
+script = ExtResource("2_ymfi6")
+duplicate_for_each_target = true
+duplication_delay = 1.0
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="PoisonCPA" index="0"]
+stream = ExtResource("3_4kva2")
+attenuation_model = 3
+max_polyphony = 2
+bus = &"Game"
+
+[node name="PathToFrom" type="Path3D" parent="PoisonCPA" index="1"]
+curve = SubResource("Curve3D_2kuw7")
+script = ExtResource("7_8an3b")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="OriginStart" type="Node3D" parent="PoisonCPA" index="2"]
+
+[node name="OriginMarker" type="Sprite3D" parent="PoisonCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("6_4e5se")
+
+[node name="TargetStart" type="Node3D" parent="PoisonCPA" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="PoisonCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("6_j8bj5")
+
+[node name="FireBurst" type="GPUParticles3D" parent="PoisonCPA/TargetStart/TargetMarker" index="0"]
+layers = 1023
+emitting = false
+amount = 30
+one_shot = true
+explosiveness = 1.0
+collision_base_size = 1.0
+process_material = SubResource("ParticleProcessMaterial_fbhtr")
+draw_pass_1 = SubResource("QuadMesh_0vmsu")
+script = ExtResource("5_bcxlv")
+_texture = ExtResource("4_4l4lm")
+_process_material = SubResource("ParticleProcessMaterial_fbhtr")

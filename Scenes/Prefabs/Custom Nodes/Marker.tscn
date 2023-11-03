@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://dcp3q824wdsdn"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/Marker.gd" id="1_vhwm6"]
+
+[node name="Marker" type="Node3D"]
+script = ExtResource("1_vhwm6")
+replace_after_disable = null

@@ -1,0 +1,216 @@
+[gd_scene load_steps=16 format=3 uid="uid://b83b5q5tplihr"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/Cell.gd" id="1_sutmr"]
+[ext_resource type="Material" uid="uid://cbqjhycga362f" path="res://Materials/redground.tres" id="2_26sxj"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Spreader.gd" id="2_j2bkn"]
+[ext_resource type="ArrayMesh" uid="uid://uloydkj65wyc" path="res://Models/cliff_blockQuarter_rock.obj" id="3_mad24"]
+[ext_resource type="ArrayMesh" uid="uid://do5lhimg0lyqa" path="res://Models/cliff_top_rock.obj" id="5_vpdip"]
+[ext_resource type="ArrayMesh" uid="uid://dl3gxxcobnk0s" path="res://Models/cliff_cornerTop_rock.obj" id="6_0ylua"]
+[ext_resource type="PackedScene" uid="uid://c3ru1vvel80c0" path="res://Scenes/Prefabs/Environment/RedTree.tscn" id="7_i6yrf"]
+[ext_resource type="PackedScene" uid="uid://ceib5gh6bdbws" path="res://Scenes/Prefabs/Custom Nodes/SpotLightGobo.tscn" id="8_6w2yg"]
+[ext_resource type="ArrayMesh" uid="uid://e6eq5q26peh3" path="res://Models/flower_redA.obj" id="8_d0lx1"]
+[ext_resource type="Texture2D" uid="uid://o8nucamdtovc" path="res://Textures/Projections/1.png" id="9_1xi61"]
+[ext_resource type="ArrayMesh" uid="uid://cjuweoqme2fj8" path="res://Models/flower_redB.obj" id="9_t7j5s"]
+[ext_resource type="ArrayMesh" uid="uid://dpi4ntuufv4qs" path="res://Models/flower_redC.obj" id="10_jq78y"]
+
+[sub_resource type="BoxShape3D" id="6"]
+size = Vector3(100, 20, 100)
+
+[sub_resource type="Curve" id="Curve_hki72"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[sub_resource type="Curve" id="Curve_oem6s"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[node name="Room" type="Node3D" groups=["cell"]]
+script = ExtResource("1_sutmr")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -10, 25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground"]
+shape = SubResource("6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Ground"]
+transform = Transform3D(100, 0, 0, 0, 50, 0, 0, 0, 100, 0, -2.5, 0)
+cast_shadow = 0
+mesh = ExtResource("3_mad24")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="Cliffs" type="Node3D" parent="Environment/Ground"]
+
+[node name="CliffTopRock" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, -40, -10, -60)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock3" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, -20, -10, -60)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock5" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 0, -10, -60)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock7" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 20, -10, -60)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock9" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 40, -10, -60)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock2" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 40)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock4" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 20)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock6" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 0)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock8" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, -20)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffTopRock10" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, -40)
+mesh = ExtResource("5_vpdip")
+skeleton = NodePath("../../../..")
+surface_material_override/0 = ExtResource("2_26sxj")
+
+[node name="CliffCornerTopRock" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(2.38498e-07, 0, -20, 0, 20, 0, 20, 0, 2.38498e-07, -60, -10, -60)
+mesh = ExtResource("6_0ylua")
+skeleton = NodePath("../../../..")
+surface_material_override/1 = ExtResource("2_26sxj")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="Environment/Ground"]
+size = Vector3(100, 20, 100)
+
+[node name="Trees" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 17, 0, 20)
+script = ExtResource("2_j2bkn")
+use_prefab_not_model = true
+prefab = ExtResource("7_i6yrf")
+min_scale = 2.25
+max_scale = 8.0
+max_scale_over_distance = SubResource("Curve_hki72")
+count = 70
+outer_rad = 55.0
+skip_invalid = false
+
+[node name="RedTree" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 43, 0, -35)
+
+[node name="RedTree2" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 39, 0, -5)
+
+[node name="RedTree3" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 37, 0, -20)
+
+[node name="RedTree4" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 41, 0, 18)
+
+[node name="RedTree5" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 21, 0, 21)
+
+[node name="RedTree6" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 17, 0, 40)
+
+[node name="RedTree7" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -11, 0, 23)
+
+[node name="RedTree8" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -19, 0, 39)
+
+[node name="RedTree9" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, -34, 0, 30)
+
+[node name="RedTree10" parent="Environment/Trees" instance=ExtResource("7_i6yrf")]
+transform = Transform3D(8, 0, 0, 0, 8, 0, 0, 0, 8, 43, 0, 42)
+
+[node name="Flowers" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.31608, 0, 9.68352)
+script = ExtResource("2_j2bkn")
+model = ExtResource("8_d0lx1")
+min_scale = 3.0
+max_scale = 10.0
+max_scale_over_distance = SubResource("Curve_oem6s")
+count = 50
+inner_rad = 0.0
+outer_rad = 40.0
+min_radian = 0.0
+max_radian = 6.283
+skip_invalid = false
+
+[node name="Flowers2" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.31608, 0, 9.68352)
+script = ExtResource("2_j2bkn")
+model = ExtResource("9_t7j5s")
+min_scale = 3.0
+max_scale = 10.0
+max_scale_over_distance = SubResource("Curve_oem6s")
+count = 50
+inner_rad = 0.0
+outer_rad = 40.0
+min_radian = 0.0
+max_radian = 6.283
+skip_invalid = false
+
+[node name="Flowers3" type="Node3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9.31608, 0, 9.68352)
+script = ExtResource("2_j2bkn")
+model = ExtResource("10_jq78y")
+min_scale = 3.0
+max_scale = 10.0
+max_scale_over_distance = SubResource("Curve_oem6s")
+count = 50
+inner_rad = 0.0
+outer_rad = 40.0
+min_radian = 0.0
+max_radian = 6.283
+skip_invalid = false
+
+[node name="SpotLightGobo" parent="." instance=ExtResource("8_6w2yg")]
+transform = Transform3D(-0.00452244, 0.871362, 0.464949, 0.56699, -0.36634, 0.721388, 0.799484, 0.269079, -0.513247, 24.9801, 44.0356, -10.7327)
+light_energy = 15.0
+light_projector = ExtResource("9_1xi61")
+spot_range = 84.8151
+spot_angle = 35.69
+rot_speed = 0.02
+pulse = true
+pulse_offset = 0.5
+pulse_amp = 0.8
+
+[node name="SpotLightGobo2" parent="." instance=ExtResource("8_6w2yg")]
+transform = Transform3D(0.873801, -0.112603, -0.489102, 0.452646, -0.26915, 0.853333, -0.227722, -0.967041, -0.180556, -10.4622, 45.3935, -8.73485)
+light_energy = 14.253
+light_projector = ExtResource("9_1xi61")
+spot_angle = 50.17
+rot_speed = -0.01
+pulse = true

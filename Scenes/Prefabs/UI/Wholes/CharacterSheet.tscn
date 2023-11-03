@@ -1,0 +1,976 @@
+[gd_scene load_steps=19 format=3 uid="uid://d3hwvplj81eyu"]
+
+[ext_resource type="Theme" uid="uid://cny534440nugo" path="res://Themes/csheet.tres" id="1"]
+[ext_resource type="PackedScene" uid="uid://e1qnq3ew8h16" path="res://Scenes/Prefabs/UI/Parts/Sheet Parts/RoundedPanel.tscn" id="2"]
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="4"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/UI/Parts/Sheet Parts/SkillButton.tscn" id="5"]
+[ext_resource type="Texture2D" uid="uid://5d22phgfqidb" path="res://Sprites/Emoji/twe_mage.png" id="6"]
+[ext_resource type="PackedScene" uid="uid://bs5s62vm5uaqg" path="res://Scenes/Prefabs/UI/Parts/BarColorChangingText.tscn" id="7"]
+[ext_resource type="Script" path="res://Scripts/Editors/Custom Nodes/ColoredVSep.gd" id="8"]
+[ext_resource type="Script" path="res://Scripts/Editors/Custom Nodes/ColoredHSep.gd" id="9"]
+
+[sub_resource type="GDScript" id="8"]
+script/source = "extends Control
+
+var chara : TurnCharacter
+var resource_bars := []
+const def_avi = preload(\"res://Sprites/Emoji/twe_gestureno.png\")
+
+var highlighted_button : SkillButton
+
+func _draw() -> void:
+	# Update which character we're looking at
+	chara = TurnPlayer.selected_character
+	if !is_instance_valid(chara):
+		hide()
+		return
+	
+	
+	# Portrait
+	$Portrait/M/TextureRect.texture = chara.avi
+	
+	# Name
+	$Name/M/Label.text = chara.rname
+	
+	# Stats
+	#  HP
+	$Stats/M/V/HP.max_value = chara.max_hp
+	$Stats/M/V/HP.value = chara.hp
+	#  Resources
+	for i in range(len(resource_bars)):
+		if chara.get_all_usable_resources().has(i):
+			resource_bars[i].show()
+			resource_bars[i].max_value = chara.max_resource[i]
+			resource_bars[i].value = chara.resource[i]
+			resource_bars[i].bar_label = CombatUI.RESOURCE_NAMES[i]
+			resource_bars[i].bar = CombatUI.RESOURCE_COLORS[i]
+		else:
+			resource_bars[i].hide()
+	
+	#  Stat Stats
+	#   SPD, EVA, DR
+	$Stats/M/V/SpdEvaDR/Spd/Value.text = str(chara.speed)
+	$Stats/M/V/SpdEvaDR/Eva/Value.text = str(chara.evasion)
+	$Stats/M/V/SpdEvaDR/Dr/Value.text = str(chara.damage_reduction)
+	
+	#   ATK, DEF
+	for i in range(len(chara.atk)):
+		$Stats/M/V/AtkDef.get_child(i+1).get_child(1).text = str(chara.atk[i])
+		$Stats/M/V/AtkDef.get_child(i+1).get_child(2).text = str(chara.def[i])
+	
+	
+	# Skills
+	var i := 1
+	var j := 0
+	for lvl in chara.unlockable_primary_actions:
+		j = 0
+		for button in $Skills/M/H/P.get_node(str(i)).get_children():
+			if j < len(lvl):
+				button.show()
+				button.set_icon(lvl[j].icon)
+				button.action = lvl[j]
+				if i <= TurnManager.player_lvl:
+					button.unsecret()
+					# Autoselect
+					if chara.primary_actions.has(button.action):
+						button.get_node(\"SkillButton\").disabled = false
+						button.get_node(\"SkillButton\").button_pressed = true
+					else:
+						button.get_node(\"SkillButton\").button_pressed = false
+						if chara.can_equip_action(button.action):
+							button.get_node(\"SkillButton\").disabled = false
+						else:
+							button.get_node(\"SkillButton\").disabled = true
+					if !TurnManager.player_out_of_combat():
+						button.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+					else:
+						button.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+				else:
+					button.secret()
+			else:
+				button.hide()
+			j += 1
+		i += 1
+	
+	i = 1
+	j = 0
+	for lvl in chara.unlockable_secondary_actions:
+		j = 0
+		for button in $Skills/M/H/S.get_node(str(i)).get_children():
+			if j < len(lvl):
+				button.show()
+				button.set_icon(lvl[j].icon)
+				button.action = lvl[j]
+				if i <= TurnManager.player_lvl:
+					button.unsecret()
+					# Autoselect
+					if chara.secondary_actions.has(button.action):
+						button.get_node(\"SkillButton\").disabled = false
+						button.get_node(\"SkillButton\").button_pressed = true
+					else:
+						button.get_node(\"SkillButton\").button_pressed = false
+						if chara.can_equip_action(button.action):
+							button.get_node(\"SkillButton\").disabled = false
+						else:
+							button.get_node(\"SkillButton\").disabled = true
+					if !TurnManager.player_out_of_combat():
+						button.lock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+					else:
+						button.unlock() # TODOConverter40, Image no longer requires locking, `false` helps to not break one line if/else, so it can freely be removed
+				else:
+					button.secret()
+			else:
+				button.hide()
+			j += 1
+		i += 1
+	
+	# Description
+	$Description/MarginContainer/Label.add_theme_color_override(
+		\"default_color\", theme.get_color(\"font_color\", \"Label\"))
+	$Description/MarginContainer/Label.text = \"\"
+	if is_instance_valid(highlighted_button) and highlighted_button.is_secret:
+		var desc = \"[b]????????[/b]\\n%s Action\\n\\n\" % [(\"Primary\" 
+		if highlighted_button.action.primary else \"Secondary\")]
+		desc += \"Reach level %s to learn more about this ability.\" % [
+			highlighted_button.get_parent().name]
+		
+		$Description/MarginContainer/Label.text += desc
+	
+	elif is_instance_valid(highlighted_button):
+		var desc = \"[b]%s[/b]\\n%s Action\\n\" % [
+		highlighted_button.action.name, (\"Primary\" 
+		if highlighted_button.action.primary else \"Secondary\")]
+		
+		desc += CombatUI.action_description(highlighted_button.action)
+		$Description/MarginContainer/Label.text += desc
+	
+	# Ability
+	$Ability/MarginContainer/Label.text = \"\"
+	$Ability/MarginContainer/Label.add_theme_color_override(
+		\"default_color\", theme.get_color(\"font_color\", \"Label\"))
+	if len(chara.abilities) > 0:
+		$Ability.show()
+		var desc = \"[center][b]Ability: %s[/b][/center]\\n\" % [
+			chara.abilities[0].name]
+		desc += chara.abilities[0].ability_desc
+		$Ability/MarginContainer/Label.text = desc
+	else:
+		$Ability.hide()
+
+
+func open() -> void:
+	show()
+
+func close() -> void:
+	hide()
+
+func toggle() -> void:
+	if visible:
+		close()
+	else:
+		open()
+
+
+
+func _ready():
+	# Update resource bar array
+	for child in $Stats/M/V.get_children():
+		if \"Resource\" in child.name:
+			resource_bars.append(child)
+	
+	var i = 0
+	for rb in resource_bars:
+		rb.bar_label = CombatUI.RESOURCE_NAMES[i]
+		rb.bar = CombatUI.RESOURCE_COLORS[i]
+		i += 1
+	
+	hide()
+"
+
+[sub_resource type="FontFile" id="1"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="3"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="4"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="5"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="2"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="GDScript" id="6"]
+script/source = "extends MarginContainer
+
+@export var thickness = 2.0
+@export var point_count = 32
+
+
+func _draw() -> void:
+	theme = NIU.find_theme(self)
+	
+	# Circle
+	draw_circle(size / 2.0, size.x / 2.0,
+	theme.get_color(\"font_color\", \"Label\"))
+	
+	# Exp Arc
+	draw_arc(size / 2.0, size.x / 2.0 - thickness,
+	-PI/2, 2*PI*TurnManager.exp_fraction_to_lvl()-PI/2, point_count, 
+	theme.get_color(\"bg_color\", \"NinePatchRect\"), thickness, false)
+	
+	# Text
+	$Label.text = str(TurnManager.player_lvl)
+	$Label.scale = size / $Label.size
+
+"
+
+[sub_resource type="FontFile" id="7"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="9"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="10"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("4")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[node name="CharacterSheet" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = ExtResource("1")
+script = SubResource("8")
+
+[node name="Portrait" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.046
+anchor_top = 0.014
+anchor_right = 0.199
+anchor_bottom = 0.276
+offset_left = -0.149204
+offset_top = 0.283242
+offset_right = 0.178787
+offset_bottom = 0.0831909
+
+[node name="M" type="MarginContainer" parent="Portrait"]
+layout_mode = 2
+size_flags_horizontal = 5
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="TextureRect" type="TextureRect" parent="Portrait/M"]
+layout_mode = 2
+size_flags_horizontal = 5
+texture = ExtResource("6")
+expand_mode = 1
+stretch_mode = 5
+
+[node name="Name" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.226
+anchor_top = 0.033
+anchor_right = 0.464
+anchor_bottom = 0.121
+offset_left = -0.424011
+offset_top = 0.200001
+offset_right = 263.864
+offset_bottom = 52.4
+
+[node name="M" type="MarginContainer" parent="Name"]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 8
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Label" type="Label" parent="Name/M"]
+layout_mode = 2
+size_flags_vertical = 5
+theme = ExtResource("1")
+theme_override_fonts/font = SubResource("1")
+text = "Parisitologist"
+
+[node name="Stats" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.028
+anchor_top = 0.325
+anchor_right = 0.278
+anchor_bottom = 0.987
+offset_left = -11.672
+offset_top = -12.0
+offset_right = 0.327972
+offset_bottom = -0.200012
+
+[node name="M" type="MarginContainer" parent="Stats"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="V" type="VBoxContainer" parent="Stats/M"]
+layout_mode = 2
+theme_override_constants/separation = 5
+
+[node name="Stats" type="Label" parent="Stats/M/V"]
+layout_mode = 2
+size_flags_vertical = 5
+theme = ExtResource("1")
+theme_override_fonts/font = SubResource("3")
+text = "Stats"
+
+[node name="HP" parent="Stats/M/V" instance=ExtResource("7")]
+layout_mode = 2
+size_flags_vertical = 0
+font_size = 28
+value = 33.0
+bar_bg = Color(0.254902, 0.254902, 0.254902, 0.768627)
+
+[node name="Resource0" parent="Stats/M/V" instance=ExtResource("7")]
+layout_mode = 2
+size_flags_vertical = 0
+font_size = 28
+bar_label = "Fuel"
+value = 48.0
+bar_bg = Color(0.878431, 0.882353, 0.180392, 0.447059)
+bar = Color(1, 0.498039, 0.309804, 1)
+txt_bg = Color(0.623529, 0.533333, 0.227451, 0.839216)
+txt = Color(0.67451, 0.321569, 0.0627451, 1)
+
+[node name="Resource1" parent="Stats/M/V" instance=ExtResource("7")]
+layout_mode = 2
+size_flags_vertical = 0
+font_size = 28
+bar_label = "Leeches"
+max_value = 2.0
+value = 1.0
+bar_bg = Color(0.313726, 0.309804, 0, 0.623529)
+bar = Color(0.501961, 0.0156863, 0.0156863, 1)
+txt_bg = Color(0.894118, 0.698039, 0.698039, 1)
+txt = Color(0.839216, 0.0745098, 0.0745098, 1)
+
+[node name="Resource2" parent="Stats/M/V" instance=ExtResource("7")]
+layout_mode = 2
+size_flags_vertical = 0
+font_size = 28
+bar_label = "Favor"
+max_value = 170.0
+value = 102.0
+bar_bg = Color(0.862745, 0.764706, 0.501961, 0.776471)
+bar = Color(0.996078, 0.968627, 0.294118, 1)
+txt_bg = Color(0.501961, 0.478431, 0.262745, 1)
+txt = Color(0.662745, 0.623529, 0.0196078, 1)
+
+[node name="Resource3" parent="Stats/M/V" instance=ExtResource("7")]
+layout_mode = 2
+size_flags_vertical = 0
+font_size = 28
+bar_label = "Stamina"
+value = 43.0
+bar_bg = Color(0.235294, 0.505882, 0.180392, 0.776471)
+bar = Color(0.392157, 0.788235, 0.333333, 1)
+txt_bg = Color(0.647059, 0.909804, 0.611765, 1)
+txt = Color(0.105882, 0.541176, 0.0431373, 1)
+
+[node name="SpdEvaDR" type="HBoxContainer" parent="Stats/M/V"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 1.75
+
+[node name="Spd" type="VBoxContainer" parent="Stats/M/V/SpdEvaDR"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/SpdEvaDR/Spd"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "SPD"
+
+[node name="ColoredHSep" type="HSeparator" parent="Stats/M/V/SpdEvaDR/Spd"]
+layout_mode = 2
+theme = ExtResource("1")
+script = ExtResource("9")
+
+[node name="Value" type="Label" parent="Stats/M/V/SpdEvaDR/Spd"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "175"
+
+[node name="Eva" type="VBoxContainer" parent="Stats/M/V/SpdEvaDR"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/SpdEvaDR/Eva"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "EVA"
+
+[node name="HSeparator" type="HSeparator" parent="Stats/M/V/SpdEvaDR/Eva"]
+layout_mode = 2
+theme = ExtResource("1")
+script = ExtResource("9")
+
+[node name="Value" type="Label" parent="Stats/M/V/SpdEvaDR/Eva"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "15"
+
+[node name="Dr" type="VBoxContainer" parent="Stats/M/V/SpdEvaDR"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/SpdEvaDR/Dr"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "DR"
+
+[node name="HSeparator" type="HSeparator" parent="Stats/M/V/SpdEvaDR/Dr"]
+layout_mode = 2
+theme = ExtResource("1")
+script = ExtResource("9")
+
+[node name="Value" type="Label" parent="Stats/M/V/SpdEvaDR/Dr"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("4")
+text = "2"
+
+[node name="AtkDef" type="VBoxContainer" parent="Stats/M/V"]
+layout_mode = 2
+size_flags_vertical = 6
+size_flags_stretch_ratio = 4.0
+
+[node name="AtkDef" type="HBoxContainer" parent="Stats/M/V/AtkDef"]
+layout_mode = 2
+
+[node name="EMPTY" type="ReferenceRect" parent="Stats/M/V/AtkDef/AtkDef"]
+layout_mode = 2
+size_flags_horizontal = 6
+
+[node name="Atk" type="Label" parent="Stats/M/V/AtkDef/AtkDef"]
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("5")
+text = "ATK"
+
+[node name="Def" type="Label" parent="Stats/M/V/AtkDef/AtkDef"]
+visible = false
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_fonts/font = SubResource("5")
+text = "DEF"
+
+[node name="Phys" type="HBoxContainer" parent="Stats/M/V/AtkDef"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/AtkDef/Phys"]
+self_modulate = Color(0.92549, 0.184314, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "PHYS"
+
+[node name="A" type="Label" parent="Stats/M/V/AtkDef/Phys"]
+self_modulate = Color(0.92549, 0.184314, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "80"
+
+[node name="D" type="Label" parent="Stats/M/V/AtkDef/Phys"]
+visible = false
+self_modulate = Color(0.92549, 0.184314, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "-15"
+
+[node name="Mag" type="HBoxContainer" parent="Stats/M/V/AtkDef"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/AtkDef/Mag"]
+self_modulate = Color(0, 0.741176, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "MAG"
+
+[node name="A" type="Label" parent="Stats/M/V/AtkDef/Mag"]
+self_modulate = Color(0, 0.741176, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "80"
+
+[node name="D" type="Label" parent="Stats/M/V/AtkDef/Mag"]
+visible = false
+self_modulate = Color(0, 0.741176, 1, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "-15"
+
+[node name="Chem" type="HBoxContainer" parent="Stats/M/V/AtkDef"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/AtkDef/Chem"]
+self_modulate = Color(0.435294, 0.764706, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "CHEM"
+
+[node name="A" type="Label" parent="Stats/M/V/AtkDef/Chem"]
+self_modulate = Color(0.435294, 0.764706, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "80"
+
+[node name="D" type="Label" parent="Stats/M/V/AtkDef/Chem"]
+visible = false
+self_modulate = Color(0.435294, 0.764706, 0, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "-15"
+
+[node name="Spir" type="HBoxContainer" parent="Stats/M/V/AtkDef"]
+layout_mode = 2
+
+[node name="Label" type="Label" parent="Stats/M/V/AtkDef/Spir"]
+self_modulate = Color(1, 0.870588, 0.368627, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "SPIR"
+
+[node name="A" type="Label" parent="Stats/M/V/AtkDef/Spir"]
+self_modulate = Color(1, 0.870588, 0.368627, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "80"
+
+[node name="D" type="Label" parent="Stats/M/V/AtkDef/Spir"]
+visible = false
+self_modulate = Color(1, 0.870588, 0.368627, 1)
+layout_mode = 2
+size_flags_horizontal = 6
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("5")
+text = "-15"
+
+[node name="Skills" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.293
+anchor_top = 0.24
+anchor_right = 0.679
+anchor_bottom = 0.982
+offset_left = -0.0320129
+offset_right = -28.2964
+offset_bottom = -0.200012
+
+[node name="M" type="MarginContainer" parent="Skills"]
+layout_mode = 2
+theme_override_constants/margin_left = 12
+theme_override_constants/margin_top = 12
+theme_override_constants/margin_right = 12
+theme_override_constants/margin_bottom = 12
+
+[node name="H" type="HBoxContainer" parent="Skills/M"]
+layout_mode = 2
+
+[node name="LVLs" type="VBoxContainer" parent="Skills/M/H"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 0.23
+
+[node name="5" type="Label" parent="Skills/M/H/LVLs"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 6
+theme_override_fonts/font = SubResource("2")
+text = "5"
+
+[node name="4" type="Label" parent="Skills/M/H/LVLs"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 6
+theme_override_fonts/font = SubResource("2")
+text = "4"
+
+[node name="3" type="Label" parent="Skills/M/H/LVLs"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 6
+theme_override_fonts/font = SubResource("2")
+text = "3"
+
+[node name="2" type="Label" parent="Skills/M/H/LVLs"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 6
+theme_override_fonts/font = SubResource("2")
+text = "2"
+
+[node name="1" type="Label" parent="Skills/M/H/LVLs"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 6
+theme_override_fonts/font = SubResource("2")
+text = "1"
+
+[node name="P" type="VBoxContainer" parent="Skills/M/H"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+alignment = 1
+
+[node name="5" type="HBoxContainer" parent="Skills/M/H/P"]
+layout_mode = 2
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/P/5" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/P/5" instance=ExtResource("5")]
+visible = false
+layout_mode = 2
+
+[node name="4" type="HBoxContainer" parent="Skills/M/H/P"]
+layout_mode = 2
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/P/4" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/P/4" instance=ExtResource("5")]
+visible = false
+layout_mode = 2
+
+[node name="3" type="HBoxContainer" parent="Skills/M/H/P"]
+layout_mode = 2
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/P/3" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/P/3" instance=ExtResource("5")]
+visible = false
+layout_mode = 2
+
+[node name="2" type="HBoxContainer" parent="Skills/M/H/P"]
+layout_mode = 2
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/P/2" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/P/2" instance=ExtResource("5")]
+visible = false
+layout_mode = 2
+
+[node name="1" type="HBoxContainer" parent="Skills/M/H/P"]
+layout_mode = 2
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/P/1" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/P/1" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="MarginContainer" type="MarginContainer" parent="Skills/M/H"]
+layout_mode = 2
+size_flags_horizontal = 6
+size_flags_vertical = 5
+size_flags_stretch_ratio = 0.25
+theme_override_constants/margin_top = 20
+theme_override_constants/margin_bottom = 20
+
+[node name="VSeparator" type="VSeparator" parent="Skills/M/H/MarginContainer"]
+layout_mode = 2
+size_flags_vertical = 5
+theme = ExtResource("1")
+script = ExtResource("8")
+
+[node name="S" type="VBoxContainer" parent="Skills/M/H"]
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_stretch_ratio = 3.0
+alignment = 1
+
+[node name="5" type="HBoxContainer" parent="Skills/M/H/S"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/S/5" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/S/5" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton3" parent="Skills/M/H/S/5" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="4" type="HBoxContainer" parent="Skills/M/H/S"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/S/4" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/S/4" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton3" parent="Skills/M/H/S/4" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="3" type="HBoxContainer" parent="Skills/M/H/S"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/S/3" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/S/3" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton3" parent="Skills/M/H/S/3" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="2" type="HBoxContainer" parent="Skills/M/H/S"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/S/2" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/S/2" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton3" parent="Skills/M/H/S/2" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="1" type="HBoxContainer" parent="Skills/M/H/S"]
+layout_mode = 2
+size_flags_horizontal = 7
+size_flags_vertical = 7
+alignment = 1
+
+[node name="SkillButton" parent="Skills/M/H/S/1" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton2" parent="Skills/M/H/S/1" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="SkillButton3" parent="Skills/M/H/S/1" instance=ExtResource("5")]
+layout_mode = 2
+
+[node name="Level" type="MarginContainer" parent="."]
+layout_mode = 0
+anchor_left = 0.158
+anchor_top = 0.195
+anchor_right = 0.232
+anchor_bottom = 0.325
+offset_left = 0.207993
+offset_right = 2.43199
+offset_bottom = -1.52588e-05
+pivot_offset = Vector2(41.8248, 43.2669)
+script = SubResource("6")
+thickness = 6.0
+
+[node name="Label" type="Label" parent="Level"]
+layout_mode = 2
+size_flags_horizontal = 5
+size_flags_vertical = 5
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("7")
+text = "3"
+
+[node name="ReferenceRect" type="ReferenceRect" parent="Level"]
+layout_mode = 2
+
+[node name="Description" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.689
+anchor_top = 0.5
+anchor_right = 0.989
+anchor_bottom = 0.982
+offset_left = 0.463989
+offset_right = 0.263977
+offset_bottom = -0.200012
+
+[node name="MarginContainer" type="MarginContainer" parent="Description"]
+layout_mode = 2
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="Label" type="RichTextLabel" parent="Description/MarginContainer"]
+layout_mode = 2
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = SubResource("9")
+theme_override_fonts/bold_font = SubResource("10")
+theme_override_fonts/italics_font = SubResource("9")
+theme_override_fonts/bold_italics_font = SubResource("9")
+theme_override_fonts/mono_font = SubResource("9")
+bbcode_enabled = true
+text = "Cost: 25 Mana, 10 Entropy
+Magical Power: 80
+Range: 3
+3 Targets (2-4 range after each)
+Launch a ball of dark energy toward the target, dealing moderate Darkness damage."
+scroll_active = false
+
+[node name="Ability" parent="." instance=ExtResource("2")]
+layout_mode = 0
+anchor_left = 0.689
+anchor_top = 0.22
+anchor_right = 0.989
+anchor_bottom = 0.482
+offset_left = 0.463989
+offset_right = 0.263977
+offset_bottom = -0.200012
+
+[node name="MarginContainer" type="MarginContainer" parent="Ability"]
+layout_mode = 2
+theme_override_constants/margin_left = 13
+theme_override_constants/margin_top = 13
+theme_override_constants/margin_right = 13
+theme_override_constants/margin_bottom = 13
+
+[node name="Label" type="RichTextLabel" parent="Ability/MarginContainer"]
+layout_mode = 2
+theme = ExtResource("1")
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = SubResource("9")
+theme_override_fonts/bold_font = SubResource("10")
+theme_override_fonts/italics_font = SubResource("9")
+theme_override_fonts/bold_italics_font = SubResource("9")
+theme_override_fonts/mono_font = SubResource("9")
+bbcode_enabled = true
+text = "Ability: Spirit Well
+Max lives is increased by 1. Max HP is reduced by 75%. Every kill restores one life."
+scroll_active = false

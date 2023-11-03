@@ -1,0 +1,28 @@
+[gd_resource type="ShaderMaterial" load_steps=4 format=3 uid="uid://cefuk8o58usvi"]
+
+[ext_resource type="Texture2D" uid="uid://cbss7ld6xlqja" path="res://Textures/darkgreenwave.png" id="1_3h2ka"]
+[ext_resource type="Shader" path="res://Shaders/ResourceCircle_SECircle.gdshader" id="1_kx5qu"]
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_xh648"]
+load_path = "res://.godot/imported/noise2grad2.png-7ee0d61dd7a1ceda113c97e81d769228.s3tc.ctex"
+
+[resource]
+render_priority = 0
+shader = ExtResource("1_kx5qu")
+shader_parameter/def_id = 0.9
+shader_parameter/def_od = 3.0
+shader_parameter/id = 0.9
+shader_parameter/od = 3.0
+shader_parameter/tfactor1 = -2.0
+shader_parameter/tfactor2 = 0.75
+shader_parameter/repetitions1 = 10.0
+shader_parameter/repetitions2 = 2.0
+shader_parameter/alpha_cutoff = 0.62
+shader_parameter/noise_floor = 0.324
+shader_parameter/tempo = 110.0
+shader_parameter/tempo_offset = 0.0
+shader_parameter/beat_pow = 0.207
+shader_parameter/beat_alpha_cutoff_offset = 0.465
+shader_parameter/beat_color_boost = 0.5
+shader_parameter/tex = ExtResource("1_3h2ka")
+shader_parameter/noise = SubResource("CompressedTexture2D_xh648")

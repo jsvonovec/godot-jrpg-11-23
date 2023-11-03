@@ -1,0 +1,46 @@
+[gd_scene load_steps=4 format=3 uid="uid://cla35tcpydj5u"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://b1pttea4jk7nt" path="res://Sprites/Emoji/twe_biohazard.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var effect_duration = 3
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+	# warning-ignore:return_value_discarded
+		se_Quarantine.new(character, target, effect_duration)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Quarantine" instance=ExtResource("1")]
+script = SubResource("1")
+effect_duration = 3
+primary = false
+close_range = false
+costs = Array[float]([0.0, 0.0, 0.0, 30.0])
+attack_type = 2
+power = 0
+priority = -3
+icon = ExtResource("2")
+description = "Quarantines the target for {effect_duration} turns. The affected unit cannot target or be targeted by friends."
+sfx_default = 6

@@ -1,0 +1,82 @@
+[gd_scene load_steps=7 format=3 uid="uid://bopa4ukc7qga3"]
+
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="1"]
+[ext_resource type="Material" uid="uid://c07cg4cgf3me0" path="res://Materials/WiggleText.tres" id="1_3hpde"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/CombatButton.gd" id="2"]
+
+[sub_resource type="FontFile" id="1"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("1")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/40/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/25/0 = Vector2(0, 0)
+cache/0/18/0/ascent = 0.0
+cache/0/18/0/descent = 0.0
+cache/0/18/0/underline_position = 0.0
+cache/0/18/0/underline_thickness = 0.0
+cache/0/18/0/scale = 1.0
+cache/0/18/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/40/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/25/0 = Vector2(0, 0)
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+cache/0/20/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/40/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/25/0 = Vector2(0, 0)
+cache/0/40/0/ascent = 0.0
+cache/0/40/0/descent = 0.0
+cache/0/40/0/underline_position = 0.0
+cache/0/40/0/underline_thickness = 0.0
+cache/0/40/0/scale = 1.0
+cache/0/40/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/40/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/40/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/40/0/kerning_overrides/40/0 = Vector2(0, 0)
+cache/0/40/0/kerning_overrides/25/0 = Vector2(0, 0)
+cache/0/25/0/ascent = 0.0
+cache/0/25/0/descent = 0.0
+cache/0/25/0/underline_position = 0.0
+cache/0/25/0/underline_thickness = 0.0
+cache/0/25/0/scale = 1.0
+cache/0/25/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/25/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/25/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/25/0/kerning_overrides/40/0 = Vector2(0, 0)
+cache/0/25/0/kerning_overrides/25/0 = Vector2(0, 0)
+
+[sub_resource type="InputEventKey" id="InputEventKey_btjho"]
+
+[sub_resource type="Shortcut" id="Shortcut_rtom0"]
+resource_local_to_scene = true
+events = [SubResource("InputEventKey_btjho")]
+
+[node name="CombatButton" type="Button" groups=["buttons"]]
+modulate = Color(0.866667, 0.776471, 1, 1)
+material = ExtResource("1_3hpde")
+custom_minimum_size = Vector2(10, 20)
+offset_right = 129.0
+offset_bottom = 35.0
+size_flags_horizontal = 0
+theme_override_fonts/font = SubResource("1")
+theme_override_font_sizes/font_size = 20
+shortcut = SubResource("Shortcut_rtom0")
+text = "Pushable"
+expand_icon = true
+script = ExtResource("2")

@@ -1,0 +1,19 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+uid="uid://1w7c2sjo5jma"
+path="res://.godot/imported/Running Hell.mp3-ce253ffe35f828782f8a1cc23e98594f.mp3str"
+
+[deps]
+
+source_file="res://Sounds/asdasdasdsa/Running Hell.mp3"
+dest_files=["res://.godot/imported/Running Hell.mp3-ce253ffe35f828782f8a1cc23e98594f.mp3str"]
+
+[params]
+
+loop=true
+loop_offset=11.435
+bpm=0
+beat_count=0
+bar_beats=4

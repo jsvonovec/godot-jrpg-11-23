@@ -1,0 +1,128 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scripts/Behaviors/Overworld.gd" type="Script" id=1]
+[ext_resource path="res://Scenes/Prefabs/Room.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Scenes/Prefabs/Characters/CharacterPlaceholder.tscn" type="PackedScene" id=3]
+
+[node name="Overworld" type="Node"]
+script = ExtResource( 1 )
+__meta__ = {
+"_editor_description_": "Room Connections: Each array STARTS with the source room, then EVERY OTHER ELEMENT is the ones it's connected to."
+}
+all_rooms = [ NodePath("Midgame"), NodePath("A"), NodePath("B"), NodePath("C Hard (1 of 1)"), NodePath("C Medium (1 of 2)"), NodePath("C Medium (2 of 2)"), NodePath("D"), NodePath("E") ]
+starting_room = NodePath("Midgame")
+room_connections = [ [ NodePath("Midgame"), NodePath("A") ], [ NodePath("A"), NodePath("B") ], [ NodePath("B"), NodePath("C Hard (1 of 1)"), NodePath("C Medium (1 of 2)") ], [ NodePath("C Hard (1 of 1)"), NodePath("D") ], [ NodePath("C Medium (1 of 2)"), NodePath("C Medium (2 of 2)") ], [ NodePath("C Medium (2 of 2)"), NodePath("D") ], [ NodePath("D"), NodePath("E") ], [ NodePath("E"), NodePath("Midgame") ] ]
+
+[node name="Midgame" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 330.1, 0, -0.354324 )
+full_heal = true
+
+[node name="CharactersPlaceholder" parent="Midgame" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Player/Parisitologist.tscn" ]
+on_players_team = true
+
+[node name="CharactersPlaceholder2" parent="Midgame" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Player/Paladin.tscn" ]
+on_players_team = true
+
+[node name="CharactersPlaceholder3" parent="Midgame" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Player/Arsonist.tscn" ]
+on_players_team = true
+
+[node name="CharactersPlaceholder4" parent="Midgame" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Player/Plaguebearer.tscn" ]
+on_players_team = true
+
+[node name="Marker3D" type="Marker3D" parent="Midgame"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="A" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 265.196, 3.82662e-05, 267.726 )
+
+[node name="CharactersPlaceholder2" parent="A" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Bat.tscn" ]
+min_charas = 5
+max_charas = 7
+
+[node name="Marker3D" type="Marker3D" parent="A"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="B" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 188.616, 3.82662e-05, 539.501 )
+
+[node name="CharactersPlaceholder2" parent="B" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Knight.tscn" ]
+allow_dupes = false
+
+[node name="CharactersPlaceholder3" parent="B" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn" ]
+min_charas = 2
+max_charas = 2
+
+[node name="Marker3D" type="Marker3D" parent="B"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="C Hard (1 of 1)" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 302.951, 3.82662e-05, 828.983 )
+
+[node name="CharactersPlaceholder2" parent="C Hard (1 of 1)" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Knight.tscn" ]
+min_charas = 2
+max_charas = 2
+
+[node name="CharactersPlaceholder3" parent="C Hard (1 of 1)" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn" ]
+allow_dupes = false
+
+[node name="Marker3D" type="Marker3D" parent="C Hard (1 of 1)"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="C Medium (1 of 2)" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 28.334, 3.82662e-05, 734.678 )
+
+[node name="CharactersPlaceholder2" parent="C Medium (1 of 2)" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Slime.tscn" ]
+min_charas = 3
+max_charas = 3
+
+[node name="Marker3D" type="Marker3D" parent="C Medium (1 of 2)"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="C Medium (2 of 2)" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 25.8307, 3.82662e-05, 936.951 )
+
+[node name="CharactersPlaceholder2" parent="C Medium (2 of 2)" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Slime.tscn", "res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn" ]
+min_charas = 4
+max_charas = 4
+
+[node name="Marker3D" type="Marker3D" parent="C Medium (2 of 2)"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="D" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 223.057, 3.82662e-05, 1180.11 )
+
+[node name="CharactersPlaceholder2" parent="D" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn" ]
+
+[node name="CharactersPlaceholder3" parent="D" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Bat.tscn" ]
+min_charas = 4
+max_charas = 4
+
+[node name="CharactersPlaceholder4" parent="D" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Smoke Bomb.tscn" ]
+
+[node name="Marker3D" type="Marker3D" parent="D"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )
+
+[node name="E" parent="." instance=ExtResource( 2 )]
+transform = Transform3D( 1, 0, 0, 0, 1, 0, 0, 0, 1, 317.116, -2.2769e-05, 1415.46 )
+
+[node name="CharactersPlaceholder3" parent="E" instance=ExtResource( 3 )]
+possible_character_paths = [ "res://Scenes/Prefabs/Characters/Enemy/Slime.tscn", "res://Scenes/Prefabs/Characters/Enemy/Boulder.tscn", "res://Scenes/Prefabs/Characters/Enemy/Bat.tscn" ]
+min_charas = 5
+max_charas = 6
+
+[node name="Marker3D" type="Marker3D" parent="E"]
+transform = Transform3D( 5, 0, 0, 0, 5, 0, 0, 0, 5, 0, 0, 0 )

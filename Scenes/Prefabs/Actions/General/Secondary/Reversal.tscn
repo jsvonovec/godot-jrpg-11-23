@@ -1,0 +1,48 @@
+[gd_scene load_steps=3 format=3 uid="uid://cquc8m6m673ak"]
+
+[ext_resource type="Texture2D" uid="uid://dkwk71wraasli" path="res://Sprites/Emoji/twe_mousetrap.png" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+
+var reversal = null
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		se_Stunned.new(character, target, 1)
+		reversal = se_Reversal.new(character, target, 2)
+
+
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Reversal" type="Node"]
+script = SubResource("1")
+primary = false
+target_self = true
+skip_targeting = true
+skill_category = 1
+costs = Array[float]([0.0, 0.0, 0.0, 40.0])
+beneficial = true
+can_miss = false
+priority = -1
+icon = ExtResource("1")
+description = "Slow. Stuns the user on the next turn. Blocks one lethal attack taken within the next two turns and kills the attacker instead."

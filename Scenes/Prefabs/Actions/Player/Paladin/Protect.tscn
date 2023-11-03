@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://dom8vwk5jo1om"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://bkg0dqj4gp0fm" path="res://Sprites/hourglass.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var se_icon : Texture2D
+@export var effect_duration = 1
+@export var bonus_phys_def = 20.0
+@export var bonus_mag_def = 20.0
+# ignore_range: if true, allows caster to protect from attacks that
+# would otherwise not be able to target the caster, like from being
+# too far away.
+@export var ignore_range = false
+@export var redirect_heals = false
+
+var status_effect
+
+func _use(_targets):
+	for target in _targets:
+		# _caster, _affected, _icon, _duration, 
+		# _phys_def, _mag_def, _ignore_range
+		status_effect = se_Protect.new(character, target, 
+		se_icon, effect_duration, bonus_phys_def, bonus_mag_def,
+		ignore_range)
+
+func possible_initial_targets() -> Array:
+	var party = get_node(\"/root/TurnManager\").targets_in_range(
+	character, close_range, target_self, target_enemies, target_friendlies)
+	party.erase(character)
+	return party
+"
+
+[node name="Protect" instance=ExtResource("1")]
+script = SubResource("1")
+se_icon = ExtResource("2")
+effect_duration = 1
+bonus_phys_def = 20.0
+bonus_mag_def = 20.0
+ignore_range = true
+redirect_heals = false
+skill_category = 1
+costs = Array[float]([0.0, 0.0, -5.0])
+target_enemies = false
+beneficial = true
+power = 0
+priority = 3
+icon = ExtResource("2")
+description = "Protects the target, redirecting all attacks aimed at them to the user. Also grants +{bonus_phys_def} physical defense and +{bonus_mag_def} magical defense."

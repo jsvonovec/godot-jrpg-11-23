@@ -1,0 +1,78 @@
+[gd_scene load_steps=10 format=2]
+
+[ext_resource path="res://Sprites/pizza w mushrooms.png" type="Texture2D" id=1]
+[ext_resource path="res://Scripts/Editors/Custom Nodes/SkillButton.gd" type="Script" id=2]
+[ext_resource path="res://Scenes/Prefabs/UI/Parts/Sheet Parts/SquarePanel.tscn" type="PackedScene" id=3]
+[ext_resource path="res://Textures/UI/skillselected.png" type="Texture2D" id=4]
+[ext_resource path="res://Textures/UI/lock.png" type="Texture2D" id=5]
+
+[sub_resource type="Gradient" id=3]
+offsets = PackedFloat32Array( 0.215596 )
+colors = PackedColorArray( 1, 0.988235, 0.658824, 0.105882 )
+
+[sub_resource type="GradientTexture2D" id=4]
+gradient = SubResource( 3 )
+
+[sub_resource type="Gradient" id=1]
+offsets = PackedFloat32Array( 0.389908 )
+colors = PackedColorArray( 0, 0, 0, 0.392157 )
+
+[sub_resource type="GradientTexture2D" id=2]
+gradient = SubResource( 1 )
+width = 1
+
+[node name="SkillButton" type="MarginContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 212.0
+offset_right = -212.0
+size_flags_horizontal = 7
+script = ExtResource( 2 )
+
+[node name="Panel" parent="." instance=ExtResource( 3 )]
+anchor_right = 0.0
+anchor_bottom = 0.0
+offset_right = 600.0
+offset_bottom = 600.0
+
+[node name="TextureRect" type="TextureRect" parent="."]
+offset_right = 600.0
+offset_bottom = 600.0
+texture = ExtResource( 1 )
+expand = true
+stretch_mode = 6
+
+[node name="SkillButton" type="TextureButton" parent="."]
+offset_right = 600.0
+offset_bottom = 600.0
+toggle_mode = true
+texture_pressed = ExtResource( 4 )
+texture_hover = SubResource( 4 )
+texture_disabled = SubResource( 2 )
+texture_focused = SubResource( 4 )
+expand = true
+
+[node name="SelectedLocked" type="TextureRect" parent="."]
+visible = false
+offset_right = 600.0
+offset_bottom = 600.0
+texture = ExtResource( 4 )
+expand = true
+stretch_mode = 6
+
+[node name="Locked" type="TextureRect" parent="."]
+offset_right = 600.0
+offset_bottom = 600.0
+texture = ExtResource( 5 )
+expand = true
+stretch_mode = 6
+
+[connection signal="focus_entered" from="SkillButton" to="." method="highlight"]
+[connection signal="focus_exited" from="SkillButton" to="." method="unhighlight"]
+[connection signal="mouse_entered" from="SkillButton" to="." method="highlight"]
+[connection signal="mouse_exited" from="SkillButton" to="." method="unhighlight"]
+[connection signal="toggled" from="SkillButton" to="." method="toggled"]
+[connection signal="focus_entered" from="Locked" to="." method="highlight"]
+[connection signal="focus_exited" from="Locked" to="." method="unhighlight"]
+[connection signal="mouse_entered" from="Locked" to="." method="highlight"]
+[connection signal="mouse_exited" from="Locked" to="." method="unhighlight"]

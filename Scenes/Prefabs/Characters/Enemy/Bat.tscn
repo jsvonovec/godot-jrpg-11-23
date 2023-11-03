@@ -1,0 +1,42 @@
+[gd_scene load_steps=6 format=3 uid="uid://btrgutmru0db5"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://c240j8wmdwdfu" path="res://Sprites/Emoji/twe_bat.png" id="2"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/Enemy/Bat/Incisor.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://ddlt5qxn4c0je" path="res://Scenes/Prefabs/Actions/Enemy/Bat/Blood Drain.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://bso5t8t35ot34" path="res://Scenes/Prefabs/Actions/Enemy/Bat/Evade.tscn" id="5"]
+
+[node name="Bat" instance=ExtResource("1")]
+exp_reward = 25
+default_speed = 160
+default_max_hp = 15
+default_hp = 15
+default_atk = [30, 20, 20, 20]
+default_def = [15, 10, 35, 10]
+default_on_players_team = false
+default_evasion = 10
+evasion = 10
+default_max_res = Array[int]([100, 1, 140, 40])
+default_res = Array[int]([100, 1, 140, 0])
+max_primary_actions = 1
+
+[node name="Center" parent="Puppet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3, 0)
+
+[node name="Sprite3D" type="Sprite3D" parent="Puppet/Center" index="0"]
+pixel_size = 0.025
+billboard = 1
+shaded = true
+alpha_cut = 2
+texture = ExtResource("2")
+
+[node name="AI" parent="." index="1"]
+skip_prio_chance = 0.5
+
+[node name="Incisor" parent="." index="3" instance=ExtResource("3")]
+
+[node name="Blood Drain" parent="." index="4" instance=ExtResource("4")]
+
+[node name="Evade" parent="." index="5" instance=ExtResource("5")]
+eva_boost = 50
+boost_duration = 1

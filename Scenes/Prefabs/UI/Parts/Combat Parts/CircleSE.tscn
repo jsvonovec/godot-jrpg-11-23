@@ -1,0 +1,178 @@
+[gd_scene load_steps=6 format=3 uid="uid://dx58u7ftsck3"]
+
+[ext_resource type="Texture2D" uid="uid://cl8p43ekqdrsw" path="res://Sprites/Emoji/twe_explosion.png" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/CircleSE.gd" id="1_qxjsu"]
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="2"]
+
+[sub_resource type="FontFile" id="7"]
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/12/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/35/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/12/0/ascent = 0.0
+cache/0/12/0/descent = 0.0
+cache/0/12/0/underline_position = 0.0
+cache/0/12/0/underline_thickness = 0.0
+cache/0/12/0/scale = 1.0
+cache/0/12/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/12/0/kerning_overrides/12/0 = Vector2(0, 0)
+cache/0/12/0/kerning_overrides/35/0 = Vector2(0, 0)
+cache/0/12/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/12/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/35/0/ascent = 0.0
+cache/0/35/0/descent = 0.0
+cache/0/35/0/underline_position = 0.0
+cache/0/35/0/underline_thickness = 0.0
+cache/0/35/0/scale = 1.0
+cache/0/35/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/35/0/kerning_overrides/12/0 = Vector2(0, 0)
+cache/0/35/0/kerning_overrides/35/0 = Vector2(0, 0)
+cache/0/35/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/35/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/50/0/ascent = 0.0
+cache/0/50/0/descent = 0.0
+cache/0/50/0/underline_position = 0.0
+cache/0/50/0/underline_thickness = 0.0
+cache/0/50/0/scale = 1.0
+cache/0/50/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/12/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/35/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/90/0/ascent = 0.0
+cache/0/90/0/descent = 0.0
+cache/0/90/0/underline_position = 0.0
+cache/0/90/0/underline_thickness = 0.0
+cache/0/90/0/scale = 1.0
+cache/0/90/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/12/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/35/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/90/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="6"]
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/150/0 = Vector2(0, 0)
+cache/0/50/0/ascent = 0.0
+cache/0/50/0/descent = 0.0
+cache/0/50/0/underline_position = 0.0
+cache/0/50/0/underline_thickness = 0.0
+cache/0/50/0/scale = 1.0
+cache/0/50/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/50/0/kerning_overrides/150/0 = Vector2(0, 0)
+cache/0/90/0/ascent = 0.0
+cache/0/90/0/descent = 0.0
+cache/0/90/0/underline_position = 0.0
+cache/0/90/0/underline_thickness = 0.0
+cache/0/90/0/scale = 1.0
+cache/0/90/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/90/0/kerning_overrides/150/0 = Vector2(0, 0)
+cache/0/150/0/ascent = 0.0
+cache/0/150/0/descent = 0.0
+cache/0/150/0/underline_position = 0.0
+cache/0/150/0/underline_thickness = 0.0
+cache/0/150/0/scale = 1.0
+cache/0/150/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/150/0/kerning_overrides/50/0 = Vector2(0, 0)
+cache/0/150/0/kerning_overrides/90/0 = Vector2(0, 0)
+cache/0/150/0/kerning_overrides/150/0 = Vector2(0, 0)
+
+[node name="CircleSE" type="Node3D"]
+script = ExtResource("1_qxjsu")
+size = 1.0
+
+[node name="SubViewport" type="SubViewport" parent="."]
+disable_3d = true
+transparent_bg = true
+handle_input_locally = false
+gui_disable_input = true
+size = Vector2i(256, 256)
+render_target_update_mode = 4
+
+[node name="Texture2D" type="TextureRect" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+pivot_offset = Vector2(128, 128)
+texture = ExtResource("1")
+expand_mode = 1
+stretch_mode = 6
+
+[node name="VBox" type="VBoxContainer" parent="SubViewport"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="ExtraInfo" type="RichTextLabel" parent="SubViewport/VBox"]
+custom_minimum_size = Vector2(50, 100)
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_colors/default_color = Color(0.8, 0.529412, 0.94902, 1)
+theme_override_fonts/normal_font = SubResource("7")
+theme_override_font_sizes/normal_font_size = 90
+bbcode_enabled = true
+text = "[center]HELLO[/center]"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="HBox" type="HBoxContainer" parent="SubViewport/VBox"]
+layout_mode = 2
+size_flags_vertical = 10
+size_flags_stretch_ratio = 20.0
+
+[node name="Stacks" type="RichTextLabel" parent="SubViewport/VBox/HBox"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_colors/default_color = Color(1, 0.858824, 0.423529, 1)
+theme_override_fonts/normal_font = SubResource("6")
+theme_override_font_sizes/normal_font_size = 150
+bbcode_enabled = true
+text = "4"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Counter" type="RichTextLabel" parent="SubViewport/VBox/HBox"]
+custom_minimum_size = Vector2(0, 120)
+layout_mode = 2
+size_flags_horizontal = 3
+size_flags_vertical = 8
+theme_override_colors/default_color = Color(1, 1, 1, 1)
+theme_override_fonts/normal_font = SubResource("6")
+theme_override_font_sizes/normal_font_size = 150
+bbcode_enabled = true
+text = "[right]2[/right]"
+scroll_active = false
+autowrap_mode = 0
+
+[node name="Board" type="Sprite3D" parent="."]
+pixel_size = 1.0
+billboard = 1
+double_sided = false
+texture_filter = 1

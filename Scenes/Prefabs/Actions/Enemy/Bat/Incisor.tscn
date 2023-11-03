@@ -1,0 +1,314 @@
+[gd_scene load_steps=20 format=3 uid="uid://gjgtwn50xwh0"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="2_2e17n"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="3_jamx2"]
+[ext_resource type="Texture2D" uid="uid://brfm2c6csnj8j" path="res://Sprites/Particles/snap.png" id="4_j6sej"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="5_irt1d"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="6_pxpyo"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="7_0ysmo"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Marker.gd" id="8_0d4lp"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+
+func _use(_targets):
+	for target in _targets:
+		deal_basic_damage(target)
+	
+	# Now change position
+	var partysize
+	if character.on_players_team:
+		partysize = len(character.cell.get_spawned_friends())
+	else:
+		partysize = len(character.cell.get_spawned_enemies())
+	character.change_position(
+		randf_range(-partysize/2.0, partysize/2.0), false)
+	
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[sub_resource type="Animation" id="Animation_dt00t"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PTFVertical/Follow/Marker:enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PTFStarts/Follow:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PTFVertical/Follow:progress_ratio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.25, 0),
+"times": PackedFloat32Array(0)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PathToFrom/FollowPart/Snap:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_hy7wb"]
+_data = {
+"RESET": SubResource("Animation_dt00t")
+}
+
+[sub_resource type="Animation" id="Animation_psbqp"]
+length = 0.75
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("PTFVertical/Follow/Marker:enabled")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.749022),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/1/type = "bezier"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("PTFStarts/Follow:progress_ratio")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"handle_modes": PackedInt32Array(0, 3, 0),
+"points": PackedFloat32Array(0, -0.25, 0, 0.0652887, 0.312315, 0.25, -0.136428, 0.0484255, 0.136428, -0.0484255, 0, -0.114523, 0.141945, 0.25, 0),
+"times": PackedFloat32Array(0, 0.375, 0.75)
+}
+tracks/2/type = "bezier"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("PTFVertical/Follow:progress_ratio")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"handle_modes": PackedInt32Array(0, 3, 3, 3),
+"points": PackedFloat32Array(0.5, -0.25, 0, 0.0527135, 0.00932777, 0.719153, -0.123815, 0.13114, 0.123815, -0.13114, 0.282018, -0.0674242, 0.0043714, 0.0674242, -0.0043714, 0.5, -0.123568, -0.056242, 0.123568, 0.056242),
+"times": PackedFloat32Array(0.0012259, 0.28073, 0.518554, 0.75)
+}
+tracks/3/type = "value"
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/path = NodePath("PathToFrom/FollowPart/Snap:emitting")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/keys = {
+"times": PackedFloat32Array(0.127493),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/4/type = "method"
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/path = NodePath(".")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/keys = {
+"times": PackedFloat32Array(0.45),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_lb3xc"]
+_data = {
+"atk": SubResource("Animation_psbqp")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_6okqe"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_5tx6j"]
+resource_local_to_scene = true
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_db2l8"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("4_j6sej")
+texture_filter = 0
+texture_repeat = false
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 7
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_2moma"]
+resource_local_to_scene = true
+material = SubResource("StandardMaterial3D_db2l8")
+size = Vector2(3, 3)
+
+[sub_resource type="Curve3D" id="Curve3D_pn8ey"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve3D" id="Curve3D_ore5d"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, -2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 0),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[node name="Incisor" instance=ExtResource("1")]
+script = SubResource("1")
+target_friendlies = false
+power = 15
+description = "Damages the target and changes position randomly."
+melee = true
+
+[node name="Ranged" type="AnimationPlayer" parent="." index="0"]
+root_node = NodePath(".")
+libraries = {
+"": SubResource("AnimationLibrary_hy7wb"),
+"Incisor": SubResource("AnimationLibrary_lb3xc")
+}
+script = ExtResource("2_2e17n")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="Ranged" index="0"]
+attenuation_model = 3
+max_polyphony = 2
+bus = &"Game"
+
+[node name="PathToFrom" type="Path3D" parent="Ranged" index="1"]
+top_level = true
+curve = SubResource("Curve3D_6okqe")
+script = ExtResource("3_jamx2")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="FollowPart" type="PathFollow3D" parent="Ranged/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, -1.50012)
+progress = 1.5
+rotation_mode = 4
+loop = false
+
+[node name="Snap" type="GPUParticles3D" parent="Ranged/PathToFrom/FollowPart" index="0"]
+transform = Transform3D(-1, -3.2468e-08, 8.117e-08, 0, 0.928477, 0.371391, -8.74228e-08, 0.371391, -0.928477, 0, 0, 0)
+emitting = false
+amount = 1
+lifetime = 0.6
+one_shot = true
+visibility_aabb = AABB(-0.5, -0.5, -0.5, 1, 1, 1)
+local_coords = true
+process_material = SubResource("ParticleProcessMaterial_5tx6j")
+draw_pass_1 = SubResource("QuadMesh_2moma")
+script = ExtResource("5_irt1d")
+_texture = ExtResource("4_j6sej")
+h_frames = 7
+_process_material = SubResource("ParticleProcessMaterial_5tx6j")
+
+[node name="PTFStarts" type="Path3D" parent="Ranged" index="2"]
+top_level = true
+curve = SubResource("Curve3D_pn8ey")
+script = ExtResource("3_jamx2")
+start_node_path = NodePath("../OriginStart")
+end_node_path = NodePath("../TargetStart")
+
+[node name="Follow" type="PathFollow3D" parent="Ranged/PTFStarts" index="0"]
+transform = Transform3D(-1, 0, 0, 0, 1, 0, 0, 0, -1, 0, 0, 0)
+rotation_mode = 4
+loop = false
+
+[node name="Below" type="Node3D" parent="Ranged/PTFStarts/Follow" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+
+[node name="Above" type="Node3D" parent="Ranged/PTFStarts/Follow" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2, 0)
+
+[node name="OriginStart" type="Node3D" parent="Ranged" index="3"]
+
+[node name="OriginMarker" type="Sprite3D" parent="Ranged/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("6_pxpyo")
+
+[node name="TargetStart" type="Node3D" parent="Ranged" index="4"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="Ranged/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("7_0ysmo")
+
+[node name="PTFVertical" type="Path3D" parent="Ranged" index="5"]
+top_level = true
+curve = SubResource("Curve3D_ore5d")
+script = ExtResource("3_jamx2")
+start_node_path = NodePath("../PTFStarts/Follow/Below")
+end_node_path = NodePath("../PTFStarts/Follow/Above")
+
+[node name="Follow" type="PathFollow3D" parent="Ranged/PTFVertical" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -2, 0)
+rotation_mode = 0
+loop = false
+tilt_enabled = false
+
+[node name="Marker" type="Node3D" parent="Ranged/PTFVertical/Follow" index="0" node_paths=PackedStringArray("node")]
+script = ExtResource("8_0d4lp")
+enabled = false
+enabled_in_editor = true
+node = NodePath("../../../OriginStart/OriginMarker")
+nodepath = NodePath("../../../OriginStart/OriginMarker")
+replace_after_disable = true

@@ -1,0 +1,58 @@
+[gd_scene load_steps=4 format=3 uid="uid://bcsnne0l85wti"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://12tbfc3bndwg" path="res://Sprites/flame.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var stun_icon : Texture2D = null
+@export var stun_duration = 1
+@export var burn_duration = 4
+@export var burn_damage = 6
+@export var tick_event = StatusEffect.TICK_EVENT.BEFORE_AFFECTED_ACT
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		# _caster, _affected, _icon, _duration
+# warning-ignore:return_value_discarded
+		se_Stunned.new(character, target, stun_duration)
+		apply_burn(target, burn_damage, burn_duration)
+		deal_basic_damage(target)
+
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Blazing Shackles" instance=ExtResource("1")]
+script = SubResource("1")
+stun_icon = null
+stun_duration = 2
+burn_duration = 4
+burn_damage = 6
+tick_event = 0
+primary = false
+skill_category = 2
+cooldown = 2
+costs = Array[float]([45.0])
+attack_type = 1
+power = 15
+icon = ExtResource("2")
+description = "Stuns the target for {stun_duration} turn and does {calc_dmg()} damage. Leaves a {burn_damage}-damage, {burn_duration}-turn burn."
+melee = true

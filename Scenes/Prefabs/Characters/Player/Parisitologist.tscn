@@ -1,0 +1,81 @@
+[gd_scene load_steps=16 format=3 uid="uid://bxgsiw7wawk2l"]
+
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="PackedScene" uid="uid://co4hxx4kh6ltl" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Instill.tscn" id="2"]
+[ext_resource type="PackedScene" uid="uid://csbuws6gukcl1" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Excite.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://2kqhiivsare8" path="res://Sprites/Characters/Plague Doc.png" id="3_it61t"]
+[ext_resource type="PackedScene" uid="uid://cle7sucyekry6" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Tiny Leeches.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://dxn7w7ebqu2o5" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Grow.tscn" id="5"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Leech Leap.tscn" id="6"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Recall Leech.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://bj4k37uqa4hv3" path="res://Scenes/Prefabs/Actions/Player/Parisitologist/Medicinalis.tscn" id="8"]
+[ext_resource type="Texture2D" uid="uid://bgm8vs6orkk6x" path="res://Sprites/Emoji/twe_scientist.png" id="9"]
+[ext_resource type="PackedScene" uid="uid://tyn5uutkuago" path="res://Scenes/Prefabs/Actions/General/Secondary/Slash.tscn" id="10"]
+[ext_resource type="PackedScene" uid="uid://cquc8m6m673ak" path="res://Scenes/Prefabs/Actions/General/Secondary/Reversal.tscn" id="11"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_5xuup"]
+atlas = ExtResource("3_it61t")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_ps1uo"]
+atlas = ExtResource("3_it61t")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_anhbk"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_5xuup")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_ps1uo")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Parisitologist" instance=ExtResource("1")]
+avi = ExtResource("9")
+rname = &"Worm Doctor"
+p_color = Color(0.701961, 0.772549, 0.392157, 1)
+s_color = Color(0.376471, 0.470588, 0.2, 1)
+default_max_hp = 80
+default_hp = 80
+default_atk = [100, 80, 120, 85]
+default_def = [12, 20, 30, 25]
+default_max_res = Array[int]([100, 2, 140, 30])
+default_res = Array[int]([100, 2, 100, 100])
+
+[node name="Puppet" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+dancing_sprite_path = NodePath("Center/Sprite2D")
+
+[node name="Center" parent="Puppet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Sprite2D" type="AnimatedSprite3D" parent="Puppet/Center" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.741742, 0)
+pixel_size = 0.125
+billboard = 1
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_anhbk")
+
+[node name="Instill" parent="L1" index="0" instance=ExtResource("2")]
+
+[node name="Excite" parent="L1" index="1" instance=ExtResource("3")]
+
+[node name="Medicinalis" parent="L1" index="2" instance=ExtResource("8")]
+
+[node name="Slash" parent="L1" index="3" instance=ExtResource("10")]
+
+[node name="Reversal" parent="L1" index="4" instance=ExtResource("11")]
+
+[node name="Tiny Leeches" parent="L2" index="0" instance=ExtResource("4")]
+
+[node name="Grow" parent="L2" index="1" instance=ExtResource("5")]
+
+[node name="Leech Leap" parent="L2" index="2" instance=ExtResource("6")]
+
+[node name="Recall Leech" parent="L2" index="3" instance=ExtResource("7")]

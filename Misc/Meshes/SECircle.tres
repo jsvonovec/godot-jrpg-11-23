@@ -1,0 +1,85 @@
+[gd_resource type="SphereMesh" load_steps=5 format=3 uid="uid://dhskreyopseg7"]
+
+[sub_resource type="Shader" id="Shader_0twmj"]
+code = "shader_type spatial;
+render_mode unshaded, blend_mix;
+
+uniform float def_id = 0.9;
+uniform float def_od = 3.0;
+uniform float id = 0.9;
+uniform float od = 3.0;
+uniform sampler2D tex;
+uniform sampler2D noise;
+uniform float tfactor1 = 0.0;
+uniform float tfactor2 = 0.0;
+uniform float repetitions1 = 1.0;
+uniform float repetitions2 = 1.0;
+uniform float alpha_cutoff = 0.5;
+uniform float noise_floor = 0.35;
+uniform float tempo = 110.0;
+uniform float tempo_offset = 0.0;
+uniform float beat_pow = 0.1;
+uniform float beat_alpha_cutoff_offset = 0.25;
+uniform float beat_color_boost = 0.5;
+
+varying vec3 pos;
+
+void vertex(){
+	pos = vec3(VERTEX.x, 0.0, VERTEX.z);
+}
+
+void fragment() {
+	float r = length(pos);
+	// discard outside of radii
+	if (r > od / 2.0 || r < id / 2.0){
+		discard;
+	}
+	float t = TIME;
+	float beat_mult = pow(mod(t - tempo_offset, 60.0 / tempo) / (60.0 / tempo), 1);
+	float theta = atan(pos.x / pos.z) + (PI * float(pos.z < 0.0));
+	vec2 uv1 = vec2((theta + t * tfactor1) / (2.0 * PI) * repetitions1, -(r * 2.0 - id) / (od - id));
+	vec2 uv2 = vec2((theta + t * tfactor2) / (2.0 * PI) * repetitions2, -(r * 2.0 - id) / (od - id));
+	float alpha = texture(tex, uv1).a * (texture(noise, uv2).r * texture(noise, uv2).a * (1.0 - noise_floor) + noise_floor);
+	if(alpha < alpha_cutoff * pow(beat_mult + beat_alpha_cutoff_offset, beat_pow)){
+		discard;
+	}
+	ALBEDO = texture(tex, uv1).rgb * (1.0 + (beat_color_boost * (1.0 - beat_mult)));
+	//EMISSION = ALBEDO;
+}
+"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_ove54"]
+load_path = "res://.godot/imported/noise2grad2.png-7ee0d61dd7a1ceda113c97e81d769228.s3tc.ctex"
+
+[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_riim4"]
+load_path = "res://.godot/imported/greenwave.png-409060466b5a96876090547a910f5776.ctex"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_hv8hl"]
+resource_local_to_scene = true
+render_priority = 0
+shader = SubResource("Shader_0twmj")
+shader_parameter/def_id = 0.9
+shader_parameter/def_od = 2.0
+shader_parameter/id = 0.9
+shader_parameter/od = 2.0
+shader_parameter/tfactor1 = 0.2
+shader_parameter/tfactor2 = 0.4
+shader_parameter/repetitions1 = 2.25
+shader_parameter/repetitions2 = 2.0
+shader_parameter/alpha_cutoff = 0.774
+shader_parameter/noise_floor = 0.678
+shader_parameter/tempo = 110.0
+shader_parameter/tempo_offset = 0.0
+shader_parameter/beat_pow = 0.02
+shader_parameter/beat_alpha_cutoff_offset = 0.8
+shader_parameter/beat_color_boost = 1.0
+shader_parameter/tex = SubResource("CompressedTexture2D_riim4")
+shader_parameter/noise = SubResource("CompressedTexture2D_ove54")
+
+[resource]
+resource_local_to_scene = true
+material = SubResource("ShaderMaterial_hv8hl")
+flip_faces = true
+radius = 5.0
+height = 5.0
+is_hemisphere = true

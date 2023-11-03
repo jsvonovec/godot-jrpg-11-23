@@ -1,0 +1,104 @@
+[gd_scene load_steps=19 format=3 uid="uid://b1oxf0s43hsn"]
+
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://bb5wrarvtsdud" path="res://Sprites/Emoji/twe_poo.png" id="2"]
+[ext_resource type="PackedScene" uid="uid://lae5jmu0he4j" path="res://Scenes/Prefabs/Actions/General/Secondary/Poison.tscn" id="3"]
+[ext_resource type="Texture2D" uid="uid://c74arh84e1qfy" path="res://Sprites/Characters/pestilence.png" id="3_kvg38"]
+[ext_resource type="PackedScene" uid="uid://dwbtljcqlsuxe" path="res://Scenes/Prefabs/Actions/Player/Pestilence/Twin Toxin.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://d3gphkt2xal21" path="res://Scenes/Prefabs/Actions/Player/Pestilence/Pressurize.tscn" id="5"]
+[ext_resource type="PackedScene" uid="uid://8oyli7x47ckn" path="res://Scenes/Prefabs/Actions/Player/Pestilence/Detonate.tscn" id="6"]
+[ext_resource type="PackedScene" uid="uid://c6154opmfkgar" path="res://Scenes/Prefabs/Actions/General/Secondary/Enflame.tscn" id="7"]
+[ext_resource type="PackedScene" uid="uid://0j2cty3bt10p" path="res://Scenes/Prefabs/Actions/Player/Pestilence/System Flush.tscn" id="8"]
+[ext_resource type="PackedScene" uid="uid://be3np2h7ayfj6" path="res://Scenes/Prefabs/Actions/Player/Pestilence/Boil Over.tscn" id="9"]
+[ext_resource type="PackedScene" uid="uid://le0ax7q7s777" path="res://Scenes/Prefabs/Actions/Player/Pestilence/Nuclear Waste.tscn" id="10"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/General/Secondary/Cleanse.tscn" id="11"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/General/Secondary/Fury Cutter.tscn" id="12"]
+[ext_resource type="PackedScene" uid="uid://cla35tcpydj5u" path="res://Scenes/Prefabs/Actions/General/Secondary/Quarantine.tscn" id="13"]
+[ext_resource type="PackedScene" uid="uid://dcsfgiwqvw6sk" path="res://Scenes/Prefabs/Actions/General/Secondary/Fester.tscn" id="14"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_qd1mu"]
+atlas = ExtResource("3_kvg38")
+region = Rect2(0, 0, 32, 32)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_57hcb"]
+atlas = ExtResource("3_kvg38")
+region = Rect2(32, 0, 32, 32)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_ur0gn"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_qd1mu")
+}, {
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_57hcb")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Pestilence" instance=ExtResource("1")]
+avi = ExtResource("2")
+p_color = Color(0.313726, 0.796078, 0.0431373, 1)
+s_color = Color(0.423529, 0.478431, 0.25098, 1)
+max_lives = 3
+lives = 3
+default_speed = 50
+default_max_hp = 200
+default_hp = 200
+default_atk = [70, 70, 80, 5]
+default_max_res = Array[int]([150, 1, 160, 40])
+default_res = Array[int]([150, 1, 160, 30])
+stamina_regen = 5
+may_use_defend = true
+may_use_shift = true
+
+[node name="Puppet" parent="." index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+dancing_sprite_path = NodePath("Center/Sprite2D")
+dance_duration = 4
+dance_ticks = Array[float]([0.0, 0.5, 1.0, 1.25, 1.75, 2.0, 2.5, 3.0])
+intent_height = 5.0
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="Puppet" index="0"]
+root_node = NodePath("../Center")
+
+[node name="Center" parent="Puppet" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+
+[node name="Sprite2D" type="AnimatedSprite3D" parent="Puppet/Center" index="1"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.741742, 0)
+pixel_size = 0.125
+billboard = 1
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_ur0gn")
+
+[node name="Intent" parent="Puppet/Center" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.4902, 0)
+
+[node name="Poison" parent="L1" index="0" instance=ExtResource("3")]
+
+[node name="Twin Toxin" parent="L1" index="1" instance=ExtResource("4")]
+
+[node name="Pressurize" parent="L1" index="2" instance=ExtResource("5")]
+atk_duration = 4
+
+[node name="Enflame" parent="L1" index="3" instance=ExtResource("7")]
+
+[node name="Detonate" parent="L2" index="0" instance=ExtResource("6")]
+
+[node name="Fury Cutter" parent="L2" index="1" instance=ExtResource("12")]
+
+[node name="Quarantine" parent="L2" index="2" instance=ExtResource("13")]
+
+[node name="Fester" parent="L2" index="3" instance=ExtResource("14")]
+
+[node name="System Flush" parent="L3" index="0" instance=ExtResource("8")]
+
+[node name="Cleanse" parent="L3" index="1" instance=ExtResource("11")]
+
+[node name="Boil Over" parent="L4" index="0" instance=ExtResource("9")]
+
+[node name="Nuclear Waste" parent="L5" index="0" instance=ExtResource("10")]

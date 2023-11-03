@@ -1,0 +1,179 @@
+[gd_scene load_steps=19 format=3 uid="uid://21tly2xorrdp"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Actions/BasicAttack.gd" id="2"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="3_3nsng"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="4_qg062"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="5_6jhnm"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="6_1h3wx"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="7_wr13p"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="8_t0bkp"]
+
+[sub_resource type="Animation" id="Animation_eo4b8"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CombatPartAnim/GPUParticlesAttractorSphere3D:visible")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_k43ky"]
+_data = {
+"RESET": SubResource("Animation_eo4b8")
+}
+
+[sub_resource type="Animation" id="Animation_hbcip"]
+length = 2.0
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("CombatPartAnim/TargetStart/TargetMarker/GameParticles:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("CombatPartAnim/GPUParticlesAttractorSphere3D:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0, 2),
+"transitions": PackedFloat32Array(1, 1),
+"update": 1,
+"values": [true, false]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("CombatPartAnim")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.8),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_k3kkx"]
+_data = {
+"atk": SubResource("Animation_hbcip")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_t83lm"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="Curve" id="Curve_woide"]
+_data = [Vector2(0, 0), 0.0, 0.0, 0, 0, Vector2(0.228916, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), -2.40511, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="CurveTexture" id="CurveTexture_lyc3t"]
+curve = SubResource("Curve_woide")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_2ghj1"]
+resource_local_to_scene = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 3.0
+emission_ring_radius = 0.5
+emission_ring_inner_radius = 0.0
+direction = Vector3(0, -1, 0)
+spread = 5.0
+initial_velocity_min = 15.0
+initial_velocity_max = 15.0
+scale_min = 0.5
+scale_max = 1.1
+scale_curve = SubResource("CurveTexture_lyc3t")
+color = Color(0.941176, 0.901961, 0.54902, 1)
+collision_mode = 1
+collision_friction = 0.0
+collision_bounce = 0.3
+collision_use_scale = true
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("4_qg062")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_4s52p"]
+material = SubResource("10")
+
+[node name="Moonglow" instance=ExtResource("1")]
+script = ExtResource("2")
+close_range = false
+costs = Array[float]([0.0, 0.0, 30.0])
+attack_type = 3
+power = 30
+can_miss = false
+description = "Cannot miss."
+
+[node name="CombatPartAnim" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_k43ky"),
+"Moonglow": SubResource("AnimationLibrary_k3kkx")
+}
+script = ExtResource("3_3nsng")
+
+[node name="GPUParticlesAttractorSphere3D" type="GPUParticlesAttractorSphere3D" parent="CombatPartAnim" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.668833, -5)
+visible = false
+strength = -17.0
+radius = 5.0
+
+[node name="PathToFrom" type="Path3D" parent="CombatPartAnim" index="1"]
+curve = SubResource("Curve3D_t83lm")
+script = ExtResource("8_t0bkp")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="OriginStart" type="Node3D" parent="CombatPartAnim" index="2"]
+
+[node name="OriginMarker" type="Sprite3D" parent="CombatPartAnim/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("6_1h3wx")
+
+[node name="TargetStart" type="Node3D" parent="CombatPartAnim" index="3"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="CombatPartAnim/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("7_wr13p")
+
+[node name="GameParticles" type="GPUParticles3D" parent="CombatPartAnim/TargetStart/TargetMarker" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 10.1291, 0)
+emitting = false
+amount = 150
+lifetime = 1.75
+one_shot = true
+explosiveness = 0.65
+collision_base_size = 1.0
+visibility_aabb = AABB(-4, -26, -4, 8, 52, 8)
+process_material = SubResource("ParticleProcessMaterial_2ghj1")
+draw_pass_1 = SubResource("QuadMesh_4s52p")
+script = ExtResource("5_6jhnm")
+_process_material = SubResource("ParticleProcessMaterial_2ghj1")

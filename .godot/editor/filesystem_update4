@@ -1,0 +1,19 @@
+res://Scenes/Prefabs/Room.tscn
+res://Themes/csheet.tres
+res://Scenes/Prefabs/Rooms/redworldroom.tscn
+res://Scripts/Behaviors/RoomEnvironment.gd
+res://Scenes/Prefabs/Environment/RedTree.tscn
+res://Scripts/Behaviors/Spreader.gd
+res://Scenes/Prefabs/Singletons/Overworld.tscn
+res://Scenes/Prefabs/Characters/Player/Arsonist.tscn
+res://Materials/Resource Circle/Poison.tres
+res://Materials/Resource Circle/BadPoison.tres
+res://Materials/Resource Circle/LethalPoison.tres
+res://Materials/Resource Circle/Burn.tres
+res://Materials/Resource Circle/Bleed.tres
+res://Scenes/Prefabs/Characters/Player/eisel.tscn
+res://Scenes/Prefabs/Actions/General/Secondary/imitate.tscn
+res://Scripts/Behaviors/Actions/imitate.gd
+res://Scripts/Behaviors/TurnCharacter.gd
+res://Scripts/Behaviors/Actions/Action.gd
+res://Scenes/Prefabs/UI/Scripts/CombatUI.gd

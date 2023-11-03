@@ -1,0 +1,21 @@
+[gd_scene load_steps=3 format=3 uid="uid://ddlt5qxn4c0je"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+@export var heal_fraction = 0.5
+
+func _use(_targets):
+	for target in _targets:
+		character.heal(int(deal_basic_damage(target) * heal_fraction))
+"
+
+[node name="Blood Drain" instance=ExtResource("1")]
+script = SubResource("1")
+heal_fraction = 0.5
+target_friendlies = false
+power = 12
+description = "Hurts the target and heals for half of the damage."
+melee = true

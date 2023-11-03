@@ -1,0 +1,31 @@
+[gd_resource type="Theme" load_steps=8 format=3 uid="uid://cny534440nugo"]
+
+[ext_resource type="FontFile" path="res://Fonts/Bahnschrift/bahn.tres" id="1"]
+[ext_resource type="Texture2D" uid="uid://drhwhvqq5n4du" path="res://Textures/UI/panel1bg.png" id="2"]
+[ext_resource type="Texture2D" uid="uid://bkgdeie6fydpq" path="res://Textures/UI/panel1border.png" id="3"]
+
+[sub_resource type="StyleBoxLine" id="4"]
+color = Color(0.266667, 0.690196, 0.113725, 1)
+thickness = 4
+
+[sub_resource type="StyleBoxTexture" id="1"]
+texture = ExtResource("2")
+region_rect = Rect2(0, 0, 64, 64)
+
+[sub_resource type="StyleBoxTexture" id="2"]
+texture = ExtResource("3")
+region_rect = Rect2(0, 0, 64, 64)
+
+[sub_resource type="StyleBoxLine" id="3"]
+color = Color(0.266667, 0.690196, 0.113725, 1)
+thickness = 4
+vertical = true
+
+[resource]
+Fonts/fonts/Bahnschrift = ExtResource("1")
+HSeparator/styles/separator = SubResource("4")
+Label/colors/font_color = Color(0.266667, 0.690196, 0.113725, 1)
+NinePatchRect/colors/bg_color = Color(0.580392, 0.878431, 0.482353, 1)
+NinePatchRect/styles/panel_bg = SubResource("1")
+NinePatchRect/styles/panel_border = SubResource("2")
+VSeparator/styles/separator = SubResource("3")

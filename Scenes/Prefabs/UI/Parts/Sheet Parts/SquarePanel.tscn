@@ -1,0 +1,68 @@
+[gd_scene load_steps=4 format=3 uid="uid://btdchxswdmfl2"]
+
+[ext_resource type="Texture2D" uid="uid://dwftgh7xmekw7" path="res://Textures/UI/panel2border.png" id="1"]
+[ext_resource type="Texture2D" uid="uid://4svrchfn7lp4" path="res://Textures/UI/panel2bg.png" id="2"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends MarginContainer
+
+var bg_color := Color.LIGHT_GRAY: set = set_bg_color
+var border_color := Color.GRAY: set = set_border_color
+
+
+func _draw() -> void:
+	$BG.self_modulate = bg_color
+	$Border.self_modulate = border_color
+
+func set_bg_color(color: Color) -> void:
+	bg_color = color
+	queue_redraw()
+
+func set_border_color(color: Color) -> void:
+	border_color = color
+	queue_redraw()
+
+func set_colors(bg: Color, border: Color) -> void:
+	bg_color = bg
+	border_color = border
+	queue_redraw()
+
+func contents() -> Node:
+	return $Marg/Cont
+"
+
+[node name="Panel" type="MarginContainer"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = -974.0
+offset_bottom = -560.0
+script = SubResource("1")
+
+[node name="BG" type="NinePatchRect" parent="."]
+self_modulate = Color(0.741176, 0.741176, 0.741176, 1)
+layout_mode = 2
+texture = ExtResource("2")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Border" type="NinePatchRect" parent="."]
+self_modulate = Color(0.392157, 0.392157, 0.392157, 1)
+layout_mode = 2
+texture = ExtResource("1")
+patch_margin_left = 32
+patch_margin_top = 32
+patch_margin_right = 32
+patch_margin_bottom = 32
+
+[node name="Marg" type="MarginContainer" parent="."]
+layout_mode = 2
+theme_override_constants/margin_left = 8
+theme_override_constants/margin_top = 7
+theme_override_constants/margin_right = 8
+theme_override_constants/margin_bottom = 8
+
+[node name="Cont" type="MarginContainer" parent="Marg"]
+layout_mode = 2

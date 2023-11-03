@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scripts/Behaviors/Actions/Flee.gd" type="Script" id=2]
+
+[node name="Flee" instance=ExtResource( 1 )]
+script = ExtResource( 2 )
+target_self = true
+skip_targeting = true
+usable = false
+visible = false
+power = 0
+priority = 10
+description = "The party runs from battle to the previous room. Actions may not be used if any character is fleeing."
+flee = true

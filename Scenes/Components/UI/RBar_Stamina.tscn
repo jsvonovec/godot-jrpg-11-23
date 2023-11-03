@@ -1,0 +1,29 @@
+[gd_scene load_steps=5 format=3 uid="uid://gkc2144lduc1"]
+
+[ext_resource type="PackedScene" uid="uid://dxyk7d18lkx2r" path="res://Scenes/Components/UI/RBar_HP.tscn" id="1"]
+[ext_resource type="Texture2D" uid="uid://cjsd2e783h0ib" path="res://Sprites/lightning.png" id="2"]
+[ext_resource type="Shader" path="res://Shaders/RBar_HP.gdshader" id="2_ywqj7"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mxdul"]
+resource_local_to_scene = true
+shader = ExtResource("2_ywqj7")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 20
+shader_parameter/fill_color = Vector3(0.592157, 0.972549, 0.278431)
+shader_parameter/unfill_color = Vector3(0.444118, 0.729412, 0.208823)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 1250.95
+shader_parameter/size = Vector2(177, 18)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("2")
+
+[node name="RBar_Stamina" instance=ExtResource("1")]
+material = SubResource("ShaderMaterial_mxdul")
+custom_minimum_size = Vector2(89, 17.5)
+fill_color = Color(0.592157, 0.972549, 0.278431, 1)
+icon = ExtResource("2")
+resource = 3

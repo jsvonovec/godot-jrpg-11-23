@@ -1,0 +1,176 @@
+[gd_scene load_steps=11 format=3 uid="uid://brf0qvi3c212f"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/Cell.gd" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Spreader.gd" id="2_mvphd"]
+[ext_resource type="ArrayMesh" uid="uid://uloydkj65wyc" path="res://Models/cliff_blockQuarter_rock.obj" id="4_kbmgk"]
+[ext_resource type="ArrayMesh" uid="uid://do5lhimg0lyqa" path="res://Models/cliff_top_rock.obj" id="5_6urub"]
+[ext_resource type="Texture2D" uid="uid://o8nucamdtovc" path="res://Textures/Projections/1.png" id="5_plwuy"]
+[ext_resource type="PackedScene" uid="uid://ceib5gh6bdbws" path="res://Scenes/Prefabs/Custom Nodes/SpotLightGobo.tscn" id="6"]
+[ext_resource type="ArrayMesh" uid="uid://cyp4mhoong83k" path="res://Models/tree.obj" id="6_gmn1v"]
+[ext_resource type="ArrayMesh" uid="uid://dl3gxxcobnk0s" path="res://Models/cliff_cornerTop_rock.obj" id="8_nkbg8"]
+
+[sub_resource type="BoxShape3D" id="6"]
+size = Vector3(100, 20, 100)
+
+[sub_resource type="Curve" id="Curve_kdkn1"]
+_data = [Vector2(0, 0), 0.0, 1.0, 0, 1, Vector2(1, 1), 1.0, 0.0, 1, 0]
+point_count = 2
+
+[node name="Room" type="Node3D" groups=["cell"]]
+script = ExtResource("1")
+
+[node name="Environment" type="Node3D" parent="."]
+
+[node name="Ground" type="StaticBody3D" parent="Environment"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, -10, 25)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Environment/Ground"]
+shape = SubResource("6")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Environment/Ground"]
+transform = Transform3D(100, 0, 0, 0, 50, 0, 0, 0, 100, 0, -2.5, 0)
+cast_shadow = 0
+mesh = ExtResource("4_kbmgk")
+
+[node name="Cliffs" type="Node3D" parent="Environment/Ground"]
+
+[node name="CliffTopRock" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, -40, -10, -60)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock3" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, -20, -10, -60)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock5" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 0, -10, -60)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock7" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 20, -10, -60)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock9" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(-20, 0, -3.01992e-06, 0, 20, 0, 3.01992e-06, 0, -20, 40, -10, -60)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock2" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 40)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock4" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 20)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock6" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, 0)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock8" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, -20)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffTopRock10" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(3.89414e-06, 0, -20, 0, 20, 0, 20, 0, 3.89414e-06, -60, -10, -40)
+mesh = ExtResource("5_6urub")
+skeleton = NodePath("../../../..")
+
+[node name="CliffCornerTopRock" type="MeshInstance3D" parent="Environment/Ground/Cliffs"]
+transform = Transform3D(2.38498e-07, 0, -20, 0, 20, 0, 20, 0, 2.38498e-07, -60, -10, -60)
+mesh = ExtResource("8_nkbg8")
+skeleton = NodePath("../../../..")
+
+[node name="GPUParticlesCollisionBox3D" type="GPUParticlesCollisionBox3D" parent="Environment/Ground"]
+size = Vector3(100, 20, 100)
+
+[node name="Trees" type="Node3D" parent="Environment"]
+script = ExtResource("2_mvphd")
+model = ExtResource("6_gmn1v")
+max_scale_over_distance = SubResource("Curve_kdkn1")
+count = 150
+inner_rad = 22.0
+outer_rad = 60.0
+skip_invalid = null
+
+[node name="Tree" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 64.0247, 0, -18.824)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree2" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 70.253, 0, -0.704357)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree3" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 63.4945, 0, 8.80481)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree4" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 59.4388, 0, 25.4317)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree5" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 57.7821, 0, 42.44)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree6" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 42.5238, 0, 45.2376)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree7" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 38.1862, -7.62939e-06, 55.4424)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree8" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 10.7843, -7.62939e-06, 44.4262)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree9" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 0.635956, -7.62939e-06, 55.2361)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree10" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, 24.391, -7.62939e-06, 55.2363)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="Tree11" type="MeshInstance3D" parent="Environment/Trees"]
+transform = Transform3D(6, 0, 0, 0, 6, 0, 0, 0, 6, -15.5343, -7.62939e-06, 56.3714)
+mesh = ExtResource("6_gmn1v")
+skeleton = NodePath("../../..")
+
+[node name="SpotLightGobo" parent="." instance=ExtResource("6")]
+transform = Transform3D(-0.871542, -0.0425898, 0.464949, 0.342003, 0.583728, 0.721388, -0.304165, 0.788175, -0.513247, 24.9801, 44.0356, -10.7327)
+light_energy = 15.0
+light_projector = ExtResource("5_plwuy")
+spot_range = 84.8151
+spot_angle = 35.69
+rot_speed = 0.02
+pulse = true
+pulse_offset = 0.5
+pulse_amp = 0.8
+
+[node name="SpotLightGobo2" parent="." instance=ExtResource("6")]
+transform = Transform3D(-0.522454, 0.70847, -0.489102, -0.118485, 0.512664, 0.853333, 0.855302, 0.503786, -0.180556, -10.4622, 45.3935, -8.73485)
+light_energy = 14.253
+light_projector = ExtResource("5_plwuy")
+spot_angle = 50.17
+rot_speed = -0.01
+pulse = true

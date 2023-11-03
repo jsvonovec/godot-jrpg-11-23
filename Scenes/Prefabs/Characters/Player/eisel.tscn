@@ -1,0 +1,84 @@
+[gd_scene load_steps=5 format=3 uid="uid://lkmiewo22x53"]
+
+[ext_resource type="PackedScene" uid="uid://cuwo0dlpq3c5a" path="res://Scenes/Prefabs/Characters/TurnCharacter.tscn" id="1_h7spq"]
+[ext_resource type="Texture2D" uid="uid://bo26amyjjojk5" path="res://Sprites/UI/Icons/toolBrush.png" id="2_prnwp"]
+[ext_resource type="PackedScene" uid="uid://tbftwip25nmu" path="res://Scenes/Prefabs/Actions/General/Secondary/imitate.tscn" id="3_lqm83"]
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_8l566"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": ExtResource("2_prnwp")
+}],
+"loop": true,
+"name": &"default",
+"speed": 5.0
+}]
+
+[node name="Eisel" instance=ExtResource("1_h7spq")]
+rname = &"Eisel"
+default_speed = 135
+default_max_hp = 20
+default_hp = 20
+default_max_res = Array[int]([30, 1, 40, 60])
+
+[node name="Center" parent="Puppet" index="0"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+
+[node name="Sprite2D" type="AnimatedSprite3D" parent="Puppet/Center" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.37396, 0)
+pixel_size = 0.1
+billboard = 1
+alpha_cut = 2
+texture_filter = 0
+sprite_frames = SubResource("SpriteFrames_8l566")
+
+[node name="Imitate" parent="L1" index="0" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate2" parent="L1" index="1" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate3" parent="L1" index="2" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate4" parent="L1" index="3" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate5" parent="L1" index="4" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate" parent="L2" index="0" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate2" parent="L2" index="1" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate3" parent="L2" index="2" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate4" parent="L2" index="3" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate5" parent="L2" index="4" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate5" parent="L3" index="0" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate6" parent="L3" index="1" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate7" parent="L3" index="2" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate8" parent="L3" index="3" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate9" parent="L3" index="4" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate9" parent="L4" index="0" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate10" parent="L4" index="1" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate11" parent="L4" index="2" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate12" parent="L4" index="3" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate13" parent="L4" index="4" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate9" parent="L5" index="0" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate10" parent="L5" index="1" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate11" parent="L5" index="2" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate12" parent="L5" index="3" instance=ExtResource("3_lqm83")]
+
+[node name="Imitate13" parent="L5" index="4" instance=ExtResource("3_lqm83")]

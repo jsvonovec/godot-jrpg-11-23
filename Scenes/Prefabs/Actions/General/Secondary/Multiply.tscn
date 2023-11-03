@@ -1,0 +1,79 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scenes/Prefabs/Animations/PSlash.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" type="PackedScene" id=2]
+
+[sub_resource type="GDScript" id=1]
+script/source = "extends Action
+
+
+# Called when the node enters the scene tree for the first time.
+func _use(_targets):
+	for target in _targets:
+		deal_basic_damage(target)
+	
+	# Duplicate!
+# warning-ignore:return_value_discarded
+	var packed_scene := PackedScene.new()
+	# WARNING: This may cause issues with node ownership, or
+	# anything else ---- pack() is dangerous!!!!!!
+	packed_scene.pack(character)
+	# duplicate affected
+	var dupe = packed_scene.instantiate()
+	get_tree().root.add_child(dupe)
+	dupe.pup.hide()
+	var duplicating_anim = CombatPuppeteer.anim_queue[-1]
+	character.cell.add_character(dupe, character.position - 0.5 + randf())
+	duplicating_anim.add_effect_call(dupe.pup, \"show\")
+	duplicating_anim.add_effect_call(dupe.pup, \"show\")
+	duplicating_anim.add_effect_call(self,
+	\"put_dupe_on_origin\", [dupe, character])
+	#duplicating_anim.add_effect_call(NIU, \"break_point\")
+	dupe.name = character.rname
+	dupe.default_hp = character.hp
+	dupe.hp = character.hp
+	dupe.default_res = character.resource.duplicate()
+	# apply status effects
+	for se in character.status_effects_active.duplicate():
+		if se.get_script() != get_script():
+			se._duplicate(dupe)
+	#dupe.on_turn_started()
+	
+
+
+
+func put_dupe_on_origin(dupe: TurnCharacter, origin: TurnCharacter):
+	origin.cell.set_rel_loc(dupe.pup, origin.cell.rel_loc(origin.pup))
+
+
+#func _update_usability():
+#	usable = true
+#	return usable
+
+# list of possible targets to start targeting
+#func possible_initial_targets() -> Array:
+#	return get_node(\"/root/TurnManager\").targets_in_range(
+#	character, target_range, target_enemies, target_friendlies)
+
+
+# Extra rules to follow when determining whether
+# a target can be multitargetted after a given one.
+#func _custom_multitarget_follow_rules(_targets, _candidate) -> bool:
+#	return true
+"
+
+[node name="Multiply" instance=ExtResource( 2 )]
+script = SubResource( 1 )
+close_range = false
+target_self = true
+skill_category = 4
+costs = [ 0.0, 0.0, 0.0, 20.0 ]
+target_friendlies = false
+target_enemies = false
+beneficial = true
+power = 0
+description = "Creates a copy of the user."
+melee = true
+sfx_default = 4
+
+[node name="PSlash" parent="." index="0" instance=ExtResource( 1 )]

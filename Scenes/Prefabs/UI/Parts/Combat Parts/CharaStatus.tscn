@@ -1,0 +1,587 @@
+[gd_scene load_steps=26 format=3 uid="uid://ctx0ko5ln63ci"]
+
+[ext_resource type="FontFile" uid="uid://b31bm6u25mit4" path="res://Fonts/Montserrat/Montserrat-Medium.ttf" id="1"]
+[ext_resource type="FontFile" uid="uid://cknqofe75asfj" path="res://Fonts/Montserrat/Montserrat-Bold.ttf" id="2"]
+[ext_resource type="FontFile" uid="uid://croixlmq76xe3" path="res://Fonts/Montserrat/Montserrat-Italic.ttf" id="3"]
+[ext_resource type="PackedScene" uid="uid://gkc2144lduc1" path="res://Scenes/Components/UI/RBar_Stamina.tscn" id="4"]
+[ext_resource type="PackedScene" uid="uid://dxyk7d18lkx2r" path="res://Scenes/Components/UI/RBar_HP.tscn" id="5"]
+[ext_resource type="Shader" path="res://Shaders/RBar_HP.gdshader" id="6_dgwar"]
+[ext_resource type="Texture2D" uid="uid://emphpnrrl6x3" path="res://Sprites/heart.png" id="7_edyi7"]
+[ext_resource type="PackedScene" path="res://Scenes/Components/UI/RBar_Leeches.tscn" id="8"]
+[ext_resource type="PackedScene" path="res://Scenes/Components/UI/RBar_Favor.tscn" id="9"]
+[ext_resource type="Texture2D" uid="uid://bj0oslwp15rr" path="res://Sprites/chevron.png" id="9_ff4mn"]
+[ext_resource type="PackedScene" uid="uid://by2uofjdoijhu" path="res://Scenes/Components/UI/RBar_Fuel.tscn" id="10"]
+[ext_resource type="Texture2D" uid="uid://dpmwqpckheijs" path="res://Sprites/Emoji/twe_shrimp.png" id="11_h72xj"]
+[ext_resource type="Texture2D" uid="uid://cvqkwwv4oyirq" path="res://Sprites/star.png" id="13_puqdr"]
+[ext_resource type="Shader" path="res://Shaders/WiggleText.gdshader" id="14"]
+[ext_resource type="Texture2D" uid="uid://cjsd2e783h0ib" path="res://Sprites/lightning.png" id="14_58q16"]
+
+[sub_resource type="GDScript" id="5"]
+script/source = "@tool
+extends Control
+
+
+@export var font_color: Color: set = set_font_color
+@export var font_color_2: Color: set = set_font_color_2
+var font_color_is_2 = false
+@export var font_size = 16: set = set_font_size
+@export var bar_font_size = 32: set = set_bar_font_size
+@export var bar_height = 12: set = set_bar_height
+@export var bar_left_margin = 4: set = set_bar_left_margin
+@export var bar_right_margin = 60: set = set_bar_right_margin
+var chara : TurnCharacter
+
+var is_ready := false
+
+func _ready() -> void:
+	is_ready = true
+
+func set_font_color(val):
+	font_color = val
+	if !is_ready:
+		return
+	if !font_color_is_2:
+		$V/Name.modulate = val
+
+func set_font_color_2(val):
+	font_color_2 = val
+	if !is_ready:
+		return
+	if font_color_is_2:
+		$V/Name.modulate = val
+
+func change_to_font_color(to_2 : bool):
+	if to_2:
+		$V/Name.modulate = font_color_2
+		font_color_is_2 = true
+	else:
+		$V/Name.modulate = font_color
+		font_color_is_2 = false
+
+func set_font_size(val):
+	if !is_ready:
+		await self.ready
+	
+	$V/Name.add_theme_font_size_override(\"normal_font_size\", val)
+	$V/Name.add_theme_font_size_override(\"bold_font_size\", val)
+	$V/Name.add_theme_font_size_override(\"bold_italics_font_size\", val)
+	$V/Name.add_theme_font_size_override(\"italics_font_size\", val)
+	$V/Name.add_theme_font_size_override(\"mono_font_size\", val)
+	font_size = val
+	await get_tree().process_frame
+	queue_redraw()
+
+func set_bar_font_size(val):
+	if !is_ready:
+		await self.ready
+	
+	bar_font_size = val
+	for child in $V.get_children():
+		if child.get_child_count() == 0: continue
+		child = child.get_child(0)
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"BarColorChange2\":
+			child.font_size = bar_font_size
+			child.queue_redraw()
+
+func set_bar_height(val):
+	if !is_ready:
+		await self.ready
+	
+	bar_height = val
+	for child in $V.get_children():
+		if child.get_child_count() == 0: continue
+		child = child.get_child(0)
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"BarColorChange2\":
+			child.bar_height = bar_height
+			child.queue_redraw()
+
+func set_bar_left_margin(val):
+	if !is_ready:
+		await self.ready
+	
+	bar_left_margin = val
+	for child in $V.get_children():
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"MarginContainer\":
+			child.add_theme_constant_override(\"offset_left\", val)
+			child.queue_redraw()
+
+func set_bar_right_margin(val):
+	if !is_ready:
+		await self.ready
+	
+	bar_right_margin = val
+	for child in $V.get_children():
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"MarginContainer\":
+			child.add_theme_constant_override(\"offset_right\", val)
+			child.queue_redraw()
+
+
+func set_chara(val):
+	chara = val
+	queue_redraw()
+
+func _draw():
+	if !NIU.iiv(chara):
+		return
+	visible = chara.pup.visible
+	$V/Name.text = \"[i][b]%s[/b][/i]\" % chara.rname
+	$V/Name.material.set_shader_parameter(\"tempo\", SoundOp.tempo)
+	var bars := []
+	for child in $V.get_children():
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"MarginContainer\":
+			bars.append(child.get_child(0))
+	#Update bars
+	update_bars_existence(bars)
+	for child in $V.get_children():
+		if NIU.iiv(child) and NIU.get_class_name(child) == \"MarginContainer\":
+			bars.append(child.get_child(0))
+	update_bars_values(bars)
+
+func update_bars_existence(bars):
+	var used_bars := []
+	for resource in chara.revealed_resource:
+		# check if this resource has a bar for it
+		var resource_has_a_bar = false
+		for rbar in bars:
+			if rbar.resource == resource:
+				# this resource is good - it has a bar.
+				resource_has_a_bar = true
+				used_bars.append(rbar)
+				break
+		# create new bar if there is not a bar for it
+		if !resource_has_a_bar:
+			var rb = bars[0].get_parent().duplicate().get_child(0)
+			#print(resource)
+			rb.resource = resource
+			rb.chara = chara
+			# reparent
+			rb = rb.get_parent()
+			if rb.get_parent() != null:
+				rb.get_parent().remove_child(rb)
+			$V.add_child(rb)
+			used_bars.append(rb)
+	# delete all unused bars
+	for i in range(len(bars) - 1, -1, -1):
+		if bars[i].name == \"HP\" or bars[i] in used_bars:
+			continue
+		bars[i].get_parent().queue_free()
+	# update used bars
+	for bar in used_bars + [$V/HP/HP]:
+		bar.queue_redraw()
+
+func update_bars_values(bars):
+	for bar in bars:
+		# HP
+		if bar.resource == -1:
+			bar.max_value = chara.pup.max_hp
+			bar.value = chara.pup.hp
+		else:
+			bar.max_value = chara.pup.max_res[bar.resource]
+			bar.fill_color = CombatUI.RESOURCE_COLORS[bar.resource]
+			#bar.bar_bg = CombatUI.get_drained_color(bar.resource)
+			#bar.txt = CombatUI.RESOURCE_COLORS[bar.resource]
+			#bar.bar_label = CombatUI.res_name(bar.resource, bar.value)
+			bar.name = CombatUI.res_name(bar.resource, bar.value)
+			bar.get_parent().name = bar.name
+			bar.value = chara.pup.res[bar.resource]
+"
+
+[sub_resource type="ShaderMaterial" id="24"]
+shader = ExtResource("14")
+shader_parameter/amplitude = 1.271
+shader_parameter/speed = 1.0
+shader_parameter/wiggle = 0.856
+shader_parameter/tempo = 110.0
+
+[sub_resource type="FontFile" id="1"]
+resource_local_to_scene = true
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fallbacks = Array[Font]([ExtResource("1")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/16/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/15/0/ascent = 0.0
+cache/0/15/0/descent = 0.0
+cache/0/15/0/underline_position = 0.0
+cache/0/15/0/underline_thickness = 0.0
+cache/0/15/0/scale = 1.0
+cache/0/15/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/15/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/34/0/ascent = 0.0
+cache/0/34/0/descent = 0.0
+cache/0/34/0/underline_position = 0.0
+cache/0/34/0/underline_thickness = 0.0
+cache/0/34/0/scale = 1.0
+cache/0/34/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/34/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/17/0/ascent = 0.0
+cache/0/17/0/descent = 0.0
+cache/0/17/0/underline_position = 0.0
+cache/0/17/0/underline_thickness = 0.0
+cache/0/17/0/scale = 1.0
+cache/0/17/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/17/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/18/0/ascent = 0.0
+cache/0/18/0/descent = 0.0
+cache/0/18/0/underline_position = 0.0
+cache/0/18/0/underline_thickness = 0.0
+cache/0/18/0/scale = 1.0
+cache/0/18/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/18/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/19/0/ascent = 0.0
+cache/0/19/0/descent = 0.0
+cache/0/19/0/underline_position = 0.0
+cache/0/19/0/underline_thickness = 0.0
+cache/0/19/0/scale = 1.0
+cache/0/19/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/19/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/20/0/ascent = 0.0
+cache/0/20/0/descent = 0.0
+cache/0/20/0/underline_position = 0.0
+cache/0/20/0/underline_thickness = 0.0
+cache/0/20/0/scale = 1.0
+cache/0/20/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/20/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/21/0/ascent = 0.0
+cache/0/21/0/descent = 0.0
+cache/0/21/0/underline_position = 0.0
+cache/0/21/0/underline_thickness = 0.0
+cache/0/21/0/scale = 1.0
+cache/0/21/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/21/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/22/0/ascent = 0.0
+cache/0/22/0/descent = 0.0
+cache/0/22/0/underline_position = 0.0
+cache/0/22/0/underline_thickness = 0.0
+cache/0/22/0/scale = 1.0
+cache/0/22/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/22/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/32/0/ascent = 0.0
+cache/0/32/0/descent = 0.0
+cache/0/32/0/underline_position = 0.0
+cache/0/32/0/underline_thickness = 0.0
+cache/0/32/0/scale = 1.0
+cache/0/32/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/32/0/kerning_overrides/100/0 = Vector2(0, 0)
+cache/0/100/0/ascent = 0.0
+cache/0/100/0/descent = 0.0
+cache/0/100/0/underline_position = 0.0
+cache/0/100/0/underline_thickness = 0.0
+cache/0/100/0/scale = 1.0
+cache/0/100/0/kerning_overrides/16/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/15/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/34/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/17/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/18/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/19/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/20/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/21/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/22/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/32/0 = Vector2(0, 0)
+cache/0/100/0/kerning_overrides/100/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="4"]
+resource_local_to_scene = true
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fallbacks = Array[Font]([ExtResource("2")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="3"]
+resource_local_to_scene = true
+subpixel_positioning = 0
+msdf_pixel_range = 14
+msdf_size = 128
+fallbacks = Array[Font]([ExtResource("3")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_kgo2g"]
+resource_local_to_scene = true
+shader = ExtResource("6_dgwar")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 10
+shader_parameter/fill_color = Vector3(0.913725, 0.160784, 0.160784)
+shader_parameter/unfill_color = Vector3(0.685294, 0.120588, 0.120588)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 10.3256
+shader_parameter/size = Vector2(176, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("7_edyi7")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_edp00"]
+resource_local_to_scene = true
+shader = ExtResource("6_dgwar")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 50
+shader_parameter/fill_color = Vector3(0.94902, 0.694118, 0.262745)
+shader_parameter/unfill_color = Vector3(0.711765, 0.520589, 0.197059)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 10.3256
+shader_parameter/size = Vector2(176, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("9_ff4mn")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_jsq0j"]
+resource_local_to_scene = true
+shader = ExtResource("6_dgwar")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 1.0
+shader_parameter/fill_color = Vector3(1, 0.729412, 0.729412)
+shader_parameter/unfill_color = Vector3(0.75, 0.547059, 0.547059)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 5.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 10.3256
+shader_parameter/size = Vector2(176, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("11_h72xj")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_5kach"]
+resource_local_to_scene = true
+shader = ExtResource("6_dgwar")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 10
+shader_parameter/fill_color = Vector3(0.988235, 0.972549, 0.764706)
+shader_parameter/unfill_color = Vector3(0.741176, 0.729412, 0.573529)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 10.3256
+shader_parameter/size = Vector2(176.5, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("13_puqdr")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_m7pob"]
+resource_local_to_scene = true
+shader = ExtResource("6_dgwar")
+shader_parameter/spacing = 3
+shader_parameter/res_per_icon = 10
+shader_parameter/fill_color = Vector3(0.592157, 0.972549, 0.278431)
+shader_parameter/unfill_color = Vector3(0.444118, 0.729412, 0.208823)
+shader_parameter/value = 100.0
+shader_parameter/max_value = 100.0
+shader_parameter/shake_amp = 1.5
+shader_parameter/rand = 0.0
+shader_parameter/horiz_t = 0.0
+shader_parameter/vert_t = 10.3256
+shader_parameter/size = Vector2(176.5, 17.5)
+shader_parameter/scale = 0.5
+shader_parameter/icon = ExtResource("14_58q16")
+
+[node name="CharaStatus" type="MarginContainer"]
+anchors_preset = 9
+anchor_bottom = 1.0
+offset_right = 240.0
+offset_bottom = -515.0
+grow_vertical = 2
+size_flags_vertical = 3
+mouse_filter = 2
+script = SubResource("5")
+font_color = Color(1, 0.97, 0.64, 1)
+font_color_2 = Color(1, 0.916667, 0, 1)
+font_size = 32
+
+[node name="V" type="VBoxContainer" parent="."]
+layout_mode = 2
+
+[node name="Name" type="RichTextLabel" parent="V"]
+modulate = Color(1, 0.97, 0.64, 1)
+material = SubResource("24")
+clip_contents = false
+layout_mode = 2
+size_flags_vertical = 3
+mouse_filter = 1
+theme_override_fonts/normal_font = SubResource("1")
+theme_override_fonts/bold_font = SubResource("4")
+theme_override_fonts/italics_font = SubResource("3")
+theme_override_font_sizes/normal_font_size = 32
+theme_override_font_sizes/bold_font_size = 32
+theme_override_font_sizes/italics_font_size = 32
+theme_override_font_sizes/bold_italics_font_size = 32
+theme_override_font_sizes/mono_font_size = 32
+bbcode_enabled = true
+text = "Parisitologist"
+fit_content = true
+scroll_active = false
+
+[node name="HP" type="MarginContainer" parent="V"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 60
+
+[node name="HP" parent="V/HP" instance=ExtResource("5")]
+material = SubResource("ShaderMaterial_kgo2g")
+custom_minimum_size = Vector2(89, 17.5)
+layout_mode = 2
+
+[node name="Res1" type="MarginContainer" parent="V"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 60
+
+[node name="RBar_Fuel" parent="V/Res1" instance=ExtResource("10")]
+material = SubResource("ShaderMaterial_edp00")
+custom_minimum_size = Vector2(89, 17.5)
+layout_mode = 2
+
+[node name="Res2" type="MarginContainer" parent="V"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 60
+
+[node name="RBar_Leeches" parent="V/Res2" instance=ExtResource("8")]
+material = SubResource("ShaderMaterial_jsq0j")
+layout_mode = 2
+
+[node name="Res3" type="MarginContainer" parent="V"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 60
+
+[node name="RBar_Favor" parent="V/Res3" instance=ExtResource("9")]
+material = SubResource("ShaderMaterial_5kach")
+layout_mode = 2
+res_per_icon = 10
+
+[node name="Res4" type="MarginContainer" parent="V"]
+layout_mode = 2
+size_flags_vertical = 2
+theme_override_constants/margin_left = 4
+theme_override_constants/margin_right = 60
+
+[node name="RBar_Stamina" parent="V/Res4" instance=ExtResource("4")]
+material = SubResource("ShaderMaterial_m7pob")
+layout_mode = 2
+res_per_icon = 10

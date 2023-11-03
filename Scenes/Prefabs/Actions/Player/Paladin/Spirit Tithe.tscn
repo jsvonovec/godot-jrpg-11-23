@@ -1,0 +1,243 @@
+[gd_scene load_steps=24 format=3 uid="uid://cqijqdkvw0e5t"]
+
+[ext_resource type="PackedScene" uid="uid://436gah7qqhg" path="res://Scenes/Prefabs/Custom Nodes/Action.tscn" id="1"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/CombatPartAnim.gd" id="2_he2mo"]
+[ext_resource type="Texture2D" uid="uid://4o7huhwxjd4l" path="res://Sprites/Particles/basic.png" id="3_2jxde"]
+[ext_resource type="PackedScene" uid="uid://cv2m4bnpcqur8" path="res://Scenes/Prefabs/ParticleSystems/vortex.tscn" id="3_ao4im"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/GameParticles.gd" id="4_pxpha"]
+[ext_resource type="Texture2D" uid="uid://cvjo2bffgd554" path="res://Sprites/Particles/slash.png" id="5_35unj"]
+[ext_resource type="Texture2D" uid="uid://iqbcetbaplh" path="res://Sprites/Emoji/twe_fullmoon.png" id="7_fj1xo"]
+[ext_resource type="Texture2D" uid="uid://irxacn0fr1gf" path="res://Sprites/Emoji/twe_crystalball.png" id="8_75tot"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/PathToFrom.gd" id="9_8i4i3"]
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Action
+
+
+
+func _use(_targets):
+	for target in _targets:
+		# Calculate here so we don't overkill.
+		#(attacker, target, type, p, amult, dmult)
+		var damage = min(target.hp, Action.calculate_damage(character, 
+									target,
+									attack_type, power, 1, 1))
+		# Now deal the damage WITHOUT CALCULATION.
+		#(power, _source, a_type = 0, 
+				#a_mult = 1, d_mult = 1, calc = true)
+		target.take_damage(damage,character,attack_type,
+		atk_multiplier,def_multiplier,false)
+		if !target.dead:
+			target.set_max_hp(target.max_hp - damage)
+"
+
+[sub_resource type="Animation" id="Animation_hy5oq"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpiritTitheCPA/PathToFrom/PathFollow3D/Slash:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpiritTitheCPA/TargetStart/TargetMarker/Vortex:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [false]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_t4nw8"]
+_data = {
+"RESET": SubResource("Animation_hy5oq")
+}
+
+[sub_resource type="Animation" id="Animation_oqu28"]
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("SpiritTitheCPA/PathToFrom/PathFollow3D/Slash:emitting")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("SpiritTitheCPA/TargetStart/TargetMarker/Vortex:emitting")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0.25),
+"transitions": PackedFloat32Array(1),
+"update": 1,
+"values": [true]
+}
+tracks/2/type = "method"
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/path = NodePath("SpiritTitheCPA")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/keys = {
+"times": PackedFloat32Array(0.25),
+"transitions": PackedFloat32Array(1),
+"values": [{
+"args": [],
+"method": &"hit"
+}]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_c8gdy"]
+_data = {
+"atk": SubResource("Animation_oqu28")
+}
+
+[sub_resource type="Curve3D" id="Curve3D_6x3fc"]
+_data = {
+"points": PackedVector3Array(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -2.5, 0, 0, 0, 0, 0, 0, 0, 0, -5),
+"tilts": PackedFloat32Array(0, 0, 0)
+}
+point_count = 3
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_i2tis"]
+resource_local_to_scene = true
+spread = 0.0
+gravity = Vector3(0, 0, 0)
+scale_min = 0.5
+scale_max = 0.5
+color = Color(0.941176, 0.901961, 0.54902, 1)
+anim_speed_min = 1.0
+anim_speed_max = 1.0
+
+[sub_resource type="StandardMaterial3D" id="2"]
+resource_local_to_scene = true
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("5_35unj")
+texture_filter = 0
+texture_repeat = false
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 14
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_e43ho"]
+material = SubResource("2")
+size = Vector2(3, 3)
+
+[sub_resource type="Curve" id="Curve_etc3b"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="CurveTexture" id="CurveTexture_76lf7"]
+curve = SubResource("Curve_etc3b")
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_7a1ge"]
+resource_local_to_scene = true
+emission_shape = 6
+emission_ring_axis = Vector3(0, 1, 0)
+emission_ring_height = 0.0
+emission_ring_radius = 1.0
+emission_ring_inner_radius = 1.0
+spread = 124.89
+gravity = Vector3(0, 10, 0)
+initial_velocity_min = 1.0
+initial_velocity_max = 3.0
+tangential_accel_min = 3.68
+tangential_accel_max = 24.21
+damping_min = 10.53
+damping_max = 10.53
+scale_curve = SubResource("CurveTexture_76lf7")
+color = Color(0.63, 0.59283, 0.2583, 1)
+
+[sub_resource type="StandardMaterial3D" id="10"]
+transparency = 1
+shading_mode = 0
+vertex_color_use_as_albedo = true
+albedo_texture = ExtResource("3_2jxde")
+billboard_mode = 3
+billboard_keep_scale = true
+particles_anim_h_frames = 1
+particles_anim_v_frames = 1
+particles_anim_loop = false
+
+[sub_resource type="QuadMesh" id="QuadMesh_fd1en"]
+material = SubResource("10")
+
+[node name="Spirit Tithe" instance=ExtResource("1")]
+script = SubResource("1")
+costs = Array[float]([0.0, 0.0, -20.0])
+attack_type = 3
+power = 5
+description = "Reduces the target's max HP instead of damaging. Will not overkill."
+melee = true
+
+[node name="SpiritTitheCPA" type="AnimationPlayer" parent="." index="0"]
+libraries = {
+"": SubResource("AnimationLibrary_t4nw8"),
+"Spirit Tithe": SubResource("AnimationLibrary_c8gdy")
+}
+script = ExtResource("2_he2mo")
+
+[node name="PathToFrom" type="Path3D" parent="SpiritTitheCPA" index="0"]
+curve = SubResource("Curve3D_6x3fc")
+script = ExtResource("9_8i4i3")
+start_node_path = NodePath("../OriginStart/OriginMarker")
+end_node_path = NodePath("../TargetStart/TargetMarker")
+
+[node name="PathFollow3D" type="PathFollow3D" parent="SpiritTitheCPA/PathToFrom" index="0"]
+transform = Transform3D(-1, 0, -8.74228e-08, 0, 1, 0, 8.74228e-08, 0, -1, 0, 0, -1.50012)
+progress = 1.5
+
+[node name="Slash" type="GPUParticles3D" parent="SpiritTitheCPA/PathToFrom/PathFollow3D" index="0"]
+emitting = false
+amount = 1
+lifetime = 0.5
+one_shot = true
+visibility_aabb = AABB(-0.5, -0.5, -0.5, 1, 1, 1)
+process_material = SubResource("ParticleProcessMaterial_i2tis")
+draw_pass_1 = SubResource("QuadMesh_e43ho")
+script = ExtResource("4_pxpha")
+_texture = ExtResource("5_35unj")
+h_frames = 14
+_process_material = SubResource("ParticleProcessMaterial_i2tis")
+
+[node name="OriginStart" type="Node3D" parent="SpiritTitheCPA" index="1"]
+
+[node name="OriginMarker" type="Sprite3D" parent="SpiritTitheCPA/OriginStart" index="0"]
+billboard = 1
+texture = ExtResource("7_fj1xo")
+
+[node name="TargetStart" type="Node3D" parent="SpiritTitheCPA" index="2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -5)
+
+[node name="TargetMarker" type="Sprite3D" parent="SpiritTitheCPA/TargetStart" index="0"]
+billboard = 1
+texture = ExtResource("8_75tot")
+
+[node name="Vortex" parent="SpiritTitheCPA/TargetStart/TargetMarker" index="0" instance=ExtResource("3_ao4im")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0)
+emitting = false
+one_shot = true
+preprocess = 1.0
+process_material = SubResource("ParticleProcessMaterial_7a1ge")
+draw_pass_1 = SubResource("QuadMesh_fd1en")
+_process_material = SubResource("ParticleProcessMaterial_7a1ge")

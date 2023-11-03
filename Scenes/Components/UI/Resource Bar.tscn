@@ -1,0 +1,91 @@
+[gd_scene load_steps=6 format=3]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/UI/BarWithText.gd" id="2"]
+[ext_resource type="FontFile" uid="uid://ddsw7a4p66evb" path="res://Fonts/Bahnschrift/bahnschrift.ttf" id="3"]
+[ext_resource type="Script" path="res://Scenes/Components/UI/Resource Bar.gd" id="4"]
+
+
+
+[sub_resource type="FontFile" id="1"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("3")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[sub_resource type="FontFile" id="4"]
+resource_name = "bahn"
+fallbacks = Array[Font]([ExtResource("3")])
+face_index = null
+embolden = null
+transform = null
+cache/0/16/0/ascent = 0.0
+cache/0/16/0/descent = 0.0
+cache/0/16/0/underline_position = 0.0
+cache/0/16/0/underline_thickness = 0.0
+cache/0/16/0/scale = 1.0
+cache/0/16/0/kerning_overrides/16/0 = Vector2(0, 0)
+
+[node name="ResourceBar" type="Control"]
+custom_minimum_size = Vector2(250, 45)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 250.0
+offset_bottom = 50.0
+script = ExtResource("4")
+res_name = "Parasites and Toxins"
+bar_color = Color(0.54902, 0.141176, 0.141176, 1)
+
+[node name="ReferenceRect" type="ReferenceRect" parent="."]
+visible = false
+layout_mode = 0
+anchor_right = 1.0
+anchor_bottom = 1.0
+
+[node name="Name" type="Label" parent="."]
+layout_mode = 0
+anchor_right = 1.0
+offset_bottom = 20.0
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("1")
+text = "Hotdogs"
+clip_text = true
+
+[node name="Bar" type="ProgressBar" parent="."]
+layout_mode = 0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 101.0
+offset_top = -23.0
+grow_horizontal = 2
+grow_vertical = 0
+theme_override_colors/font_color = Color(0.956863, 0, 0, 1)
+theme_override_colors/font_shadow_color = Color(0.827451, 0.52549, 0.52549, 1)
+value = 75.0
+script = ExtResource("2")
+label_path = "Amount"
+bar_color = Color(1, 0, 0, 1)
+text_color = Color(0.0431373, 0.964706, 0.184314, 1)
+update_color_every_frame = true
+
+[node name="Amount" type="Label" parent="Bar"]
+layout_mode = 0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_left = -101.0
+offset_top = -22.7297
+offset_right = -2.0
+offset_bottom = 0.270317
+grow_vertical = 0
+pivot_offset = Vector2(0, 23)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = SubResource("4")
+text = "76/258"
+clip_text = true

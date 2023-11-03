@@ -1,0 +1,65 @@
+[gd_scene load_steps=4 format=2]
+
+[ext_resource path="res://Scripts/Managers/CombatPuppeteer.gd" type="Script" id=1]
+
+[sub_resource type="Curve3D" id=1]
+_data = {
+"points": PackedVector3Array(  ),
+"tilts": PackedFloat32Array(  )
+}
+up_vector_enabled = false
+
+[sub_resource type="Curve3D" id=2]
+_data = {
+"points": PackedVector3Array(  ),
+"tilts": PackedFloat32Array(  )
+}
+
+[node name="CombatPuppeteer" type="Node"]
+script = ExtResource( 1 )
+
+[node name="PlayerPath" type="Path3D" parent="."]
+curve = SubResource( 1 )
+
+[node name="PathFollowDefault" type="PathFollow3D" parent="PlayerPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow2" type="PathFollow3D" parent="PlayerPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow3" type="PathFollow3D" parent="PlayerPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow4" type="PathFollow3D" parent="PlayerPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow5" type="PathFollow3D" parent="PlayerPath"]
+rotation_mode = 0
+loop = false
+
+[node name="EnemyPath" type="Path3D" parent="."]
+curve = SubResource( 2 )
+
+[node name="PathFollow3D" type="PathFollow3D" parent="EnemyPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow2" type="PathFollow3D" parent="EnemyPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow3" type="PathFollow3D" parent="EnemyPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow4" type="PathFollow3D" parent="EnemyPath"]
+rotation_mode = 0
+loop = false
+
+[node name="PathFollow5" type="PathFollow3D" parent="EnemyPath"]
+rotation_mode = 0
+loop = false

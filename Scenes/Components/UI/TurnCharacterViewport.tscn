@@ -1,0 +1,31 @@
+[gd_scene load_steps=3 format=3 uid="uid://capcwjyoyandq"]
+
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/Combat Cardv2.tscn" id="2"]
+
+[sub_resource type="ViewportTexture" id="1"]
+viewport_path = NodePath("SubViewport")
+
+[node name="TurnCharacterViewport" type="Node3D"]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+transparent_bg = true
+gui_disable_input = true
+size = Vector2i(520, 1000)
+
+[node name="CombatCard" parent="SubViewport" instance=ExtResource("2")]
+layout_mode = 3
+anchors_preset = 0
+offset_left = 0.0
+offset_top = 700.0
+offset_right = 0.0
+offset_bottom = 700.0
+grow_horizontal = 1
+grow_vertical = 1
+
+[node name="Sprite3D" type="Sprite3D" parent="."]
+transform = Transform3D(3, 0, 0, 0, 3, 0, 0, 0, 3, 0, 0, 0)
+cast_shadow = 0
+offset = Vector2(-260, 200)
+pixel_size = 0.0075
+billboard = 1
+texture = SubResource("1")

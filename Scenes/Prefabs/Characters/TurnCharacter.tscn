@@ -1,0 +1,83 @@
+[gd_scene load_steps=13 format=3 uid="uid://cuwo0dlpq3c5a"]
+
+[ext_resource type="Script" path="res://Scripts/Behaviors/TurnCharacter.gd" id="1"]
+[ext_resource type="PackedScene" path="res://Scenes/Prefabs/Actions/General/Flee.tscn" id="3"]
+[ext_resource type="PackedScene" uid="uid://baloemgjpfsj3" path="res://Scenes/Prefabs/Actions/General/Defend.tscn" id="4"]
+[ext_resource type="Texture2D" uid="uid://xvexjtiqmcgm" path="res://Sprites/Emoji/twe_gestureno.png" id="5"]
+[ext_resource type="PackedScene" uid="uid://de1n47cfd0n3v" path="res://Scenes/Prefabs/Actions/General/Shift.tscn" id="6"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/AI.gd" id="7"]
+[ext_resource type="Script" path="res://Scripts/Behaviors/Puppet.gd" id="8"]
+[ext_resource type="PackedScene" uid="uid://bvjfayru1w46l" path="res://Scenes/Prefabs/UI/Parts/Combat Parts/Resource Circle.tscn" id="9"]
+[ext_resource type="Texture2D" uid="uid://cl8p43ekqdrsw" path="res://Sprites/Emoji/twe_explosion.png" id="10"]
+
+[sub_resource type="Curve" id="2"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(0.358491, 0.527273), -2.07003, -2.07003, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 3
+
+[sub_resource type="Curve" id="3"]
+_data = [Vector2(0, 1), 0.0, 1.78961, 0, 0, Vector2(0.995283, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="GDScript" id="1"]
+script/source = "extends Node3D
+
+func get_chara():
+	return get_parent().get_chara()
+"
+
+[node name="TurnCharacter" type="Node3D" groups=["turn_characters"]]
+script = ExtResource("1")
+avi = ExtResource("5")
+p_color = Color(0.423529, 0.423529, 0.423529, 1)
+s_color = Color(0.752941, 0.752941, 0.752941, 1)
+default_max_res = Array[int]([100, 1, 140, 50])
+default_res = Array[int]([100, 1, 140, 50])
+
+[node name="Puppet" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 0)
+script = ExtResource("8")
+intent_fade = SubResource("2")
+intent_fade_scale = SubResource("3")
+
+[node name="Center" type="Node3D" parent="Puppet"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.87543, 0)
+script = SubResource("1")
+
+[node name="RCircle" parent="Puppet/Center" instance=ExtResource("9")]
+max_od = 4.8
+max_id = 4.0
+
+[node name="Intent" type="Sprite3D" parent="Puppet/Center"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 3.08312, 0)
+cast_shadow = 0
+billboard = 1
+double_sided = false
+alpha_cut = 2
+texture = ExtResource("10")
+
+[node name="AI" type="Node" parent="."]
+script = ExtResource("7")
+max_comrades_per_prio = {
+"Buff": 2,
+"Damage": 0,
+"Debuff": 3,
+"Heal": 2,
+"Lethal": 2,
+"Rescue": 2
+}
+
+[node name="Defend" parent="." instance=ExtResource("4")]
+
+[node name="Flee" parent="." instance=ExtResource("3")]
+
+[node name="Shift" parent="." instance=ExtResource("6")]
+
+[node name="L1" type="Node" parent="."]
+
+[node name="L2" type="Node" parent="."]
+
+[node name="L3" type="Node" parent="."]
+
+[node name="L4" type="Node" parent="."]
+
+[node name="L5" type="Node" parent="."]

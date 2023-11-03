@@ -1,0 +1,9 @@
+[gd_scene load_steps=3 format=3 uid="uid://c3ru1vvel80c0"]
+
+[ext_resource type="ArrayMesh" uid="uid://cyp4mhoong83k" path="res://Models/tree.obj" id="1_qdsb4"]
+[ext_resource type="Material" uid="uid://cbqjhycga362f" path="res://Materials/redground.tres" id="2_37b42"]
+
+[node name="RedTree" type="MeshInstance3D"]
+mesh = ExtResource("1_qdsb4")
+skeleton = NodePath("../../..")
+surface_material_override/1 = ExtResource("2_37b42")
